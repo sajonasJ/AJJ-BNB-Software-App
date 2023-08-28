@@ -15,6 +15,8 @@ Gantt: https://griffitheduau-my.sharepoint.com/:x:/g/personal/jonas_sajonas_grif
 
 Activity Def: https://1drv.ms/w/s!AulvIukSHMr0hvIglXHA1rWWvwR0Rw?e=LoPhjH
 
+use case diagram: https://lucid.app/lucidchart/05a101cd-3e34-424d-ae05-a2dfcf43707b/edit?viewport_loc=-1222%2C42%2C2758%2C1295%2C0_0&invitationId=inv_53257447-7ef1-422e-ac89-3be62abd9110
+
 WBS: https://lucid.app/lucidchart/b1cd5aaf-f667-43db-902c-db8e8d97f919/edit?viewport_loc=-11%2C-11%2C1529%2C1217%2C0_0&invitationId=inv_e8806300-154d-40e1-913a-d689f0a9f9b6
 
 Moqup - design and heirachy diagram Drafts: 
