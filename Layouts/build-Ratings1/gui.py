@@ -36,6 +36,14 @@ canvas = Canvas(
 
 canvas.place(x = 0, y = 0)
 canvas.create_rectangle(
+    228.0,
+    122.0,
+    899.0,
+    517.0,
+    fill="#FFFFFF",
+    outline="")
+
+canvas.create_rectangle(
     0.0,
     0.0,
     195.0,
@@ -53,10 +61,10 @@ button_1 = Button(
     relief="flat"
 )
 button_1.place(
-    x=33.0,
-    y=539.0,
-    width=126.0,
-    height=56.0
+    x=284.0,
+    y=536.0,
+    width=218.0,
+    height=39.0
 )
 
 button_image_2 = PhotoImage(
@@ -69,10 +77,26 @@ button_2 = Button(
     relief="flat"
 )
 button_2.place(
-    x=33.0,
-    y=302.0,
-    width=126.0,
-    height=56.0
+    x=626.0,
+    y=536.0,
+    width=218.0,
+    height=39.0
+)
+
+canvas.create_rectangle(
+    461.0,
+    455.0,
+    679.0,
+    494.0,
+    fill="#E8E8E8",
+    outline="")
+
+image_image_1 = PhotoImage(
+    file=relative_to_assets("image_1.png"))
+image_1 = canvas.create_image(
+    564.0,
+    70.0,
+    image=image_image_1
 )
 
 button_image_3 = PhotoImage(
@@ -86,7 +110,7 @@ button_3 = Button(
 )
 button_3.place(
     x=33.0,
-    y=460.0,
+    y=539.0,
     width=126.0,
     height=56.0
 )
@@ -102,7 +126,7 @@ button_4 = Button(
 )
 button_4.place(
     x=33.0,
-    y=381.0,
+    y=302.0,
     width=126.0,
     height=56.0
 )
@@ -118,7 +142,23 @@ button_5 = Button(
 )
 button_5.place(
     x=33.0,
-    y=223.0,
+    y=460.0,
+    width=126.0,
+    height=56.0
+)
+
+button_image_6 = PhotoImage(
+    file=relative_to_assets("button_6.png"))
+button_6 = Button(
+    image=button_image_6,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("button_6 clicked"),
+    relief="flat"
+)
+button_6.place(
+    x=33.0,
+    y=381.0,
     width=126.0,
     height=56.0
 )
@@ -132,20 +172,28 @@ canvas.create_text(
     font=("Inter Bold", 40 * -1)
 )
 
-image_image_1 = PhotoImage(
-    file=relative_to_assets("image_1.png"))
-image_1 = canvas.create_image(
-    96.0,
-    145.0,
-    image=image_image_1
-)
-
 image_image_2 = PhotoImage(
     file=relative_to_assets("image_2.png"))
 image_2 = canvas.create_image(
-    574.0,
-    303.0,
+    96.0,
+    145.0,
     image=image_image_2
+)
+
+button_image_7 = PhotoImage(
+    file=relative_to_assets("button_7.png"))
+button_7 = Button(
+    image=button_image_7,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("button_7 clicked"),
+    relief="flat"
+)
+button_7.place(
+    x=33.0,
+    y=223.0,
+    width=126.0,
+    height=56.0
 )
 window.resizable(False, False)
 window.mainloop()
