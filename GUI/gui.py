@@ -45,7 +45,7 @@ current_canvas = None
 
 #Display suburb listing
 def show_canvas2():
-    print('hello')
+    print('canvas 2')
     canvas.pack_forget()
     global current_canvas
     
@@ -287,220 +287,10 @@ def show_canvas2():
     canvasListSuburb.pack()
     current_canvas = canvasListSuburb
 
-#Display cleanliness function
-def show_canvas3():
-    print('hello')
-    canvas.pack_forget()
-    
-    global current_canvas
-    
-    if current_canvas:
-        current_canvas.pack_forget()
-        
-    #canvasListSuburb.pack_forget()
-    canvasCleanliness = Canvas(
-    window,
-    bg = "#E8E8E8",
-    height = 626,
-    width = 932,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-    )
-
-    canvasCleanliness.place(x = 0, y = 0)
-    canvasCleanliness.update()  # Update the canvas before getting dimensions
-    print("Canvas dimensions:", canvasCleanliness.winfo_width(), canvasCleanliness.winfo_height())
-
-    canvasCleanliness.create_rectangle(
-    228.0,
-    122.0,
-    899.0,
-    517.0,
-    fill="#FFFFFF",
-    outline="")
-
-    canvasCleanliness.create_rectangle(
-        0.0,
-        0.0,
-        195.0,
-        626.0,
-        fill="#32213A",
-        outline="")
-    
-    entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
-    window.eleven = entry_image_1
-    entry_bg_1 = canvasCleanliness.create_image(
-        563.5,
-        474.5,
-        image=entry_image_1
-    )
-    entry_1 = Entry(
-        bd=0,
-        bg="#E8E8E8",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entry_1.place(
-        x=446.0,
-        y=455.0,
-        width=235.0,
-        height=37.0
-    )
-
-    image_image_1 = PhotoImage(
-    file=relative_to_assets("display_chart_by_cleanliness.png"))
-    window.twelve = image_image_1
-    image_1 = canvasCleanliness.create_image(
-    564.0,
-    70.0,
-    image=image_image_1
-    )
-    
-    button_image_1 = PhotoImage(
-        file=relative_to_assets("display_by_ratings.png"))
-    window.three = button_image_1
-    button_1 = Button(
-    image=button_image_1,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: show_canvas6(),
-    relief="flat"
-    )
-    
-    button_1.place(
-        x=33.0,
-        y=539.0,
-        width=126.0,
-        height=56.0
-    )
-    
-    image_image_2 = PhotoImage(
-    file=relative_to_assets("home.png"))
-    window.thirteen = image_image_2
-    image_2 = canvasCleanliness.create_image(
-        96.0,
-        145.0,
-        image=image_image_2
-    )
-
-    button_image_1 = PhotoImage(
-    file=relative_to_assets("display_by_ratings.png"))
-    window.fourteen = button_image_1
-    button_1 = Button(
-        image=button_image_1,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas6(),
-        relief="flat"
-    )
-    button_1.place(
-        x=33.0,
-        y=539.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_2 = PhotoImage(
-        file=relative_to_assets("price_chart.png"))
-    window.fifteen = button_image_2
-    button_2 = Button(
-        image=button_image_2,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas4(),
-        relief="flat"
-    )
-    button_2.place(
-        x=33.0,
-        y=302.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_3 = PhotoImage(
-        file=relative_to_assets("cleanliness.png"))
-    window.sixteen = button_image_3
-    button_3 = Button(
-        image=button_image_3,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_3 clicked"),
-        relief="flat"
-    )
-    button_3.place(
-        x=33.0,
-        y=460.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_4 = PhotoImage(
-        file=relative_to_assets("search.png"))
-    window.seventeen = button_image_4
-    button_4 = Button(
-        image=button_image_4,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas5(),
-        relief="flat"
-    )
-    button_4.place(
-        x=33.0,
-        y=381.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_5 = PhotoImage(
-        file=relative_to_assets("suburb_listing.png"))
-    window.eighteen = button_image_5
-    button_5 = Button(
-        image=button_image_5,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas2(),
-        relief="flat"
-    )
-    button_5.place(
-        x=33.0,
-        y=223.0,
-        width=126.0,
-        height=56.0
-    )
-
-    canvasCleanliness.create_text(
-        56.0,
-        36.0,
-        anchor="nw",
-        text="AJJ",
-        fill="#FFFFFF",
-        font=("Inter Bold", 40 * -1)
-    )
-    
-    button_image_5 = PhotoImage(
-    file=relative_to_assets("display.png"))
-    window.nineteen = button_image_5
-    button_5 = Button(
-        image=button_image_5,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_5 clicked"),
-        relief="flat"
-    )
-    button_5.place(
-        x=454.0,
-        y=536.0,
-        width=218.0,
-        height=39.0
-    )
-
-    canvasCleanliness.pack()
-    current_canvas = canvasCleanliness
 
 #Display Price Listings function
 def show_canvas4():
+    print("canvas4")
     canvas.pack_forget()
     global current_canvas
     
@@ -749,9 +539,11 @@ def show_canvas4():
 
     canvasPriceListings.pack()
     current_canvas = canvasPriceListings
-
-#Display search records function
+    
+    
+#Display search records function (Search button)
 def show_canvas5():
+    print("canvas5")
     canvas.pack_forget()
     global current_canvas
     
@@ -949,9 +741,224 @@ def show_canvas5():
 
     canvasSearch.pack()
     current_canvas = canvasSearch
+    
+    
+#Display cleanliness function
+def show_canvas3():
+    print('canvas 3')
+    canvas.pack_forget()
+    
+    global current_canvas
+    
+    if current_canvas:
+        current_canvas.pack_forget()
+        
+    #canvasListSuburb.pack_forget()
+    canvasCleanliness = Canvas(
+    window,
+    bg = "#E8E8E8",
+    height = 626,
+    width = 932,
+    bd = 0,
+    highlightthickness = 0,
+    relief = "ridge"
+    )
+
+    canvasCleanliness.place(x = 0, y = 0)
+    canvasCleanliness.update()  # Update the canvas before getting dimensions
+    print("Canvas dimensions:", canvasCleanliness.winfo_width(), canvasCleanliness.winfo_height())
+
+    canvasCleanliness.create_rectangle(
+    228.0,
+    122.0,
+    899.0,
+    517.0,
+    fill="#FFFFFF",
+    outline="")
+
+    canvasCleanliness.create_rectangle(
+        0.0,
+        0.0,
+        195.0,
+        626.0,
+        fill="#32213A",
+        outline="")
+    
+    entry_image_1 = PhotoImage(
+    file=relative_to_assets("entry_4.png"))
+    window.eleven = entry_image_1
+    entry_bg_1 = canvasCleanliness.create_image(
+        563.5,
+        474.5,
+        image=entry_image_1
+    )
+    entry_1 = Entry(
+        bd=0,
+        bg="#E8E8E8",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_1.place(
+        x=446.0,
+        y=455.0,
+        width=235.0,
+        height=37.0
+    )
+
+    image_image_1 = PhotoImage(
+    file=relative_to_assets("display_chart_by_cleanliness.png"))
+    window.twelve = image_image_1
+    image_1 = canvasCleanliness.create_image(
+    564.0,
+    70.0,
+    image=image_image_1
+    )
+    
+    button_image_1 = PhotoImage(
+        file=relative_to_assets("display_by_ratings.png"))
+    window.three = button_image_1
+    button_1 = Button(
+    image=button_image_1,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: show_canvas6(),
+    relief="flat"
+    )
+    
+    button_1.place(
+        x=33.0,
+        y=539.0,
+        width=126.0,
+        height=56.0
+    )
+    
+    image_image_2 = PhotoImage(
+    file=relative_to_assets("home.png"))
+    window.thirteen = image_image_2
+    image_2 = canvasCleanliness.create_image(
+        96.0,
+        145.0,
+        image=image_image_2
+    )
+
+    button_image_1 = PhotoImage(
+    file=relative_to_assets("display_by_ratings.png"))
+    window.fourteen = button_image_1
+    button_1 = Button(
+        image=button_image_1,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: show_canvas6(),
+        relief="flat"
+    )
+    button_1.place(
+        x=33.0,
+        y=539.0,
+        width=126.0,
+        height=56.0
+    )
+
+    button_image_2 = PhotoImage(
+        file=relative_to_assets("price_chart.png"))
+    window.fifteen = button_image_2
+    button_2 = Button(
+        image=button_image_2,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: show_canvas4(),
+        relief="flat"
+    )
+    button_2.place(
+        x=33.0,
+        y=302.0,
+        width=126.0,
+        height=56.0
+    )
+
+    button_image_3 = PhotoImage(
+        file=relative_to_assets("cleanliness.png"))
+    window.sixteen = button_image_3
+    button_3 = Button(
+        image=button_image_3,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: print("button_3 clicked"),
+        relief="flat"
+    )
+    button_3.place(
+        x=33.0,
+        y=460.0,
+        width=126.0,
+        height=56.0
+    )
+
+    button_image_4 = PhotoImage(
+        file=relative_to_assets("search.png"))
+    window.seventeen = button_image_4
+    button_4 = Button(
+        image=button_image_4,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: show_canvas5(),
+        relief="flat"
+    )
+    button_4.place(
+        x=33.0,
+        y=381.0,
+        width=126.0,
+        height=56.0
+    )
+
+    button_image_5 = PhotoImage(
+        file=relative_to_assets("suburb_listing.png"))
+    window.eighteen = button_image_5
+    button_5 = Button(
+        image=button_image_5,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: show_canvas2(),
+        relief="flat"
+    )
+    button_5.place(
+        x=33.0,
+        y=223.0,
+        width=126.0,
+        height=56.0
+    )
+
+    canvasCleanliness.create_text(
+        56.0,
+        36.0,
+        anchor="nw",
+        text="AJJ",
+        fill="#FFFFFF",
+        font=("Inter Bold", 40 * -1)
+    )
+    
+    button_image_5 = PhotoImage(
+    file=relative_to_assets("display.png"))
+    window.nineteen = button_image_5
+    button_5 = Button(
+        image=button_image_5,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: print("button_5 clicked"),
+        relief="flat"
+    )
+    button_5.place(
+        x=454.0,
+        y=536.0,
+        width=218.0,
+        height=39.0
+    )
+
+    canvasCleanliness.pack()
+    current_canvas = canvasCleanliness
+
 
 #Display ratings listings
 def show_canvas6():
+    print("canvas 6")
     canvas.pack_forget()
     global current_canvas
     
