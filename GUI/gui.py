@@ -9,6 +9,7 @@ from pathlib import Path
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
 from PIL import Image,ImageTk
+import pandas as pd
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -1410,6 +1411,100 @@ def show_canvas7():
 
     canvasListingsByRatingsChart.pack()
     current_canvas = canvasListingsByRatingsChart
+
+
+#read Excel files by file name
+def readExcel(fileName):
+    df = pd.read_csv(fileName)
+    cleanExcelData(df)
+
+
+#clean the Excel file for any unwanted data
+def cleanExcelData(dataframe):
+    columns = "idk yet"
+    removeExtraColumns(dataframe, columns)
+
+
+#remove extra columns from the dataframe
+def removeExtraColumns(dataframe, wantedColumns):
+    print("remove extra columns" + dataframe + wantedColumns)
+
+
+#grab and store the start and end date for a user selected period from 2 calendars
+def selectDate(startDate,endDate):
+    print(startDate, endDate)
+
+
+#clear the user input
+def cleanUserInput(input):
+    print("clear the user input" + input)
+
+
+#get suburb listings data
+def getSuburbListings(fromDate, to, suburb, dataframe):
+    print(fromDate, to, property, dataframe)
+
+
+#display a chart with all the listings from the data from getSuburbListings() "Suburb Listing" button
+def displaySuburbListings():
+    print("display suburb listings")
+
+
+#get property prices data for a chart "Price Chart" button
+def getPriceChartData(fromDate, to, property, dataframe):
+    print(fromDate, to, property, dataframe)
+    
+    
+#display the price chart (matplotlib graph) from the data from getPriceChartData()
+def displayPriceChart():
+    print("display price chart")
+
+
+#get keyword results from the user
+def getKeywordResults(keyWords,fromDate,to,dataframe):
+    print("get keyword results" + keyWords + fromDate + to + dataframe)
+
+
+#display the results from the chosen keywords the "Search" button
+def displayKeywordResults():
+    print("display keyword results")
+    
+
+#display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
+def displayCleanliness():
+    print("display cleanliness")
+
+
+#get the cleanliness data for the displayCleanliness()
+def getCleanlinessData(keywords, suburb, dataframe):
+    print(keywords, suburb, dataframe)
+
+
+#clear search fields (button will be needed for it)
+def clearSearchQuery():
+    print("clear search fields")
+
+
+#display error messages
+def displayErrorMessage(errorMessage):
+    print("display error message" + errorMessage)
+
+
+#get suburb ratings data
+def getSuburbRatings(suburb, rating, dataframe):
+    print("get suburb ratings" + suburb + rating + dataframe)
+    
+    
+#"Display by Ratings" button, "Display List" button
+def displaySuburbRatingsRecords():
+    print("display suburb ratings record")
+    
+
+#"Display by Ratings" button, "Display Chart" button
+def displaySuburbRatingsChart():
+    print("display suburb ratings chart")
+
+
 
 canvas = Canvas(
     window,
