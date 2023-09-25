@@ -10,6 +10,34 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
 from PIL import Image,ImageTk
 import pandas as pd
+import sys
+
+
+#clean the Excel file for any unwanted data
+def cleanExcelData(dataframe):
+    for index, row in dataframe.iterrows():
+        comment = row['comments']
+        if type(comment) == float:
+            dataframe.loc[index] = row
+    return dataframe    
+    #removeExtraColumns(dataframe, columns)
+    
+#read Excel files by file name
+def readExcel(file):
+    df = pd.read_csv(file,low_memory=False)
+    return cleanExcelData(df)
+
+
+#dfListings = readExcel("../../bnb_data/listings_dec18.csv")
+dfReviews = readExcel("../../bnb_data/reviews_dec18.csv")
+#dfCalendar = readExcel("../../bnb_data/calendar_dec18.csv")
+
+print(dfReviews)
+#cleanComments = cleanExcelData(dfReviews)
+
+#remove extra columns from the dataframe
+def removeExtraColumns(dataframe, wantedColumns):
+    print("remove extra columns" + dataframe + wantedColumns)
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -788,18 +816,21 @@ def show_canvas3():
     entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_4.png"))
     window.eleven = entry_image_1
+    
+    #global cleanlinessEntry
+    
     entry_bg_1 = canvasCleanliness.create_image(
         563.5,
         474.5,
         image=entry_image_1
     )
-    entry_1 = Entry(
+    cleanlinessEntry = Entry(
         bd=0,
         bg="#E8E8E8",
         fg="#000716",
         highlightthickness=0
     )
-    entry_1.place(
+    cleanlinessEntry.place(
         x=446.0,
         y=455.0,
         width=235.0,
@@ -936,6 +967,8 @@ def show_canvas3():
         font=("Inter Bold", 40 * -1)
     )
     
+    cleanlinessKeywords = ['dirty', 'clean', 'cleanliness']
+    
     button_image_5 = PhotoImage(
     file=relative_to_assets("display.png"))
     window.nineteen = button_image_5
@@ -943,9 +976,11 @@ def show_canvas3():
         image=button_image_5,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("button_5 clicked"),
+        command=lambda: getCleanlinessData(cleanlinessKeywords, cleanlinessEntry.get(), dfReviews),
         relief="flat"
     )
+    
+    #cleanlinessEntry
     button_5.place(
         x=454.0,
         y=536.0,
@@ -955,6 +990,21 @@ def show_canvas3():
 
     canvasCleanliness.pack()
     current_canvas = canvasCleanliness
+
+#display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
+def displayCleanliness():
+    print("display cleanliness")
+
+
+#get the cleanliness data for the displayCleanliness()
+def getCleanlinessData(keywords, suburb, dataframe):
+    mask = dataframe['comments'].str.contains('|'.join(keywords), case=False, na=False)
+
+    filtered_mergedFile = dataframe[mask]
+    
+    print(filtered_mergedFile)
+    
+    displayCleanliness()
 
 
 #Display ratings listings
@@ -1412,22 +1462,9 @@ def show_canvas7():
     canvasListingsByRatingsChart.pack()
     current_canvas = canvasListingsByRatingsChart
 
+theColumns = ['id', 'neighbourhood']
 
-#read Excel files by file name
-def readExcel(fileName):
-    df = pd.read_csv(fileName)
-    cleanExcelData(df)
-
-
-#clean the Excel file for any unwanted data
-def cleanExcelData(dataframe):
-    columns = "idk yet"
-    removeExtraColumns(dataframe, columns)
-
-
-#remove extra columns from the dataframe
-def removeExtraColumns(dataframe, wantedColumns):
-    print("remove extra columns" + dataframe + wantedColumns)
+#dfListings = pd.read_csv('../bnb_data/listings_dec18.csv',low_memory=False, usecols=lambda x: x in theColumns)
 
 
 #grab and store the start and end date for a user selected period from 2 calendars
@@ -1469,16 +1506,6 @@ def getKeywordResults(keyWords,fromDate,to,dataframe):
 def displayKeywordResults():
     print("display keyword results")
     
-
-#display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
-def displayCleanliness():
-    print("display cleanliness")
-
-
-#get the cleanliness data for the displayCleanliness()
-def getCleanlinessData(keywords, suburb, dataframe):
-    print(keywords, suburb, dataframe)
-
 
 #clear search fields (button will be needed for it)
 def clearSearchQuery():
