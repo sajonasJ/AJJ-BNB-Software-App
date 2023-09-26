@@ -8,9 +8,8 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
-from PIL import Image,ImageTk
 import pandas as pd
-import sys
+import matplotlib as plt
 
 
 #clean the Excel file for any unwanted data
@@ -28,9 +27,9 @@ def readExcel(file):
     return cleanExcelData(df)
 
 
-#dfListings = readExcel("../../bnb_data/listings_dec18.csv")
-dfReviews = readExcel("../../bnb_data/reviews_dec18.csv")
-#dfCalendar = readExcel("../../bnb_data/calendar_dec18.csv")
+#dfListings = readExcel("../bnb_data/listings_dec18.csv")
+dfReviews = readExcel("../bnb_data/reviews_dec18.csv")
+#dfCalendar = readExcel("../bnb_data/calendar_dec18.csv")
 
 print(dfReviews)
 #cleanComments = cleanExcelData(dfReviews)
@@ -83,12 +82,12 @@ def show_canvas2():
         
     canvasListSuburb = Canvas(
     window,
-    bg = "#E8E8E8",
-    height = 626,
-    width = 932,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
+        bg = "#E8E8E8",
+        height = 626,
+        width = 932,
+        bd = 0,
+        highlightthickness = 0,
+        relief = "ridge"
     )
 
     canvasListSuburb.place(x = 0, y = 0)
@@ -169,10 +168,10 @@ def show_canvas2():
         highlightthickness=0
     )
     entry_1.place(
-    x=269.0,
-    y=455.0,
-    width=171.0,
-    height=38.0
+        x=269.0,
+        y=455.0,
+        width=171.0,
+        height=38.0
     )
     
     entry_image_2 = PhotoImage(
@@ -213,10 +212,10 @@ def show_canvas2():
     )
     
     entry_3.place(
-    x=462.0,
-    y=454.0,
-    width=171.0,
-    height=38.0
+        x=462.0,
+        y=454.0,
+        width=171.0,
+        height=38.0
     )
 
     button_image_1 = PhotoImage(
@@ -645,7 +644,7 @@ def show_canvas5():
     )
 
     image_image_1 = PhotoImage(
-    file=relative_to_assets("Display_Search_Records.png"))
+        file=relative_to_assets("Display_Search_Records.png"))
     window.two = image_image_1
     image_1 = canvasSearch.create_image(
         564.0,
@@ -654,7 +653,7 @@ def show_canvas5():
     )
     
     entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
+        file=relative_to_assets("entry_4.png"))
     window.three = entry_image_1
     entry_bg_1 = canvasSearch.create_image(
         563.5,
@@ -784,13 +783,13 @@ def show_canvas3():
         
     #canvasListSuburb.pack_forget()
     canvasCleanliness = Canvas(
-    window,
-    bg = "#E8E8E8",
-    height = 626,
-    width = 932,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
+        window,
+        bg = "#E8E8E8",
+        height = 626,
+        width = 932,
+        bd = 0,
+        highlightthickness = 0,
+        relief = "ridge"
     )
 
     canvasCleanliness.place(x = 0, y = 0)
@@ -798,12 +797,13 @@ def show_canvas3():
     print("Canvas dimensions:", canvasCleanliness.winfo_width(), canvasCleanliness.winfo_height())
 
     canvasCleanliness.create_rectangle(
-    228.0,
-    122.0,
-    899.0,
-    517.0,
-    fill="#FFFFFF",
-    outline="")
+        228.0,
+        122.0,
+        899.0,
+        517.0,
+        fill="#FFFFFF",
+        outline=""
+    )
 
     canvasCleanliness.create_rectangle(
         0.0,
@@ -811,7 +811,8 @@ def show_canvas3():
         195.0,
         626.0,
         fill="#32213A",
-        outline="")
+        outline=""
+    )
     
     entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_4.png"))
@@ -850,11 +851,11 @@ def show_canvas3():
         file=relative_to_assets("display_by_ratings.png"))
     window.three = button_image_1
     button_1 = Button(
-    image=button_image_1,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: show_canvas6(),
-    relief="flat"
+        image=button_image_1,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: show_canvas6(),
+        relief="flat"
     )
     
     button_1.place(
