@@ -20,3 +20,10 @@ WBS: https://lucid.app/lucidchart/b1cd5aaf-f667-43db-902c-db8e8d97f919/edit?view
 
 Moqup - design and heirachy diagram Drafts: 
 https://app.moqups.com/QhBzdGtClU61wn0XNBEirMU8lH47gXMl/view/page/a53aff595
+
+
+Pip install requirements:
+pip install tkcalendar
+pip install matplotlib
+pip install tk
+pip install pandas

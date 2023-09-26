@@ -7,12 +7,15 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar
+from tkinter import ttk
 import pandas as pd
 #import matplotlib as plt
-
+import sqlite3
+from tkcalendar import Calendar
 
 #clean the Excel file for any unwanted data
+'''
 def cleanExcelData(dataframe):
     for index, row in dataframe.iterrows():
         comment = row['comments']
@@ -20,24 +23,25 @@ def cleanExcelData(dataframe):
             dataframe.loc[index] = row
     return dataframe    
     #removeExtraColumns(dataframe, columns)
-    
+
 #read Excel files by file name
 def readExcel(file):
     df = pd.read_csv(file,low_memory=False)
     return cleanExcelData(df)
-
+'''  
 
 #dfListings = readExcel("../bnb_data/listings_dec18.csv")
-dfReviews = readExcel("../bnb_data/reviews_dec18.csv")
+#dfReviews = readExcel("../bnb_data/reviews_dec18.csv")
 #dfCalendar = readExcel("../bnb_data/calendar_dec18.csv")
 
-print(dfReviews)
+#print(dfReviews)
 #cleanComments = cleanExcelData(dfReviews)
 
 #remove extra columns from the dataframe
+'''
 def removeExtraColumns(dataframe, wantedColumns):
     print("remove extra columns" + dataframe + wantedColumns)
-
+'''
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
@@ -71,6 +75,13 @@ center_screen()
 photo_images = {}
 current_canvas = None
 
+#grab and store the start and end date for a user selected period from 2 calendars
+def selectDate(startDate,endDate):
+    #date.config(text = "Selected Date is: " + cal.get_date())
+    print(startDate.get_date(),endDate.get_date())
+    return (startDate.get_date(), endDate.get_date())
+    
+    
 #Display suburb listing
 def show_canvas2():
     print('canvas 2')
@@ -92,7 +103,6 @@ def show_canvas2():
 
     canvasListSuburb.place(x = 0, y = 0)
     canvasListSuburb.update()  # Update the canvas before getting dimensions
-    print("Canvas dimensions:", canvasListSuburb.winfo_width(), canvasListSuburb.winfo_height())
 
     canvasListSuburb.create_rectangle(
         228.0,
@@ -135,7 +145,7 @@ def show_canvas2():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("button_1 clicked"),
+        command=lambda: getSuburbListings(cal, calendarEnd, citySelect.get()),
         relief="flat"
     )
     button_1.place(
@@ -152,7 +162,7 @@ def show_canvas2():
         70.0,
         image=image_image_7
     )
-
+    '''
     entry_image_1 = PhotoImage(
         file=relative_to_assets("entry_1.png"))
     window.three = entry_image_1
@@ -173,7 +183,7 @@ def show_canvas2():
         width=171.0,
         height=38.0
     )
-    
+
     entry_image_2 = PhotoImage(
         file=relative_to_assets("entry_2.png"))
     window.four = entry_image_2
@@ -195,15 +205,50 @@ def show_canvas2():
         width=218.0,
         height=38.0
     )
+    '''
     
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    query = "SELECT DISTINCT city FROM listingsDec"
+
+    cursor.execute(query)
+
+    # Fetch the results
+    results = cursor.fetchall()
+    # Process the results (print in this example)
+    #print("the total cleanliness results=",len(results))
+    #print(results)
+    cityArray = []
+    for row in results:
+        cityArray.append(row[0])
+
+    #print(cityArray)
+    connection.close()
+    
+    label2 = Label(window, text="Pick A Suburb")
+    window.aaaaaa = label2
+    
+    label2.place(x=532, y=350)
+    
+    n = StringVar()
+    citySelect = ttk.Combobox(window, width = 27, height = 13, textvariable = n)
+    citySelect['values'] = cityArray
+    
+    window.niine = citySelect
+    citySelect.place(x=472,y=378)
+    
+    '''
     entry_image_3 = PhotoImage(
         file=relative_to_assets("entry_3.png"))
     window.five = entry_image_3
+    
     entry_bg_3 = canvasListSuburb.create_image(
         547.5,
         474.0,
         image=entry_image_3
     )
+    
     entry_3 = Entry(
         bd=0,
         bg="#D9D9D9",
@@ -217,7 +262,7 @@ def show_canvas2():
         width=171.0,
         height=38.0
     )
-
+    '''
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -311,9 +356,79 @@ def show_canvas2():
         fill="#FFFFFF",
         font=("Inter Bold", 40 * -1)
     )
+    
+    label = Label(window, text="Start date")
+    window.sixty = label
+    
+    label.place(x=250, y=130)
+    
+    cal = Calendar(
+        window, 
+        selectmode = 'day',
+        year = 2019, 
+        month = 1,
+        day = 1,
+        date_pattern='y-mm-dd'
+    )
+    
+    window.fifty = cal
+    cal.place(x=250, y=150)
+    
+    endLabel = Label(window, text="End date")
+    window.sixtytwo = endLabel
+    
+    endLabel.place(x=630, y=130)
+    
+    calendarEnd = Calendar(
+        window, 
+        selectmode = 'day',
+        year = 2019, 
+        month = 1,
+        day = 1,
+        date_pattern='y-mm-dd'
+    )
+    
+    window.fiftytwo = calendarEnd
+    calendarEnd.place(x=630, y=150)
 
     canvasListSuburb.pack()
     current_canvas = canvasListSuburb
+    
+'''
+def grad_date():
+    date.config(text = "Selected Date is: " + cal.get_date())
+'''
+
+#get suburb listings data
+def getSuburbListings(startDate, endDate, suburb):
+    dates = selectDate(startDate,endDate)
+    print('startDate=',dates[0], 'endDate=',dates[1], 'suburb=', suburb)
+    #print(fromDate, to, property, dataframe)
+    
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    query = "SELECT DISTINCT l.id, l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND l.city = ? ORDER BY l.id"
+
+    cursor.execute(query, (dates[0], dates[1], suburb))
+
+    # Fetch the results
+    results = cursor.fetchall()
+    # Process the results (print in this example)
+    #print("the total cleanliness results=",len(results))
+    for row in results:
+        print(row)
+
+    connection.close()
+
+
+#For a user-selected period, report the information of all listings in a specified suburb
+
+#Note, what is "the information"?
+
+#display a chart with all the listings from the data from getSuburbListings() "Suburb Listing" button
+def displaySuburbListings():
+    print("display suburb listings")
 
 
 #Display Price Listings function
@@ -337,7 +452,6 @@ def show_canvas4():
 
     canvasPriceListings.place(x = 0, y = 0)
     canvasPriceListings.update()  # Update the canvas before getting dimensions
-    print("Canvas dimensions:", canvasPriceListings.winfo_width(), canvasPriceListings.winfo_height())
 
     canvasPriceListings.create_rectangle(
         228.0,
@@ -590,7 +704,6 @@ def show_canvas5():
 
     canvasSearch.place(x = 0, y = 0)
     canvasSearch.update()  # Update the canvas before getting dimensions
-    print("Canvas dimensions:", canvasSearch.winfo_width(), canvasSearch.winfo_height())
 
     canvasSearch.create_rectangle(
         228.0,
@@ -794,7 +907,6 @@ def show_canvas3():
 
     canvasCleanliness.place(x = 0, y = 0)
     canvasCleanliness.update()  # Update the canvas before getting dimensions
-    print("Canvas dimensions:", canvasCleanliness.winfo_width(), canvasCleanliness.winfo_height())
 
     canvasCleanliness.create_rectangle(
         228.0,
@@ -977,7 +1089,7 @@ def show_canvas3():
         image=button_image_5,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: getCleanlinessData(cleanlinesskeywords, cleanlinessEntry.get(), dfReviews),
+        command=lambda: getCleanlinessData(cleanlinesskeywords, cleanlinessEntry.get()),
         relief="flat"
     )
     
@@ -998,12 +1110,32 @@ def displayCleanliness():
 
 
 #get the cleanliness data for the displayCleanliness()
-def getCleanlinessData(keywords, suburb, dataframe):
-    mask = dataframe['comments'].str.contains('|'.join(keywords), case=False, na=False)
-
-    filtered_mergedFile = dataframe[mask]
+def getCleanlinessData(keywords, suburb):
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
     
-    print(filtered_mergedFile)
+    query = "SELECT * FROM reviewsDec WHERE " + " OR ".join(["comments LIKE ?"] * len(keywords))
+    
+    # Modify each keyword to include wildcards for partial matching
+    modified_keywords = ['%{}%'.format(keyword) for keyword in keywords]
+
+    # Execute the SQL query, passing the modified keywords as parameters
+    cursor.execute(query, modified_keywords)
+
+    # Fetch the results
+    results = cursor.fetchall()
+    # Process the results (print in this example)
+    print("the total cleanliness results=",len(results))
+    #for row in results:
+        #print(row)
+
+    connection.close()
+    
+    #mask = dataframe['comments'].str.contains('|'.join(keywords), case=False, na=False)
+
+    #filtered_mergedFile = dataframe[mask]
+    
+    #print(filtered_mergedFile)
     
     displayCleanliness()
 
@@ -1029,7 +1161,6 @@ def show_canvas6():
 
     canvasListingsByRatings.place(x = 0, y = 0)
     canvasListingsByRatings.update()  # Update the canvas before getting dimensions
-    print("Canvas dimensions:", canvasListingsByRatings.winfo_width(), canvasListingsByRatings.winfo_height())
 
     canvasListingsByRatings.create_rectangle(
         228.0,
@@ -1256,7 +1387,6 @@ def show_canvas7():
 
     canvasListingsByRatingsChart.place(x = 0, y = 0)
     canvasListingsByRatingsChart.update()  # Update the canvas before getting dimensions
-    print("Canvas dimensions:", canvasListingsByRatingsChart.winfo_width(), canvasListingsByRatingsChart.winfo_height())
 
     canvasListingsByRatingsChart.create_rectangle(
         228.0,
@@ -1463,29 +1593,10 @@ def show_canvas7():
     canvasListingsByRatingsChart.pack()
     current_canvas = canvasListingsByRatingsChart
 
-theColumns = ['id', 'neighbourhood']
-
-#dfListings = pd.read_csv('../bnb_data/listings_dec18.csv',low_memory=False, usecols=lambda x: x in theColumns)
-
-
-#grab and store the start and end date for a user selected period from 2 calendars
-def selectDate(startDate,endDate):
-    print(startDate, endDate)
-
 
 #clear the user input
 def cleanUserInput(input):
     print("clear the user input" + input)
-
-
-#get suburb listings data
-def getSuburbListings(fromDate, to, suburb, dataframe):
-    print(fromDate, to, property, dataframe)
-
-
-#display a chart with all the listings from the data from getSuburbListings() "Suburb Listing" button
-def displaySuburbListings():
-    print("display suburb listings")
 
 
 #get property prices data for a chart "Price Chart" button
