@@ -504,71 +504,6 @@ def show_canvas4():
         image=image_image_1
     )
     
-    '''
-    entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_3.png"))
-    window.three = entry_image_1
-    entry_bg_1 = canvasPriceListings.create_image(
-        544.5,
-        474.5,
-        image=entry_image_1
-    )
-    
-    entry_1 = Entry(
-        bd=0,
-        bg="#E8E8E8",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entry_1.place(
-        x=459.0,
-        y=455.0,
-        width=171.0,
-        height=37.0
-    )
-
-    entry_image_2 = PhotoImage(
-        file=relative_to_assets("entry_3.png"))
-    window.four = entry_image_2
-    entry_bg_2 = canvasPriceListings.create_image(
-        351.5,
-        474.5,
-        image=entry_image_2
-    )
-    entry_2 = Entry(
-        bd=0,
-        bg="#E8E8E8",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entry_2.place(
-        x=266.0,
-        y=455.0,
-        width=171.0,
-        height=37.0
-    )
-
-    entry_image_3 = PhotoImage(
-    file=relative_to_assets("entry_5.png"))
-    window.five = entry_image_3
-    entry_bg_3 = canvasPriceListings.create_image(
-        778.0,
-        474.5,
-        image=entry_image_3
-    )
-    entry_3 = Entry(
-        bd=0,
-        bg="#E8E8E8",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entry_3.place(
-        x=669.0,
-        y=455.0,
-        width=218.0,
-        height=37.0
-    )
-    '''
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -710,34 +645,80 @@ def cleanUserInput(input):
 
 
 #get keyword results from the user
-def getKeywordResults(startDate, endDate,keyWords):
+def getKeywordResults(startDate, endDate,keyWords, howMuchData):
     cleanedWords = cleanUserInput(keyWords)
     dates = selectDate(startDate,endDate)
     print('startDate=',dates[0], 'endDate=',dates[1])
     #print(fromDate, to, property, dataframe)
     
-
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
 
-    query = "SELECT DISTINCT l.id, l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
-    query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
-    query += ") ORDER BY l.id"
-    params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
-    cursor.execute(query, params)
+    if(howMuchData == 'Short'):
+        
+        columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
+        
+        query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
+        query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
+        query += ") ORDER BY l.id"
+        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
+        cursor.execute(query, params)
+        
+        results = cursor.fetchall()
+            
+        # Print the column names
+        print("Column names:", columnNames)
+        
+        displayKeywordResults(results, columnNames, keyWords)
+        
+    elif(howMuchData == 'All'):
+        query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
+        query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
+        query += ") ORDER BY l.id"
+        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
+        cursor.execute(query, params)
+        
+        results = cursor.fetchall()
+            
+        cursor.execute(f"PRAGMA table_info(listingsDec)")
+        columns_info = cursor.fetchall()
 
+        columnNames = [col[1] for col in columns_info]
 
-    results = cursor.fetchall()
-
-    for row in results:
-        print(row)
-
+        print("Column names:", columnNames)
+        
+        displayKeywordResults(results, columnNames, keyWords)
+        
     connection.close()
 
 
 #display the results from the chosen keywords the "Search" button
-def displayKeywordResults():
-    print("display keyword results")
+def displayKeywordResults(results, columnNames, keywords):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    newWindow = Toplevel(window)
+    newWindow.title(f"Listings for {keywords}")
+    newWindow.geometry(f"{screen_width}x{screen_height-100}")
+
+    tree = ttk.Treeview(newWindow, column=columnNames, show='headings')
+    for index, value in enumerate(columnNames):
+        tree.column(f"#{index+1}", anchor=CENTER)
+        tree.heading(f"#{index+1}", text=f"{value}")
+        
+    for row in results:
+        tree.insert("", END, values=row)  
+        
+    scrollbar = ttk.Scrollbar(newWindow, orient=VERTICAL, command=tree.yview)
+    scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
+
+    tree.configure(yscrollcommand=scrollbar.set)
+    
+    x_scrollbar = ttk.Scrollbar(newWindow, orient=HORIZONTAL, command=tree.xview)
+    x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
+
+    tree.configure(xscrollcommand=x_scrollbar.set)
+    
+    tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
 
 
 #Display search records function (Search button)
@@ -804,7 +785,7 @@ def show_canvas5():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: getKeywordResults(cal, calendarEnd, entry_1.get()),
+        command=lambda: getKeywordResults(cal, calendarEnd, entry_1.get(), dataSelect.get()),
         relief="flat"
     )
     button_1.place(
@@ -848,6 +829,19 @@ def show_canvas5():
         width=235.0,
         height=37.0
     )
+    
+    label55 = Label(window, text="How Many Columns?")
+    window.aaaaaeeeeeeea = label55
+    
+    label55.place(x=250, y=350)
+    
+    n = StringVar()
+    dataSelect = ttk.Combobox(window, width = 22, height = 13, textvariable = n)
+    dataSelect['values'] = ['Short', 'All']
+    dataSelect.set('Short')
+    
+    window.niineeeeee = dataSelect
+    dataSelect.place(x=250,y=378)
     
     label = Label(window, text="Start date")
     window.sixty = label
