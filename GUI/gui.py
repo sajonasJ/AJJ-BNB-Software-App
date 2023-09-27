@@ -7,7 +7,7 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, END, Toplevel, CENTER, VERTICAL, HORIZONTAL
 from tkinter import ttk
 import pandas as pd
 #import matplotlib as plt
@@ -54,11 +54,8 @@ query = "SELECT DISTINCT city FROM listingsDec"
 
 cursor.execute(query)
 
-# Fetch the results
 results = cursor.fetchall()
-# Process the results (print in this example)
-#print("the total cleanliness results=",len(results))
-#print(results)
+
 cityArray = []
 for row in results:
     cityArray.append(row[0])
@@ -71,8 +68,84 @@ def selectDate(startDate,endDate):
     #date.config(text = "Selected Date is: " + cal.get_date())
     print(startDate.get_date(),endDate.get_date())
     return (startDate.get_date(), endDate.get_date())
+
+
+#get suburb listings data
+def getSuburbListings(startDate, endDate, suburb, howMuchData):
+    dates = selectDate(startDate,endDate)
+    print('startDate=',dates[0], 'endDate=',dates[1], 'suburb=', suburb)
+    #print(fromDate, to, property, dataframe)
     
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    if(howMuchData == 'Short'):
+        
+        columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
+        
+        query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND l.city = ? ORDER BY l.id"
     
+        cursor.execute(query, (dates[0], dates[1], suburb))
+        results = cursor.fetchall()
+            
+        # Print the column names
+        print("Column names:", columnNames)
+        
+        displaySuburbListings(results, columnNames, suburb)
+        
+    elif(howMuchData == 'All'):
+        query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND l.city = ? ORDER BY l.id"
+    
+        cursor.execute(query, (dates[0], dates[1], suburb))
+        results = cursor.fetchall()
+            
+        cursor.execute(f"PRAGMA table_info(listingsDec)")
+        columns_info = cursor.fetchall()
+        # Fetch the results
+
+        columnNames = [col[1] for col in columns_info]
+
+        # Print the column names
+        print("Column names:", columnNames)
+        
+        displaySuburbListings(results, columnNames, suburb)
+
+    connection.close()
+
+
+#For a user-selected period, report the information of all listings in a specified suburb
+
+#Note, what is "the information"?
+
+#display a chart with all the listings from the data from getSuburbListings() "Suburb Listing" button
+def displaySuburbListings(results, columnNames, suburb):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    newWindow = Toplevel(window)
+    newWindow.title(f"Listings for {suburb}")
+    newWindow.geometry(f"{screen_width}x{screen_height-100}")
+
+    tree = ttk.Treeview(newWindow, column=columnNames, show='headings')
+    for index, value in enumerate(columnNames):
+        tree.column(f"#{index+1}", anchor=CENTER)
+        tree.heading(f"#{index+1}", text=f"{value}")
+        
+    for row in results:
+        tree.insert("", END, values=row)  
+        
+    scrollbar = ttk.Scrollbar(newWindow, orient=VERTICAL, command=tree.yview)
+    scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
+
+    tree.configure(yscrollcommand=scrollbar.set)
+    
+    x_scrollbar = ttk.Scrollbar(newWindow, orient=HORIZONTAL, command=tree.xview)
+    x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
+
+    tree.configure(xscrollcommand=x_scrollbar.set)
+    
+    tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
+
+
 #Display suburb listing
 def show_canvas2():
     print('canvas 2')
@@ -136,7 +209,7 @@ def show_canvas2():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: getSuburbListings(cal, calendarEnd, citySelect.get()),
+        command=lambda: getSuburbListings(cal, calendarEnd, citySelect.get(), dataSelect.get()),
         relief="flat"
     )
     button_1.place(
@@ -153,50 +226,20 @@ def show_canvas2():
         70.0,
         image=image_image_7
     )
-    '''
-    entry_image_1 = PhotoImage(
-        file=relative_to_assets("entry_1.png"))
-    window.three = entry_image_1
-    entry_bg_1 = canvasListSuburb.create_image(
-        354.5,
-        475.0,
-        image=entry_image_1
-    )
-    entry_1 = Entry(
-        bd=0,
-        bg="#D9D9D9",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entry_1.place(
-        x=269.0,
-        y=455.0,
-        width=171.0,
-        height=38.0
-    )
-
-    entry_image_2 = PhotoImage(
-        file=relative_to_assets("entry_2.png"))
-    window.four = entry_image_2
-    entry_bg_2 = canvasListSuburb.create_image(
-        781.0,
-        474.0,
-        image=entry_image_2
-    )
-    entry_2 = Entry(
-        bd=0,
-        bg="#D9D9D9",
-        fg="#000716",
-        highlightthickness=0
-    )
     
-    entry_2.place(
-        x=672.0,
-        y=454.0,
-        width=218.0,
-        height=38.0
-    )
-    '''
+    label55 = Label(window, text="How Many Columns?")
+    window.aaaaaeeeeeeea = label55
+    
+    label55.place(x=250, y=350)
+    
+    n = StringVar()
+    dataSelect = ttk.Combobox(window, width = 22, height = 13, textvariable = n)
+    dataSelect['values'] = ['Short', 'All']
+    dataSelect.set('Short')
+    
+    window.niineeeeee = dataSelect
+    dataSelect.place(x=250,y=378)
+    
     
     label2 = Label(window, text="Pick A Suburb")
     window.aaaaaa = label2
@@ -210,31 +253,6 @@ def show_canvas2():
     window.niine = citySelect
     citySelect.place(x=472,y=378)
     
-    '''
-    entry_image_3 = PhotoImage(
-        file=relative_to_assets("entry_3.png"))
-    window.five = entry_image_3
-    
-    entry_bg_3 = canvasListSuburb.create_image(
-        547.5,
-        474.0,
-        image=entry_image_3
-    )
-    
-    entry_3 = Entry(
-        bd=0,
-        bg="#D9D9D9",
-        fg="#000716",
-        highlightthickness=0
-    )
-    
-    entry_3.place(
-        x=462.0,
-        y=454.0,
-        width=171.0,
-        height=38.0
-    )
-    '''
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -366,42 +384,6 @@ def show_canvas2():
     canvasListSuburb.pack()
     current_canvas = canvasListSuburb
     
-'''
-def grad_date():
-    date.config(text = "Selected Date is: " + cal.get_date())
-'''
-
-#get suburb listings data
-def getSuburbListings(startDate, endDate, suburb):
-    dates = selectDate(startDate,endDate)
-    print('startDate=',dates[0], 'endDate=',dates[1], 'suburb=', suburb)
-    #print(fromDate, to, property, dataframe)
-    
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
-
-    query = "SELECT DISTINCT l.id, l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND l.city = ? ORDER BY l.id"
-
-    cursor.execute(query, (dates[0], dates[1], suburb))
-
-    # Fetch the results
-    results = cursor.fetchall()
-    # Process the results (print in this example)
-    #print("the total cleanliness results=",len(results))
-    for row in results:
-        print(row)
-
-    connection.close()
-
-
-#For a user-selected period, report the information of all listings in a specified suburb
-
-#Note, what is "the information"?
-
-#display a chart with all the listings from the data from getSuburbListings() "Suburb Listing" button
-def displaySuburbListings():
-    print("display suburb listings")
-
 
 #For a user-selected period, produce a chart to show the distribution of prices of properties
 #get property prices data for a chart "Price Chart" button
