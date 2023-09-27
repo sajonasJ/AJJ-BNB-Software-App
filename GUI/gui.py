@@ -14,34 +14,6 @@ import pandas as pd
 import sqlite3
 from tkcalendar import Calendar
 
-#clean the Excel file for any unwanted data
-'''
-def cleanExcelData(dataframe):
-    for index, row in dataframe.iterrows():
-        comment = row['comments']
-        if type(comment) == float:
-            dataframe.loc[index] = row
-    return dataframe    
-    #removeExtraColumns(dataframe, columns)
-
-#read Excel files by file name
-def readExcel(file):
-    df = pd.read_csv(file,low_memory=False)
-    return cleanExcelData(df)
-'''  
-
-#dfListings = readExcel("../bnb_data/listings_dec18.csv")
-#dfReviews = readExcel("../bnb_data/reviews_dec18.csv")
-#dfCalendar = readExcel("../bnb_data/calendar_dec18.csv")
-
-#print(dfReviews)
-#cleanComments = cleanExcelData(dfReviews)
-
-#remove extra columns from the dataframe
-'''
-def removeExtraColumns(dataframe, wantedColumns):
-    print("remove extra columns" + dataframe + wantedColumns)
-'''
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
@@ -74,6 +46,25 @@ center_screen()
     
 photo_images = {}
 current_canvas = None
+
+connection = sqlite3.connect('data.db')
+cursor = connection.cursor()
+
+query = "SELECT DISTINCT city FROM listingsDec"
+
+cursor.execute(query)
+
+# Fetch the results
+results = cursor.fetchall()
+# Process the results (print in this example)
+#print("the total cleanliness results=",len(results))
+#print(results)
+cityArray = []
+for row in results:
+    cityArray.append(row[0])
+
+#print(cityArray)
+connection.close()
 
 #grab and store the start and end date for a user selected period from 2 calendars
 def selectDate(startDate,endDate):
@@ -206,25 +197,6 @@ def show_canvas2():
         height=38.0
     )
     '''
-    
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
-
-    query = "SELECT DISTINCT city FROM listingsDec"
-
-    cursor.execute(query)
-
-    # Fetch the results
-    results = cursor.fetchall()
-    # Process the results (print in this example)
-    #print("the total cleanliness results=",len(results))
-    #print(results)
-    cityArray = []
-    for row in results:
-        cityArray.append(row[0])
-
-    #print(cityArray)
-    connection.close()
     
     label2 = Label(window, text="Pick A Suburb")
     window.aaaaaa = label2
@@ -836,6 +808,7 @@ def show_canvas5():
     image_image_6 = PhotoImage(
         file=relative_to_assets("home.png"))
     window.one = image_image_6
+    
     # Create and place the image on canvasSearch
     image_6 = canvasSearch.create_image(
         96.0,
@@ -1036,14 +1009,16 @@ def displayCleanliness():
 def getCleanlinessData(keywords, suburb):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
-    
-    query = "SELECT * FROM reviewsDec WHERE " + " OR ".join(["comments LIKE ?"] * len(keywords))
-    
+    query = "SELECT r.* FROM reviewsDec r INNER JOIN listingsDec l ON r.listing_id = l.id WHERE l.city = ? AND (" + " OR ".join(["comments LIKE ?"] * len(keywords)) + ")"
+
     # Modify each keyword to include wildcards for partial matching
     modified_keywords = ['%{}%'.format(keyword) for keyword in keywords]
 
-    # Execute the SQL query, passing the modified keywords as parameters
-    cursor.execute(query, modified_keywords)
+    # Combine suburb and modified keywords into a single tuple
+    params = (suburb,) + tuple(modified_keywords)
+
+    # Execute the query with the parameters
+    cursor.execute(query, params)
 
     # Fetch the results
     results = cursor.fetchall()
@@ -1097,6 +1072,19 @@ def show_canvas3():
         outline=""
     )
     
+    label2 = Label(window, text="Pick A Suburb")
+    window.aaaaaa = label2
+    
+    label2.place(x=532, y=350)
+    
+    n = StringVar()
+    citySelect = ttk.Combobox(window, width = 27, height = 13, textvariable = n)
+    citySelect['values'] = cityArray
+    
+    window.niine = citySelect
+    citySelect.place(x=472,y=378)
+    
+    '''
     entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_4.png"))
     window.eleven = entry_image_1
@@ -1120,7 +1108,7 @@ def show_canvas3():
         width=235.0,
         height=37.0
     )
-
+    '''
     image_image_1 = PhotoImage(
     file=relative_to_assets("display_chart_by_cleanliness.png"))
     window.twelve = image_image_1
@@ -1260,7 +1248,7 @@ def show_canvas3():
         image=button_image_5,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: getCleanlinessData(cleanlinesskeywords, cleanlinessEntry.get()),
+        command=lambda: getCleanlinessData(cleanlinesskeywords, citySelect.get()),
         relief="flat"
     )
     
@@ -1276,7 +1264,39 @@ def show_canvas3():
     current_canvas = canvasCleanliness
 
 
-#Display ratings listings
+#get suburb ratings data
+def getSuburbRatings(suburb):
+    print("get suburb ratings" + suburb)
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+    
+    query = "SELECT * FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75"
+
+    cursor.execute(query)
+
+    # Fetch the results
+    results = cursor.fetchall()
+    # Process the results (print in this example)
+    #print("the total cleanliness results=",len(results))
+    for row in results:
+        print(row)
+
+    connection.close()
+    
+    
+#"Display by Ratings" button, "Display List" button
+def displaySuburbRatingsRecords(suburb):
+    getSuburbRatings(suburb)
+    print("display suburb ratings record")
+    
+
+#"Display by Ratings" button, "Display Chart" button
+def displaySuburbRatingsChart(suburb):
+    getSuburbRatings(suburb)
+    print("display suburb ratings chart")
+
+
+#Display ratings listings by table/records
 def show_canvas6():
     print("canvas 6")
     canvas.pack_forget()
@@ -1297,7 +1317,7 @@ def show_canvas6():
 
     canvasListingsByRatings.place(x = 0, y = 0)
     canvasListingsByRatings.update()  # Update the canvas before getting dimensions
-
+    
     canvasListingsByRatings.create_rectangle(
         228.0,
         122.0,
@@ -1314,14 +1334,7 @@ def show_canvas6():
         fill="#32213A",
         outline="")
     
-    canvasListingsByRatings.create_rectangle(
-    461.0,
-    455.0,
-    679.0,
-    494.0,
-    fill="#E8E8E8",
-    outline="")
-    
+
     image_image_6 = PhotoImage(
         file=relative_to_assets("home.png"))
     window.one = image_image_6
@@ -1339,6 +1352,7 @@ def show_canvas6():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
+        command=lambda: displaySuburbRatingsRecords(citySelect.get()),
         relief="flat"
     )
     button_111.place(
@@ -1355,7 +1369,7 @@ def show_canvas6():
         image=button_image_2,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: show_canvas7(),
+        command=lambda: displaySuburbRatingsChart(citySelect.get()),
         relief="flat"
     )
     button_2.place(
@@ -1367,7 +1381,7 @@ def show_canvas6():
 
 
     image_image_1 = PhotoImage(
-    file=relative_to_assets("display_listings_by_ratings_chart.png"))
+    file=relative_to_assets("display_listings_by_ratings.png"))
     window.two = image_image_1
     image_1 = canvasListingsByRatings.create_image(
         564.0,
@@ -1384,7 +1398,19 @@ def show_canvas6():
     font=("Inter Bold", 40 * -1)
     )
 
+    label2 = Label(window, text="Pick A Suburb")
+    window.aaaaaa = label2
     
+    label2.place(x=532, y=150)
+    
+    n = StringVar()
+    citySelect = ttk.Combobox(window, width = 27, height = 13, textvariable = n)
+    citySelect['values'] = cityArray
+    
+    window.niine = citySelect
+    citySelect.place(x=472,y=178)
+    
+    '''
     entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_4.png"))
     window.three = entry_image_1
@@ -1405,7 +1431,7 @@ def show_canvas6():
         width=235.0,
         height=37.0
     )
-    
+    '''
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -1503,7 +1529,8 @@ def show_canvas6():
     canvasListingsByRatings.pack()
     current_canvas = canvasListingsByRatings
     
-#Display ratings listings
+'''
+#Display ratings listings by chart
 def show_canvas7():
     canvas.pack_forget()
     global current_canvas
@@ -1539,14 +1566,6 @@ def show_canvas7():
         626.0,
         fill="#32213A",
         outline="")
-    
-    canvasListingsByRatingsChart.create_rectangle(
-    461.0,
-    455.0,
-    679.0,
-    494.0,
-    fill="#E8E8E8",
-    outline="")
     
     image_image_6 = PhotoImage(
         file=relative_to_assets("home.png"))
@@ -1610,6 +1629,18 @@ def show_canvas7():
     font=("Inter Bold", 40 * -1)
     )
 
+    label2 = Label(window, text="Pick A Suburb")
+    window.aaaaaa = label2
+    
+    label2.place(x=532, y=150)
+    
+    n = StringVar()
+    citySelect = ttk.Combobox(window, width = 27, height = 13, textvariable = n)
+    citySelect['values'] = cityArray
+    
+    window.niine = citySelect
+    citySelect.place(x=472,y=178)
+    
     
     entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_4.png"))
@@ -1631,7 +1662,7 @@ def show_canvas7():
         width=235.0,
         height=37.0
     )
-    
+
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -1728,7 +1759,7 @@ def show_canvas7():
 
     canvasListingsByRatingsChart.pack()
     current_canvas = canvasListingsByRatingsChart
-
+'''
 
 #clear search fields (button will be needed for it)
 def clearSearchQuery(): 
@@ -1738,21 +1769,6 @@ def clearSearchQuery():
 #display error messages
 def displayErrorMessage(errorMessage):
     print("display error message" + errorMessage)
-
-
-#get suburb ratings data
-def getSuburbRatings(suburb, rating, dataframe):
-    print("get suburb ratings" + suburb + rating + dataframe)
-    
-    
-#"Display by Ratings" button, "Display List" button
-def displaySuburbRatingsRecords():
-    print("display suburb ratings record")
-    
-
-#"Display by Ratings" button, "Display Chart" button
-def displaySuburbRatingsChart():
-    print("display suburb ratings chart")
 
 
 
