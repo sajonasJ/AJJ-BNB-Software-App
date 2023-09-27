@@ -1016,7 +1016,6 @@ def show_canvas3():
     if current_canvas:
         current_canvas.pack_forget()
         
-    #canvasListSuburb.pack_forget()
     canvasCleanliness = Canvas(
         window,
         bg = "#E8E8E8",
@@ -1196,8 +1195,6 @@ def show_canvas3():
         font=("Inter Bold", 40 * -1)
     )
     
-
-    
     button_image_5 = PhotoImage(
     file=relative_to_assets("display.png"))
     window.nineteen = button_image_5
@@ -1221,35 +1218,155 @@ def show_canvas3():
     current_canvas = canvasCleanliness
 
 
+#get keyword results from the user
+def getKeywordResults(startDate, endDate,keyWords, howMuchData):
+    cleanedWords = cleanUserInput(keyWords)
+    dates = selectDate(startDate,endDate)
+    print('startDate=',dates[0], 'endDate=',dates[1])
+
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    if(howMuchData == 'Short'):
+        columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
+        
+        query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
+        query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
+        query += ") ORDER BY l.id"
+        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
+        cursor.execute(query, params)
+        
+        results = cursor.fetchall()
+            
+        # Print the column names
+        print("Column names:", columnNames)
+        
+        displayKeywordResults(results, columnNames, keyWords)
+        
+    elif(howMuchData == 'All'):
+        query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
+        query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
+        query += ") ORDER BY l.id"
+        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
+        cursor.execute(query, params)
+        
+        results = cursor.fetchall()
+            
+        cursor.execute(f"PRAGMA table_info(listingsDec)")
+        columns_info = cursor.fetchall()
+
+        columnNames = [col[1] for col in columns_info]
+
+        print("Column names:", columnNames)
+        
+        displayKeywordResults(results, columnNames, keyWords)
+        
+    connection.close()
+
+
+#display the results from the chosen keywords the "Search" button
+def displayKeywordResults(results, columnNames, keywords):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    newWindow = Toplevel(window)
+    newWindow.title(f"Listings for {keywords}")
+    newWindow.geometry(f"{screen_width}x{screen_height-100}")
+
+    tree = ttk.Treeview(newWindow, column=columnNames, show='headings')
+    for index, value in enumerate(columnNames):
+        tree.column(f"#{index+1}", anchor=CENTER)
+        tree.heading(f"#{index+1}", text=f"{value}")
+        
+    for row in results:
+        tree.insert("", END, values=row)  
+        
+    scrollbar = ttk.Scrollbar(newWindow, orient=VERTICAL, command=tree.yview)
+    scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
+
+    tree.configure(yscrollcommand=scrollbar.set)
+    
+    x_scrollbar = ttk.Scrollbar(newWindow, orient=HORIZONTAL, command=tree.xview)
+    x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
+
+    tree.configure(xscrollcommand=x_scrollbar.set)
+    
+    tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
+
+
 #get suburb ratings data
-def getSuburbRatings(suburb):
+def getSuburbRatings(suburb, howMuchData):
+    print(howMuchData)
     print("get suburb ratings" + suburb)
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
     
-    query = "SELECT * FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75"
+    if(howMuchData == 'Short'):
+        columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
+        
+        query = "SELECT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
 
-    cursor.execute(query)
+        cursor.execute(query)
+        
+        results = cursor.fetchall()
+            
+        # Print the column names
+        print("Column names:", columnNames)
+        
+        return (results, columnNames, suburb)
+        
+    elif(howMuchData == 'All'):
+        query = "SELECT * FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
+        
+        cursor.execute(query)
+        
+        results = cursor.fetchall()
+            
+        cursor.execute(f"PRAGMA table_info(listingsDec)")
+        columns_info = cursor.fetchall()
 
-    # Fetch the results
-    results = cursor.fetchall()
-    # Process the results (print in this example)
-    #print("the total cleanliness results=",len(results))
-    for row in results:
-        print(row)
+        columnNames = [col[1] for col in columns_info]
 
+        print("Column names:", columnNames)
+        
+        return (results, columnNames, suburb)
+        
     connection.close()
-    
-    
+
+
 #"Display by Ratings" button, "Display List" button
-def displaySuburbRatingsRecords(suburb):
-    getSuburbRatings(suburb)
-    print("display suburb ratings record")
+def displaySuburbRatingsRecords(theSuburb, howMuchData):
+    results, columnNames, suburb = getSuburbRatings(theSuburb, howMuchData)
+    
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    newWindow = Toplevel(window)
+    newWindow.title(f"Listings for {suburb}")
+    newWindow.geometry(f"{screen_width}x{screen_height-100}")
+
+    tree = ttk.Treeview(newWindow, column=columnNames, show='headings')
+    for index, value in enumerate(columnNames):
+        tree.column(f"#{index+1}", anchor=CENTER)
+        tree.heading(f"#{index+1}", text=f"{value}")
+        
+    for row in results:
+        tree.insert("", END, values=row)  
+        
+    scrollbar = ttk.Scrollbar(newWindow, orient=VERTICAL, command=tree.yview)
+    scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
+
+    tree.configure(yscrollcommand=scrollbar.set)
+    
+    x_scrollbar = ttk.Scrollbar(newWindow, orient=HORIZONTAL, command=tree.xview)
+    x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
+
+    tree.configure(xscrollcommand=x_scrollbar.set)
+    
+    tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
     
 
 #"Display by Ratings" button, "Display Chart" button
-def displaySuburbRatingsChart(suburb):
-    getSuburbRatings(suburb)
+def displaySuburbRatingsChart(suburb, howMuchData):
+    getSuburbRatings(suburb, howMuchData)
     print("display suburb ratings chart")
 
 
@@ -1309,7 +1426,7 @@ def show_canvas6():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: displaySuburbRatingsRecords(citySelect.get()),
+        command=lambda: displaySuburbRatingsRecords(citySelect.get(), dataSelect.get()),
         relief="flat"
     )
     button_111.place(
@@ -1326,7 +1443,7 @@ def show_canvas6():
         image=button_image_2,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: displaySuburbRatingsChart(citySelect.get()),
+        command=lambda: displaySuburbRatingsChart(citySelect.get(), dataSelect.get()),
         relief="flat"
     )
     button_2.place(
@@ -1355,6 +1472,19 @@ def show_canvas6():
     font=("Inter Bold", 40 * -1)
     )
 
+    label55 = Label(window, text="How Many Columns?")
+    window.aaaaaeeeeeeea = label55
+    
+    label55.place(x=250, y=150)
+    
+    n = StringVar()
+    dataSelect = ttk.Combobox(window, width = 22, height = 13, textvariable = n)
+    dataSelect['values'] = ['Short', 'All']
+    dataSelect.set('Short')
+    
+    window.niineeeeee = dataSelect
+    dataSelect.place(x=250,y=178)
+    
     label2 = Label(window, text="Pick A Suburb")
     window.aaaaaa = label2
     
@@ -1366,29 +1496,7 @@ def show_canvas6():
     
     window.niine = citySelect
     citySelect.place(x=472,y=178)
-    
-    '''
-    entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
-    window.three = entry_image_1
-    entry_bg_1 = canvasListingsByRatings.create_image(
-        563.5,
-        474.5,
-        image=entry_image_1
-    )
-    entry_1 = Entry(
-        bd=0,
-        bg="#E8E8E8",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entry_1.place(
-        x=446.0,
-        y=455.0,
-        width=235.0,
-        height=37.0
-    )
-    '''
+
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -1485,238 +1593,7 @@ def show_canvas6():
 
     canvasListingsByRatings.pack()
     current_canvas = canvasListingsByRatings
-    
-'''
-#Display ratings listings by chart
-def show_canvas7():
-    canvas.pack_forget()
-    global current_canvas
-    
-    if current_canvas:
-        current_canvas.pack_forget()
-        
-    canvasListingsByRatingsChart = Canvas(
-    window,
-    bg = "#E8E8E8",
-    height = 626,
-    width = 932,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-    )
 
-    canvasListingsByRatingsChart.place(x = 0, y = 0)
-    canvasListingsByRatingsChart.update()  # Update the canvas before getting dimensions
-
-    canvasListingsByRatingsChart.create_rectangle(
-        228.0,
-        122.0,
-        899.0,
-        517.0,
-        fill="#FFFFFF",
-        outline="")
-
-    canvasListingsByRatingsChart.create_rectangle(
-        0.0,
-        0.0,
-        195.0,
-        626.0,
-        fill="#32213A",
-        outline="")
-    
-    image_image_6 = PhotoImage(
-        file=relative_to_assets("home.png"))
-    window.one = image_image_6
-    # Create and place the image on canvasListingsByRatingsChart
-    image_6 = canvasListingsByRatingsChart.create_image(
-        96.0,
-        145.0,
-        image=image_image_6
-    )
-
-    button_image_1 = PhotoImage(
-    file=relative_to_assets("display_list.png"))
-    window.negativenegative = button_image_1
-    button_111 = Button(
-        image=button_image_1,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas6(),
-        relief="flat"
-    )
-    button_111.place(
-        x=284.0,
-        y=536.0,
-        width=218.0,
-        height=39.0
-    )
-
-    button_image_2 = PhotoImage(
-        file=relative_to_assets("display_chart.png"))
-    window.negativenegativenegative = button_image_2
-    button_2 = Button(
-        image=button_image_2,
-        borderwidth=0,
-        highlightthickness=0,
-        relief="flat"
-    )
-    button_2.place(
-        x=626.0,
-        y=536.0,
-        width=218.0,
-        height=39.0
-    )
-
-
-    image_image_1 = PhotoImage(
-    file=relative_to_assets("display_listings_by_ratings.png"))
-    window.two = image_image_1
-    image_1 = canvasListingsByRatingsChart.create_image(
-        564.0,
-        70.0,
-        image=image_image_1
-    )
-    
-    canvasListingsByRatingsChart.create_text(
-    56.0,
-    36.0,
-    anchor="nw",
-    text="AJJ",
-    fill="#FFFFFF",
-    font=("Inter Bold", 40 * -1)
-    )
-
-    label2 = Label(window, text="Pick A Suburb")
-    window.aaaaaa = label2
-    
-    label2.place(x=532, y=150)
-    
-    n = StringVar()
-    citySelect = ttk.Combobox(window, width = 27, height = 13, textvariable = n)
-    citySelect['values'] = cityArray
-    
-    window.niine = citySelect
-    citySelect.place(x=472,y=178)
-    
-    
-    entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
-    window.three = entry_image_1
-    entry_bg_1 = canvasListingsByRatingsChart.create_image(
-        563.5,
-        474.5,
-        image=entry_image_1
-    )
-    entry_1 = Entry(
-        bd=0,
-        bg="#E8E8E8",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entry_1.place(
-        x=446.0,
-        y=455.0,
-        width=235.0,
-        height=37.0
-    )
-
-    button_image_1 = PhotoImage(
-    file=relative_to_assets("display_by_ratings.png"))
-    window.six = button_image_1
-    button_1 = Button(
-        image=button_image_1,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas6(),
-        relief="flat"
-    )
-    button_1.place(
-        x=33.0,
-        y=539.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_2 = PhotoImage(
-        file=relative_to_assets("price_chart.png"))
-    window.seven = button_image_2
-    button_2 = Button(
-        image=button_image_2,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas4(),
-        relief="flat"
-    )
-    button_2.place(
-        x=33.0,
-        y=302.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_3 = PhotoImage(
-        file=relative_to_assets("cleanliness.png"))
-    window.eight = button_image_3
-    button_3 = Button(
-        image=button_image_3,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas3(),
-        relief="flat"
-    )
-    button_3.place(
-        x=33.0,
-        y=460.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_4 = PhotoImage(
-        file=relative_to_assets("search.png"))
-    window.nine = button_image_4
-    button_4 = Button(
-        image=button_image_4,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas5(),
-        relief="flat"
-    )
-    button_4.place(
-        x=33.0,
-        y=381.0,
-        width=126.0,
-        height=56.0
-    )
-
-    button_image_5 = PhotoImage(
-        file=relative_to_assets("suburb_listing.png"))
-    window.ten = button_image_5
-    button_5 = Button(
-        image=button_image_5,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: show_canvas2(),
-        relief="flat"
-    )
-    button_5.place(
-        x=33.0,
-        y=223.0,
-        width=126.0,
-        height=56.0
-    )
-
-    canvasListingsByRatingsChart.create_text(
-        56.0,
-        36.0,
-        anchor="nw",
-        text="AJJ",
-        fill="#FFFFFF",
-        font=("Inter Bold", 40 * -1)
-    )
-
-    canvasListingsByRatingsChart.pack()
-    current_canvas = canvasListingsByRatingsChart
-'''
 
 #clear search fields (button will be needed for it)
 def clearSearchQuery(): 
@@ -1726,7 +1603,6 @@ def clearSearchQuery():
 #display error messages
 def displayErrorMessage(errorMessage):
     print("display error message" + errorMessage)
-
 
 
 canvas = Canvas(
