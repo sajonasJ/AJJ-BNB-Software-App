@@ -431,6 +431,35 @@ def displaySuburbListings():
     print("display suburb listings")
 
 
+#For a user-selected period, produce a chart to show the distribution of prices of properties
+#get property prices data for a chart "Price Chart" button
+def getPriceChartData(startDate, endDate):
+    dates = selectDate(startDate,endDate)
+
+    print('startDate=',dates[0], 'endDate=',dates[1])
+    #print(fromDate, to, property, dataframe)
+    
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    query = "SELECT l.name, c.* FROM calendarDec c INNER JOIN listingsDec l ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND c.price NOT NULL"
+
+    cursor.execute(query, (dates[0], dates[1]))
+
+    # Fetch the results
+    results = cursor.fetchall()
+    # Process the results (print in this example)
+    #print("the total cleanliness results=",len(results))
+    for row in results:
+        print(row)
+
+    connection.close()
+    
+    
+#display the price chart (matplotlib graph) from the data from getPriceChartData()
+def displayPriceChart():
+    print("display price chart")
+
 #Display Price Listings function
 def show_canvas4():
     print("canvas4")
@@ -494,7 +523,7 @@ def show_canvas4():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("button_1 clicked"),
+        command=lambda: getPriceChartData(cal, calendarEnd),
         relief="flat"
     )
     button_1.place(
@@ -521,6 +550,7 @@ def show_canvas4():
         image=image_image_1
     )
     
+    '''
     entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_3.png"))
     window.three = entry_image_1
@@ -584,7 +614,7 @@ def show_canvas4():
         width=218.0,
         height=37.0
     )
-    
+    '''
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -678,6 +708,40 @@ def show_canvas4():
         fill="#FFFFFF",
         font=("Inter Bold", 40 * -1)
     )
+    
+    label = Label(window, text="Start date")
+    window.sixty = label
+    
+    label.place(x=250, y=130)
+    
+    cal = Calendar(
+        window, 
+        selectmode = 'day',
+        year = 2019, 
+        month = 1,
+        day = 1,
+        date_pattern='y-mm-dd'
+    )
+    
+    window.fifty = cal
+    cal.place(x=250, y=150)
+    
+    endLabel = Label(window, text="End date")
+    window.sixtytwo = endLabel
+    
+    endLabel.place(x=630, y=130)
+    
+    calendarEnd = Calendar(
+        window, 
+        selectmode = 'day',
+        year = 2019, 
+        month = 1,
+        day = 1,
+        date_pattern='y-mm-dd'
+    )
+    
+    window.fiftytwo = calendarEnd
+    calendarEnd.place(x=630, y=150)
 
     canvasPriceListings.pack()
     current_canvas = canvasPriceListings
@@ -1597,16 +1661,6 @@ def show_canvas7():
 #clear the user input
 def cleanUserInput(input):
     print("clear the user input" + input)
-
-
-#get property prices data for a chart "Price Chart" button
-def getPriceChartData(fromDate, to, property, dataframe):
-    print(fromDate, to, property, dataframe)
-    
-    
-#display the price chart (matplotlib graph) from the data from getPriceChartData()
-def displayPriceChart():
-    print("display price chart")
 
 
 #get keyword results from the user
