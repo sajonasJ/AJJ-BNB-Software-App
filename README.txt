@@ -27,3 +27,5 @@ pip install tkcalendar
 pip install matplotlib
 pip install tk
 pip install pandas
+pip install numpy
+pip install mplcursors

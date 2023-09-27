@@ -7,13 +7,18 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, END, Toplevel, CENTER, VERTICAL, HORIZONTAL
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, HORIZONTAL, BOTH, END, TOP
 from tkinter import ttk
 import pandas as pd
-#import matplotlib as plt
+import matplotlib as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (
+FigureCanvasTkAgg, NavigationToolbar2Tk)
+import matplotlib.pyplot as plt
 import sqlite3
 from tkcalendar import Calendar
-
+import numpy as np
+import mplcursors
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
@@ -387,7 +392,7 @@ def show_canvas2():
 
 #For a user-selected period, produce a chart to show the distribution of prices of properties
 #get property prices data for a chart "Price Chart" button
-def getPriceChartData(startDate, endDate):
+def getPriceChartData(startDate, endDate, suburb):
     dates = selectDate(startDate,endDate)
 
     print('startDate=',dates[0], 'endDate=',dates[1])
@@ -396,20 +401,48 @@ def getPriceChartData(startDate, endDate):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
 
-    query = "SELECT l.name, c.* FROM calendarDec c INNER JOIN listingsDec l ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND c.price NOT NULL"
-
-    cursor.execute(query, (dates[0], dates[1]))
+    #query = "SELECT l.name, c.* FROM calendarDec c INNER JOIN listingsDec l ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND c.price NOT NULL"
+    query = "SELECT l.name, c.price, c.date FROM calendarDec c INNER JOIN listingsDec l ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND c.price NOT NULL AND l.city = ?"
+    
+    cursor.execute(query, (dates[0], dates[1], suburb))
 
     # Fetch the results
     results = cursor.fetchall()
     # Process the results (print in this example)
     #print("the total cleanliness results=",len(results))
+    thePrices = []
+    theNames = []
+    theDates = []
+    
     for row in results:
-        print(row)
+        #print(row[0])
+        theNames.append(row[0])
+        thePrices.append(row[1])
+        theDates.append(row[2])
 
+    print(len(thePrices))
     connection.close()
+    #cd Ours/SoftwareTech-Group17/GUI/
+    fig, ax = plt.subplots(figsize=(5, 2.7))
+    #ax.scatter(thePrices, np.arange(len(thePrices)), label='Price')
+    #ax.set_xticks([])
+    #ax.set_xticklabels([])
+    ax.scatter(np.arange(len(thePrices)), thePrices, label='Price')
+    ax.set_yticklabels([])
+    ax.set_title(f"Price Data for {suburb}")
+    ax.legend()
+
+    mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover(sel, thePrices, theNames, theDates))
+    plt.show()
+
     
-    
+def on_hover(sel, thePrices, theNames, theDates):
+    index = sel.index
+    price = thePrices[index]
+    sel.annotation.set_text(f'Price: {price} for \n{theNames[index]}\nDate: {theDates[index]}')
+
+# Connect the tooltip function to the scatter plot
+
 #display the price chart (matplotlib graph) from the data from getPriceChartData()
 def displayPriceChart():
     print("display price chart")
@@ -477,7 +510,7 @@ def show_canvas4():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: getPriceChartData(cal, calendarEnd),
+        command=lambda: getPriceChartData(cal, calendarEnd, citySelect.get() ),
         relief="flat"
     )
     button_1.place(
@@ -597,6 +630,18 @@ def show_canvas4():
         fill="#FFFFFF",
         font=("Inter Bold", 40 * -1)
     )
+    
+    label2 = Label(window, text="Pick A Suburb")
+    window.aaaaaa = label2
+    
+    label2.place(x=532, y=350)
+    
+    n = StringVar()
+    citySelect = ttk.Combobox(window, width = 27, height = 13, textvariable = n)
+    citySelect['values'] = cityArray
+    
+    window.niine = citySelect
+    citySelect.place(x=472,y=378)
     
     label = Label(window, text="Start date")
     window.sixty = label

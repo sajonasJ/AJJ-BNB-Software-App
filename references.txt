@@ -4,3 +4,14 @@ http://trishmarie.com/vision
 
 https://coolors.co/32213a-383b53-66717e-d4d6b9-d1caa1https://coolors.co/32213a-383b53-66717e-d4d6b9-d1caa1
 
+https://www.activestate.com/resources/quick-reads/how-to-display-data-in-a-table-using-tkinter/
+https://www.tutorialspoint.com/python/tk_scrollbar.htm
+https://www.pythontutorial.net/tkinter/tkinter-treeview/
+https://www.geeksforgeeks.org/open-a-new-window-with-a-button-in-python-tkinter/
+https://www.w3schools.com/python/ref_string_split.asp
+https://www.sqlitetutorial.net/sqlite-where/
+https://www.geeksforgeeks.org/create-a-date-picker-calendar-tkinter/
+https://www.geeksforgeeks.org/combobox-widget-in-tkinter-python/
+https://www.sqlitetutorial.net/sqlite-in/
+https://www.sqlitetutorial.net/sqlite-join/
+https://mplcursors.readthedocs.io/en/stable/
