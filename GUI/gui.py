@@ -649,13 +649,11 @@ def getKeywordResults(startDate, endDate,keyWords, howMuchData):
     cleanedWords = cleanUserInput(keyWords)
     dates = selectDate(startDate,endDate)
     print('startDate=',dates[0], 'endDate=',dates[1])
-    #print(fromDate, to, property, dataframe)
-    
+
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
 
     if(howMuchData == 'Short'):
-        
         columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
         
         query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
@@ -976,13 +974,9 @@ def show_canvas5():
 
 #Analysing how many customers commented on factors related to cleanliness (multiple key words may be associated with cleanliness – justify your selection).
 
-#display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
-def displayCleanliness():
-    print("display cleanliness")
-
 
 #get the cleanliness data for the displayCleanliness()
-def getCleanlinessData(keywords, suburb):
+def getCleanlinessData(keywords, suburb, label3):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
     query = "SELECT r.* FROM reviewsDec r INNER JOIN listingsDec l ON r.listing_id = l.id WHERE l.city = ? AND (" + " OR ".join(["comments LIKE ?"] * len(keywords)) + ")"
@@ -1003,9 +997,15 @@ def getCleanlinessData(keywords, suburb):
 
     connection.close()
     
-    displayCleanliness()
+    displayCleanliness(len(results), suburb, label3)
 
-    
+
+#display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
+def displayCleanliness(resultNumber, suburb, label3):
+    print("display cleanliness")
+    label3.config(text=f"The number of reviews that mention cleanliness in {suburb} is: {resultNumber}")
+
+
 #Display cleanliness function
 def show_canvas3():
     print('canvas 3')
@@ -1048,6 +1048,12 @@ def show_canvas3():
         outline=""
     )
     
+    #label for displaying the cleabliness results
+    label3= Label(window, text="", bg="#FFFFFF")
+    window.aaaaaa = label3
+    
+    label3.place(x=232, y=150)
+    
     label2 = Label(window, text="Pick A Suburb")
     window.aaaaaa = label2
     
@@ -1060,31 +1066,6 @@ def show_canvas3():
     window.niine = citySelect
     citySelect.place(x=472,y=378)
     
-    '''
-    entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
-    window.eleven = entry_image_1
-    
-    #global cleanlinessEntry
-    
-    entry_bg_1 = canvasCleanliness.create_image(
-        563.5,
-        474.5,
-        image=entry_image_1
-    )
-    cleanlinessEntry = Entry(
-        bd=0,
-        bg="#E8E8E8",
-        fg="#000716",
-        highlightthickness=0
-    )
-    cleanlinessEntry.place(
-        x=446.0,
-        y=455.0,
-        width=235.0,
-        height=37.0
-    )
-    '''
     image_image_1 = PhotoImage(
     file=relative_to_assets("display_chart_by_cleanliness.png"))
     window.twelve = image_image_1
@@ -1224,7 +1205,7 @@ def show_canvas3():
         image=button_image_5,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: getCleanlinessData(cleanlinesskeywords, citySelect.get()),
+        command=lambda: getCleanlinessData(cleanlinesskeywords, citySelect.get(), label3),
         relief="flat"
     )
     
