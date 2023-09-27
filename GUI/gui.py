@@ -36,6 +36,7 @@ window.configure(bg = "#E8E8E8")
 window_height = 626
 window_width = 932
 
+
 def center_screen():
     """ gets the coordinates of the center of the screen """
     global screen_height, screen_width, x_cordinate, y_cordinate
@@ -46,6 +47,7 @@ def center_screen():
     x_cordinate = int((screen_width/2) - (window_width/2))
     y_cordinate = int((screen_height/2) - (window_height/2))
     window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
 
 center_screen()
     
@@ -84,7 +86,7 @@ def getSuburbListings(startDate, endDate, suburb, howMuchData):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
 
-    if(howMuchData == 'Short'):
+    if howMuchData == 'Short':
         
         columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
         
@@ -98,7 +100,7 @@ def getSuburbListings(startDate, endDate, suburb, howMuchData):
         
         displaySuburbListings(results, columnNames, suburb)
         
-    elif(howMuchData == 'All'):
+    elif howMuchData == 'All':
         query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND l.city = ? ORDER BY l.id"
     
         cursor.execute(query, (dates[0], dates[1], suburb))
@@ -443,9 +445,11 @@ def on_hover(sel, thePrices, theNames, theDates):
 
 # Connect the tooltip function to the scatter plot
 
+
 #display the price chart (matplotlib graph) from the data from getPriceChartData()
 def displayPriceChart():
     print("display price chart")
+
 
 #Display Price Listings function
 def show_canvas4():
@@ -457,14 +461,14 @@ def show_canvas4():
         current_canvas.pack_forget()
         
     canvasPriceListings = Canvas(
-    window,
-    bg = "#E8E8E8",
-    height = 626,
-    width = 932,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-    )
+        window,
+        bg="#E8E8E8",
+        height=626,
+        width=932,
+        bd=0,
+        highlightthickness=0,
+        relief="ridge"
+        )
 
     canvasPriceListings.place(x = 0, y = 0)
     canvasPriceListings.update()  # Update the canvas before getting dimensions
@@ -667,10 +671,10 @@ def show_canvas4():
     
     calendarEnd = Calendar(
         window, 
-        selectmode = 'day',
-        year = 2019, 
-        month = 1,
-        day = 1,
+        selectmode='day',
+        year=2019,
+        month=1,
+        day=1,
         date_pattern='y-mm-dd'
     )
     
@@ -698,7 +702,7 @@ def getKeywordResults(startDate, endDate,keyWords, howMuchData):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
 
-    if(howMuchData == 'Short'):
+    if howMuchData == 'Short':
         columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
         
         query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
@@ -714,7 +718,7 @@ def getKeywordResults(startDate, endDate,keyWords, howMuchData):
         
         displayKeywordResults(results, columnNames, keyWords)
         
-    elif(howMuchData == 'All'):
+    elif howMuchData == 'All':
         query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
         query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
         query += ") ORDER BY l.id"
@@ -774,14 +778,14 @@ def show_canvas5():
         current_canvas.pack_forget()
         
     canvasSearch = Canvas(
-    window,
-    bg = "#E8E8E8",
-    height = 626,
-    width = 932,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-    )
+        window,
+        bg="#E8E8E8",
+        height=626,
+        width=932,
+        bd=0,
+        highlightthickness=0,
+        relief="ridge"
+        )
 
     canvasSearch.place(x = 0, y = 0)
     canvasSearch.update()  # Update the canvas before getting dimensions
@@ -1111,12 +1115,12 @@ def show_canvas3():
     citySelect.place(x=472,y=378)
     
     image_image_1 = PhotoImage(
-    file=relative_to_assets("display_chart_by_cleanliness.png"))
+        file=relative_to_assets("display_chart_by_cleanliness.png"))
     window.twelve = image_image_1
     image_1 = canvasCleanliness.create_image(
-    564.0,
-    70.0,
-    image=image_image_1
+        564.0,
+        70.0,
+        image=image_image_1
     )
     
     button_image_1 = PhotoImage(
@@ -1272,7 +1276,7 @@ def getKeywordResults(startDate, endDate,keyWords, howMuchData):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
 
-    if(howMuchData == 'Short'):
+    if howMuchData == 'Short':
         columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
         
         query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
@@ -1288,7 +1292,7 @@ def getKeywordResults(startDate, endDate,keyWords, howMuchData):
         
         displayKeywordResults(results, columnNames, keyWords)
         
-    elif(howMuchData == 'All'):
+    elif howMuchData == 'All':
         query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
         query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
         query += ") ORDER BY l.id"
@@ -1345,7 +1349,7 @@ def getSuburbRatings(suburb, howMuchData):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
     
-    if(howMuchData == 'Short'):
+    if howMuchData == 'Short':
         columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
         
         query = "SELECT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
@@ -1359,7 +1363,7 @@ def getSuburbRatings(suburb, howMuchData):
         
         return (results, columnNames, suburb)
         
-    elif(howMuchData == 'All'):
+    elif howMuchData == 'All':
         query = "SELECT * FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
         
         cursor.execute(query)
@@ -1425,14 +1429,14 @@ def show_canvas6():
         current_canvas.pack_forget()
         
     canvasListingsByRatings = Canvas(
-    window,
-    bg = "#E8E8E8",
-    height = 626,
-    width = 932,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-    )
+        window,
+        bg = "#E8E8E8",
+        height = 626,
+        width = 932,
+        bd = 0,
+        highlightthickness = 0,
+        relief = "ridge"
+        )
 
     canvasListingsByRatings.place(x = 0, y = 0)
     canvasListingsByRatings.update()  # Update the canvas before getting dimensions
@@ -1509,13 +1513,13 @@ def show_canvas6():
     )
     
     canvasListingsByRatings.create_text(
-    56.0,
-    36.0,
-    anchor="nw",
-    text="AJJ",
-    fill="#FFFFFF",
-    font=("Inter Bold", 40 * -1)
-    )
+        56.0,
+        36.0,
+        anchor="nw",
+        text="AJJ",
+        fill="#FFFFFF",
+        font=("Inter Bold", 40 * -1)
+        )
 
     label55 = Label(window, text="How Many Columns?")
     window.aaaaaeeeeeeea = label55
