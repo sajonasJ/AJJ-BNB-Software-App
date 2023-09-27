@@ -746,7 +746,46 @@ def show_canvas4():
     canvasPriceListings.pack()
     current_canvas = canvasPriceListings
     
+
+#For a user-selected period, retrieve all records that contain a keyword (user entered), e.g. pool, pet.
+
+#clear the user input
+def cleanUserInput(input):
+    splitInput = [item.strip() for item in input.split(',')]
+    return splitInput
+
+
+#get keyword results from the user
+def getKeywordResults(startDate, endDate,keyWords):
+    cleanedWords = cleanUserInput(keyWords)
+    dates = selectDate(startDate,endDate)
+    print('startDate=',dates[0], 'endDate=',dates[1])
+    #print(fromDate, to, property, dataframe)
     
+
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    query = "SELECT DISTINCT l.id, l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
+    query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
+    query += ") ORDER BY l.id"
+    params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
+    cursor.execute(query, params)
+
+
+    results = cursor.fetchall()
+
+    for row in results:
+        print(row)
+
+    connection.close()
+
+
+#display the results from the chosen keywords the "Search" button
+def displayKeywordResults():
+    print("display keyword results")
+
+
 #Display search records function (Search button)
 def show_canvas5():
     print("canvas5")
@@ -810,7 +849,7 @@ def show_canvas5():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("button_1 clicked"),
+        command=lambda: getKeywordResults(cal, calendarEnd, entry_1.get()),
         relief="flat"
     )
     button_1.place(
@@ -828,6 +867,11 @@ def show_canvas5():
         70.0,
         image=image_image_1
     )
+    
+    labelf = Label(window, text="Enter Keywords separated by comma")
+    window.sixtyt = labelf
+    
+    labelf.place(x=462, y=425)
     
     entry_image_1 = PhotoImage(
         file=relative_to_assets("entry_4.png"))
@@ -849,6 +893,40 @@ def show_canvas5():
         width=235.0,
         height=37.0
     )
+    
+    label = Label(window, text="Start date")
+    window.sixty = label
+    
+    label.place(x=250, y=130)
+    
+    cal = Calendar(
+        window, 
+        selectmode = 'day',
+        year = 2019, 
+        month = 1,
+        day = 1,
+        date_pattern='y-mm-dd'
+    )
+    
+    window.fifty = cal
+    cal.place(x=250, y=150)
+    
+    endLabel = Label(window, text="End date")
+    window.sixtytwo = endLabel
+    
+    endLabel.place(x=630, y=130)
+    
+    calendarEnd = Calendar(
+        window, 
+        selectmode = 'day',
+        year = 2019, 
+        month = 1,
+        day = 1,
+        date_pattern='y-mm-dd'
+    )
+    
+    window.fiftytwo = calendarEnd
+    calendarEnd.place(x=630, y=150)
     
     button_image_1 = PhotoImage(
     file=relative_to_assets("display_by_ratings.png"))
@@ -946,7 +1024,36 @@ def show_canvas5():
 
     canvasSearch.pack()
     current_canvas = canvasSearch
+
+#Analysing how many customers commented on factors related to cleanliness (multiple key words may be associated with cleanliness – justify your selection).
+
+#display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
+def displayCleanliness():
+    print("display cleanliness")
+
+
+#get the cleanliness data for the displayCleanliness()
+def getCleanlinessData(keywords, suburb):
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
     
+    query = "SELECT * FROM reviewsDec WHERE " + " OR ".join(["comments LIKE ?"] * len(keywords))
+    
+    # Modify each keyword to include wildcards for partial matching
+    modified_keywords = ['%{}%'.format(keyword) for keyword in keywords]
+
+    # Execute the SQL query, passing the modified keywords as parameters
+    cursor.execute(query, modified_keywords)
+
+    # Fetch the results
+    results = cursor.fetchall()
+
+    print("the total cleanliness results=",len(results))
+
+    connection.close()
+    
+    displayCleanliness()
+
     
 #Display cleanliness function
 def show_canvas3():
@@ -1167,41 +1274,6 @@ def show_canvas3():
 
     canvasCleanliness.pack()
     current_canvas = canvasCleanliness
-
-#display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
-def displayCleanliness():
-    print("display cleanliness")
-
-
-#get the cleanliness data for the displayCleanliness()
-def getCleanlinessData(keywords, suburb):
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
-    
-    query = "SELECT * FROM reviewsDec WHERE " + " OR ".join(["comments LIKE ?"] * len(keywords))
-    
-    # Modify each keyword to include wildcards for partial matching
-    modified_keywords = ['%{}%'.format(keyword) for keyword in keywords]
-
-    # Execute the SQL query, passing the modified keywords as parameters
-    cursor.execute(query, modified_keywords)
-
-    # Fetch the results
-    results = cursor.fetchall()
-    # Process the results (print in this example)
-    print("the total cleanliness results=",len(results))
-    #for row in results:
-        #print(row)
-
-    connection.close()
-    
-    #mask = dataframe['comments'].str.contains('|'.join(keywords), case=False, na=False)
-
-    #filtered_mergedFile = dataframe[mask]
-    
-    #print(filtered_mergedFile)
-    
-    displayCleanliness()
 
 
 #Display ratings listings
@@ -1658,23 +1730,8 @@ def show_canvas7():
     current_canvas = canvasListingsByRatingsChart
 
 
-#clear the user input
-def cleanUserInput(input):
-    print("clear the user input" + input)
-
-
-#get keyword results from the user
-def getKeywordResults(keyWords,fromDate,to,dataframe):
-    print("get keyword results" + keyWords + fromDate + to + dataframe)
-
-
-#display the results from the chosen keywords the "Search" button
-def displayKeywordResults():
-    print("display keyword results")
-    
-
 #clear search fields (button will be needed for it)
-def clearSearchQuery():
+def clearSearchQuery(): 
     print("clear search fields")
 
 
