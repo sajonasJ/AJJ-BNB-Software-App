@@ -408,9 +408,7 @@ def getPriceChartData(startDate, endDate, suburb):
     
     cursor.execute(query, (dates[0], dates[1], suburb))
 
-    # Fetch the results
     results = cursor.fetchall()
-    # Process the results (print in this example)
     #print("the total cleanliness results=",len(results))
     thePrices = []
     theNames = []
@@ -424,11 +422,17 @@ def getPriceChartData(startDate, endDate, suburb):
 
     print(len(thePrices))
     connection.close()
-    #cd Ours/SoftwareTech-Group17/GUI/
+    displayPriceChart(thePrices, suburb, theNames, theDates)
+
+    
+def on_hover(sel, thePrices, theNames, theDates):
+    index = sel.index
+    sel.annotation.set_text(f'Price: {thePrices[index]}\nName:{theNames[index]}\nDate: {theDates[index]}')
+
+
+#display the price chart (matplotlib graph) from the data from getPriceChartData()
+def displayPriceChart(thePrices, suburb, theNames, theDates):
     fig, ax = plt.subplots(figsize=(5, 2.7))
-    #ax.scatter(thePrices, np.arange(len(thePrices)), label='Price')
-    #ax.set_xticks([])
-    #ax.set_xticklabels([])
     ax.scatter(np.arange(len(thePrices)), thePrices, label='Price')
     ax.set_yticklabels([])
     ax.set_title(f"Price Data for {suburb}")
@@ -436,19 +440,6 @@ def getPriceChartData(startDate, endDate, suburb):
 
     mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover(sel, thePrices, theNames, theDates))
     plt.show()
-
-    
-def on_hover(sel, thePrices, theNames, theDates):
-    index = sel.index
-    price = thePrices[index]
-    sel.annotation.set_text(f'Price: {price} for \n{theNames[index]}\nDate: {theDates[index]}')
-
-# Connect the tooltip function to the scatter plot
-
-
-#display the price chart (matplotlib graph) from the data from getPriceChartData()
-def displayPriceChart():
-    print("display price chart")
 
 
 #Display Price Listings function
@@ -1267,124 +1258,66 @@ def show_canvas3():
     current_canvas = canvasCleanliness
 
 
-#get keyword results from the user
-def getKeywordResults(startDate, endDate,keyWords, howMuchData):
-    cleanedWords = cleanUserInput(keyWords)
-    dates = selectDate(startDate,endDate)
-    print('startDate=',dates[0], 'endDate=',dates[1])
-
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
-
-    if howMuchData == 'Short':
-        columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
-        
-        query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
-        query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
-        query += ") ORDER BY l.id"
-        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
-        cursor.execute(query, params)
-        
-        results = cursor.fetchall()
-            
-        # Print the column names
-        print("Column names:", columnNames)
-        
-        displayKeywordResults(results, columnNames, keyWords)
-        
-    elif howMuchData == 'All':
-        query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date BETWEEN ? AND ? AND ("
-        query += " OR ".join(["l.amenities LIKE ?" for _ in cleanedWords])
-        query += ") ORDER BY l.id"
-        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleanedWords)
-        cursor.execute(query, params)
-        
-        results = cursor.fetchall()
-            
-        cursor.execute(f"PRAGMA table_info(listingsDec)")
-        columns_info = cursor.fetchall()
-
-        columnNames = [col[1] for col in columns_info]
-
-        print("Column names:", columnNames)
-        
-        displayKeywordResults(results, columnNames, keyWords)
-        
-    connection.close()
-
-
-#display the results from the chosen keywords the "Search" button
-def displayKeywordResults(results, columnNames, keywords):
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    newWindow = Toplevel(window)
-    newWindow.title(f"Listings for {keywords}")
-    newWindow.geometry(f"{screen_width}x{screen_height-100}")
-
-    tree = ttk.Treeview(newWindow, column=columnNames, show='headings')
-    for index, value in enumerate(columnNames):
-        tree.column(f"#{index+1}", anchor=CENTER)
-        tree.heading(f"#{index+1}", text=f"{value}")
-        
-    for row in results:
-        tree.insert("", END, values=row)  
-        
-    scrollbar = ttk.Scrollbar(newWindow, orient=VERTICAL, command=tree.yview)
-    scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
-
-    tree.configure(yscrollcommand=scrollbar.set)
-    
-    x_scrollbar = ttk.Scrollbar(newWindow, orient=HORIZONTAL, command=tree.xview)
-    x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
-
-    tree.configure(xscrollcommand=x_scrollbar.set)
-    
-    tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
-
-
 #get suburb ratings data
-def getSuburbRatings(suburb, howMuchData):
+def getSuburbRatings(suburb, howMuchData, dataType):
     print(howMuchData)
     print("get suburb ratings" + suburb)
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
     
-    if howMuchData == 'Short':
-        columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
-        
-        query = "SELECT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
-
-        cursor.execute(query)
-        
-        results = cursor.fetchall()
+    if dataType == 'Record':  
+        if howMuchData == 'Short':
+            columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city', 'state', 'zipcode', 'accommodates','bathrooms', 'bedrooms','amenities', 'price',  'review_scores_rating', 'cancellation_policy']
             
-        # Print the column names
-        print("Column names:", columnNames)
-        
-        return (results, columnNames, suburb)
-        
-    elif howMuchData == 'All':
-        query = "SELECT * FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
-        
-        cursor.execute(query)
-        
-        results = cursor.fetchall()
+            query = "SELECT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
+
+            cursor.execute(query)
             
-        cursor.execute(f"PRAGMA table_info(listingsDec)")
-        columns_info = cursor.fetchall()
+            results = cursor.fetchall()
+                
+            # Print the column names
+            print("Column names:", columnNames)
+            
+            return (results, columnNames, suburb)
+            
+        elif howMuchData == 'All':
+            query = "SELECT * FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
+            
+            cursor.execute(query)
+            
+            results = cursor.fetchall()
+                
+            cursor.execute(f"PRAGMA table_info(listingsDec)")
+            columns_info = cursor.fetchall()
 
-        columnNames = [col[1] for col in columns_info]
+            columnNames = [col[1] for col in columns_info]
 
-        print("Column names:", columnNames)
+            print("Column names:", columnNames)
+            
+            return (results, columnNames, suburb)
+    elif dataType == 'Chart':
+        query = "SELECT l.name, l.review_scores_rating FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating ASC"
+        cursor.execute(query)
+        results = cursor.fetchall()
         
-        return (results, columnNames, suburb)
+        theScore = []
+        theNames = []
         
+        for row in results:
+            #print(row[0])
+            theNames.append(row[0])
+            theScore.append(row[1])
+            cursor.execute(query)
+        
+
+        return theScore, suburb, theNames
+
     connection.close()
 
 
 #"Display by Ratings" button, "Display List" button
 def displaySuburbRatingsRecords(theSuburb, howMuchData):
-    results, columnNames, suburb = getSuburbRatings(theSuburb, howMuchData)
+    results, columnNames, suburb = getSuburbRatings(theSuburb, howMuchData, 'Record')
     
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
@@ -1415,8 +1348,20 @@ def displaySuburbRatingsRecords(theSuburb, howMuchData):
 
 #"Display by Ratings" button, "Display Chart" button
 def displaySuburbRatingsChart(suburb, howMuchData):
-    getSuburbRatings(suburb, howMuchData)
-    print("display suburb ratings chart")
+    theScore, theSuburb, theNames = getSuburbRatings(suburb, howMuchData, 'Chart')
+    fig, ax = plt.subplots(figsize=(5, 2.7))
+    ax.scatter(np.arange(len(theScore)), theScore, label='Rating')
+    ax.set_yticklabels([])
+    ax.set_title(f"Ratings over 75 for {theSuburb}")
+    ax.legend()
+
+    mplcursors.cursor(ax, hover=True).connect('add', lambda sel: onHoverRatings(sel, theScore, theNames))
+    plt.show()
+    
+    
+def onHoverRatings(sel, theScore, theNames):
+    index = sel.index
+    sel.annotation.set_text(f'Rating: {theScore[index]}\nPlace Name: {theNames[index]}')
 
 
 #Display ratings listings by table/records
