@@ -71,11 +71,8 @@ def get_the_data():
     for row in df_reviews.itertuples():
         values = (row.listing_id, row.id, row.date, row.reviewer_id, row.reviewer_name, row.comments)
         # print(row)
-        cursor.execute('''INSERT INTO reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)
-                    VALUES (?,?,?,?,?,?)
-                    ''',
-                       values
-                       )
+        cursor.execute('''INSERT INTO reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)VALUES
+        (?,?,?,?,?,?)''',values)
         count += 1
 
         if 0.2 * total_records == count:
@@ -93,11 +90,7 @@ def get_the_data():
     for row in df_calendar.itertuples():
         values = (row.listing_id, row.date, row.available, row.price)
         # print(row)
-        cursor.execute('''INSERT INTO calendarDec(listing_id,date,available,price)
-                    VALUES (?,?,?,?)
-                    ''',
-                       values
-                       )
+        cursor.execute('''INSERT INTO calendarDec(listing_id,date,available,price)VALUES (?,?,?,?)''',values)
         count += 1
         if 0.2 * total_records == count:
             print("20% done.\n")
@@ -127,11 +120,7 @@ start_button = ttk.Button(
 start_button.grid(column=0, row=1, padx=10, pady=10, sticky=tk.E)
 
 # stop button
-stop_button = ttk.Button(
-    root,
-    text='Cancel',
-    command=lambda: cancel()
-)
+stop_button = ttk.Button(root,text='Cancel',command=lambda: cancel())
 stop_button.grid(column=1, row=1, padx=10, pady=10, sticky=tk.W)
 
 
@@ -140,10 +129,9 @@ def get_data():
 
 
 def cancel():
-    # quit the script
     root.quit()
 
 
 root.mainloop()
 
-# sys.exit()
+

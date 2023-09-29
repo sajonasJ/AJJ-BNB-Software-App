@@ -22,7 +22,6 @@ global screen_height, screen_width, x_cordinate, y_cordinate
 
 def center_screen():
     """ gets the coordinates of the center of the screen """
-
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
     # Coordinates of the upper left corner of the window to make the window appear in the center
@@ -65,7 +64,6 @@ def display_suburb_listings(results, column_names, suburb):
     scrollbar = ttk.Scrollbar(new_window, orient=VERTICAL, command=tree.yview)
     scrollbar.place(x=initial_width - 20, y=0, height=initial_height - 100)
     tree.configure(yscrollcommand=scrollbar.set)
-
     x_scrollbar = ttk.Scrollbar(new_window, orient=HORIZONTAL, command=tree.xview)
     x_scrollbar.place(x=0, y=initial_height - 80, width=initial_width - 20)
     tree.configure(xscrollcommand=x_scrollbar.set)
@@ -80,7 +78,6 @@ def display_price_chart(the_prices, suburb, the_names, the_dates):
     ax.set_yticklabels([])
     ax.set_title(f"Price Data for {suburb}")
     ax.legend()
-
     mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover(sel, the_prices, the_names, the_dates))
     plt.show()
 
@@ -103,19 +100,14 @@ def display_keyword_results(results, column_names, keywords):
 
     scrollbar = ttk.Scrollbar(new_window, orient=VERTICAL, command=tree.yview)
     scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
-
     tree.configure(yscrollcommand=scrollbar.set)
-
     x_scrollbar = ttk.Scrollbar(new_window, orient=HORIZONTAL, command=tree.xview)
     x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
-
     tree.configure(xscrollcommand=x_scrollbar.set)
-
     tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
 
 
 def display_cleanliness(result_number, suburb, label3):
-    # display cleanliness chart from the getCleanlinessData() function "Cleanliness" button
     print("display cleanliness")
     label3.config(text=f"The number of reviews that mention cleanliness in {suburb} is: {result_number}")
 

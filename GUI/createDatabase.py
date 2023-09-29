@@ -95,10 +95,7 @@ def get_the_data():
     columns = df_listings.columns.tolist()
     cursor = connection.cursor()
 
-    create_table_statement = "CREATE TABLE IF NOT EXISTS listingsDec ("
-    create_table_statement += ','.join(columns)
-    create_table_statement += ")"
-
+    create_table_statement = "CREATE TABLE IF NOT EXISTS listingsDec ({})".format(','.join(columns))
     cursor.execute(create_table_statement)
     print(columns)
 
@@ -111,11 +108,8 @@ def get_the_data():
         # row.review_scores_rating,row.review_scores_accuracy,row.review_scores_cleanliness,
         # row.review_scores_checkin,row.review_scores_communication,row.review_scores_location,
         # row.review_scores_value,row.number_of_reviews) print(row)
-        cursor.execute('''
-                    INSERT INTO listingsDec ({})
-                VALUES ({})
-                '''.format(','.join(columns), ','.join(['?'] * len(columns))),
-                       values)
+        cursor.execute('''INSERT INTO listingsDec ({})VALUES ({})'''.format(','.join(columns), ','
+                    .join(['?'] * len(columns))),values)
         count += 1
 
         if 0.2 * total_records == count:
@@ -132,12 +126,8 @@ def get_the_data():
 
     for row in df_reviews.itertuples():
         values = (row.listing_id, row.id, row.date, row.reviewer_id, row.reviewer_name, row.comments)
-        # print(row)
         cursor.execute('''INSERT INTO reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)
-                    VALUES (?,?,?,?,?,?)
-                    ''',
-                       values
-                       )
+                    VALUES (?,?,?,?,?,?)''',values)
         count += 1
 
         if 0.2 * total_records == count:
@@ -155,11 +145,7 @@ def get_the_data():
     for row in df_calendar.itertuples():
         values = (row.listing_id, row.date, row.available, row.price)
         # print(row)
-        cursor.execute('''INSERT INTO calendarDec(listing_id,date,available,price)
-                    VALUES (?,?,?,?)
-                    ''',
-                       values
-                       )
+        cursor.execute('''INSERT INTO calendarDec(listing_id,date,available,price)VALUES (?,?,?,?)''',values)
         count += 1
         if 0.2 * total_records == count:
             output_text.insert(tk.END, "Total Records 20% done.\n")
@@ -192,7 +178,6 @@ def get_data():
 
 
 def close():
-    # quit the script
     root.destroy()
 
 

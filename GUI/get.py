@@ -1,91 +1,50 @@
 import sqlite3
 from displays import *
 from utils import *
+from clean import *
 
 
 def get_suburb_listings(start_date, end_date, suburb, how_much_data):
+    """retrieves the suburb listings using date and queries"""
     dates = select_date(start_date, end_date)
     print('start Date=', dates[0], 'end Date=', dates[1], 'suburb=', suburb)
-    # print(fromDate, to, property, dataframe)
+    with sqlite3.connect('data.db') as connection:
+        cursor = connection.cursor()
 
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
+        if how_much_data == 'Short':
+            cursor.execute(suburb_listing_shortquery, (dates[0], dates[1], suburb))
+            results = cursor.fetchall()
 
-    if how_much_data == 'Short':
+            print("Column names:", COLUMN_NAMES)
+            display_suburb_listings(results, COLUMN_NAMES, suburb)
 
-        column_names = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city',
-                        'state', 'zipcode', 'accommodates', 'bathrooms', 'bedrooms', 'amenities', 'price',
-                        'review_scores_rating', 'cancellation_policy']
-
-        query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city," \
-                "l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating," \
-                "l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE " \
-                "c.date BETWEEN ? AND ? AND l.city = ? ORDER BY l.id"
-
-        cursor.execute(query, (dates[0], dates[1], suburb))
-        results = cursor.fetchall()
-
-        # Print the column names
-        print("Column names:", column_names)
-
-        display_suburb_listings(results, column_names, suburb)
-
-    elif how_much_data == 'All':
-        query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date " \
-                "BETWEEN ? AND ? AND l.city = ? ORDER BY l.id"
-
-        cursor.execute(query, (dates[0], dates[1], suburb))
-        results = cursor.fetchall()
-
-        cursor.execute(f"PRAGMA table_info(listingsDec)")
-        columns_info = cursor.fetchall()
-        # Fetch the results
-
-        column_names = [col[1] for col in columns_info]
-
-        # Print the column names
-        print("Column names:", column_names)
-        connection.close()
-        display_suburb_listings(results, column_names, suburb)
+        elif how_much_data == 'All':
+            cursor.execute(suburb_listing_longquery, (dates[0], dates[1], suburb))
+            results = cursor.fetchall()
+            cursor.execute(f"PRAGMA table_info(listingsDec)")
+            columns_info = cursor.fetchall()
+            column_names = [col[1] for col in columns_info]
+            print("Column names:", column_names)
+            display_suburb_listings(results, column_names, suburb)
 
 
-# For a user-selected period, produce a chart to show the distribution of prices of properties
-# get property prices data for a chart "Price Chart" button
 def get_price_chart_data(start_date, end_date, suburb):
     dates = select_date(start_date, end_date)
-
     print('startDate=', dates[0], 'endDate=', dates[1])
-    # print(fromDate, to, property, dataframe)
+    with sqlite3.connect('data.db') as connection:
+        cursor = connection.cursor()
 
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
+        cursor.execute(price_chart_query, (dates[0], dates[1], suburb))
+        results = cursor.fetchall()
+        the_names = [row[0] for row in results]
+        the_prices = [row[1] for row in results]
+        the_dates = [row[2] for row in results]
 
-    # query = "SELECT l.name, c.* FROM calendarDec c INNER JOIN listingsDec l ON c.listing_id = l.id WHERE c.date
-    # BETWEEN ? AND ? AND c.price NOT NULL"
-    query = "SELECT l.name, c.price, c.date FROM calendarDec c INNER JOIN listingsDec l ON c.listing_id = l.id WHERE " \
-            "c.date BETWEEN ? AND ? AND c.price NOT NULL AND l.city = ?"
-
-    cursor.execute(query, (dates[0], dates[1], suburb))
-
-    results = cursor.fetchall()
-    # print("the total cleanliness results=",len(results))
-    the_prices = []
-    the_names = []
-    the_dates = []
-
-    for row in results:
-        # print(row[0])
-        the_names.append(row[0])
-        the_prices.append(row[1])
-        the_dates.append(row[2])
-
-    print(len(the_prices))
-    connection.close()
-    display_price_chart(the_prices, suburb, the_names, the_dates)
+        print(len(the_prices))
+        display_price_chart(the_prices, suburb, the_names, the_dates)
 
 
 def get_keyword_results(start_date, end_date, key_words, how_much_data):
-    # get keyword results from the user
     cleaned_words = clean_user_input(key_words)
     dates = select_date(start_date, end_date)
     print('startDate=', dates[0], 'endDate=', dates[1])
@@ -139,19 +98,11 @@ def get_cleanliness_data(keywords, suburb, label3):
     connection = sqlite3.connect('data.db')
     cursor = connection.cursor()
     query = "SELECT r.* FROM reviewsDec r INNER JOIN listingsDec l ON r.listing_id = l.id WHERE l.city = ? \
-    AND (" + "OR ".join(
-        ["comments LIKE ?"] * len(keywords)) + ")"
+    AND (" + "OR ".join(["comments LIKE ?"] * len(keywords)) + ")"
 
-    # Modify each keyword to include wildcards for partial matching
     modified_keywords = ['%{}%'.format(keyword) for keyword in keywords]
-
-    # Combine suburb and modified keywords into a single tuple
     params = (suburb,) + tuple(modified_keywords)
-
-    # Execute the query with the parameters
     cursor.execute(query, params)
-
-    # Fetch the results
     results = cursor.fetchall()
 
     print("the total cleanliness results=", len(results))
@@ -161,58 +112,49 @@ def get_cleanliness_data(keywords, suburb, label3):
     display_cleanliness(len(results), suburb, label3)
 
 # get suburb ratings data
-# def getSuburbRatings(suburb, howMuchData, dataType):
-#     print(howMuchData)
-#     print("get suburb ratings" + suburb)
-#     connection = sqlite3.connect('data.db')
-#     cursor = connection.cursor()
-#
-#     if dataType == 'Record':
-#         if howMuchData == 'Short':
-#             columnNames = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city',
-#                            'state', 'zipcode', 'accommodates', 'bathrooms', 'bedrooms', 'amenities', 'price',
-#                            'review_scores_rating', 'cancellation_policy']
-#
-# query = "SELECT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city,l.state,
-# l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating,l.cancellation_policy
-# FROM listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
-#
-#             cursor.execute(query)
-#
-#             results = cursor.fetchall()
-#
-#             # Print the column names
-#             print("Column names:", columnNames)
-#
-#             return (results, columnNames, suburb)
-#
-# elif howMuchData == 'All': query = "SELECT * FROM listingsDec l WHERE l.city = '" + suburb + "' AND
-# l.review_scores_rating > 75 ORDER BY review_scores_rating DESC"
-#
-#             cursor.execute(query)
-#
-#             results = cursor.fetchall()
-#
-#             cursor.execute(f"PRAGMA table_info(listingsDec)")
-#             columns_info = cursor.fetchall()
-#
-#             columnNames = [col[1] for col in columns_info]
-#
-#             print("Column names:", columnNames)
-#
-# return (results, columnNames, suburb) elif dataType == 'Chart': query = "SELECT l.name, l.review_scores_rating FROM
-# listingsDec l WHERE l.city = '" + suburb + "' AND l.review_scores_rating > 75 ORDER BY review_scores_rating ASC"
-# cursor.execute(query) results = cursor.fetchall()
-#
-#         theScore = []
-#         theNames = []
-#
-#         for row in results:
-#             # print(row[0])
-#             theNames.append(row[0])
-#             theScore.append(row[1])
-#             cursor.execute(query)
-#
-#         return theScore, suburb, theNames
-#
-#     connection.close()
+def get_suburb_ratings(suburb, how_much_data, data_type):
+    print(how_much_data)
+    print("get suburb ratings" + suburb)
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    limit = 'LIMIT 100' if how_much_data == 'Short' else ''
+    select_columns = '*' if how_much_data == 'All' else 'l.id, l.listing_url, l.name, l.description, l.transit, l.street, l.neighbourhood, l.city, l.state, l.zipcode, l.accommodates, l.bathrooms, l.bedrooms, l.amenities, l.price, l.review_scores_rating, l.cancellation_policy'
+
+    if data_type == 'Record':
+        query = f"""
+            SELECT {select_columns} FROM listingsDec l
+            WHERE l.city = ? AND l.review_scores_rating > 75
+            ORDER BY l.review_scores_rating ASC
+            {limit}
+            """
+        cursor.execute(query, (suburb,))
+        results = cursor.fetchall()
+
+        if how_much_data == 'Short':
+            column_names = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city',
+                            'state', 'zipcode', 'accommodates', 'bathrooms', 'bedrooms', 'amenities', 'price',
+                            'review_scores_rating', 'cancellation_policy']
+        else:
+            cursor.execute("PRAGMA table_info(listingsDec)")
+            columns_info = cursor.fetchall()
+            column_names = [col[1] for col in columns_info]
+
+        print("Column names:", column_names)
+        return results, column_names, suburb
+
+    elif data_type == 'Chart':
+        query = f"""
+            SELECT l.name, l.review_scores_rating 
+            FROM listingsDec l
+            WHERE l.city = ? AND l.review_scores_rating > 75
+            ORDER BY l.review_scores_rating ASC
+            {limit}
+            """
+        cursor.execute(query, (suburb,))
+        results = cursor.fetchall()
+        the_score = [row[1] for row in results]
+        the_names = [row[0] for row in results]
+        return the_score, suburb, the_names
+
+    connection.close()
