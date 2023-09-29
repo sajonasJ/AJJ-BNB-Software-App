@@ -28,18 +28,16 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
-center_screen()
 photo_images = {}
 current_canvas = None
 
 with sqlite3.connect('data.db') as connection:
     cursor = connection.cursor()
-    cursor.execute(city_query)
+    cursor.execute(CITY_QUERY)
     results = cursor.fetchall()
     cityArray = []
     for row in results:
         cityArray.append(row[0])
-
 
 
 def show_canvas2():
@@ -374,7 +372,7 @@ def show_canvas3():
     button_image_5 = PhotoImage(file=relative_to_assets("display.png"))
     window.nineteen = button_image_5
     button_5 = Button(image=button_image_5, borderwidth=0, highlightthickness=0,
-                      command=lambda: get_cleanliness_data(cleanliness_keywords, city_select.get(), label3),
+                      command=lambda: get_cleanliness_data(CLEANLINESS_KEYWORDS, city_select.get(), label3),
                       relief="flat")
     button_5.place(x=454.0, y=536.0, width=218.0, height=39.0)
     canvas_cleanliness.pack()
@@ -388,7 +386,7 @@ def display_suburb_ratings_records(the_suburb, how_much_data):
     new_window = Toplevel(window)
     new_window.title(f"Listings for {suburb}")
     new_window.geometry(f"{screen_width}x{screen_height - 100}")
-    tree = ttk.Treeview(new_window, column=column_names, show='headings')
+    tree = ttk.Treeview(new_window, columns=column_names, show='headings')
     for index, value in enumerate(column_names):
         tree.column(f"#{index + 1}", anchor=CENTER)
         tree.heading(f"#{index + 1}", text=f"{value}")

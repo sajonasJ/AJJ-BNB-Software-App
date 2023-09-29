@@ -12,14 +12,14 @@ def get_suburb_listings(start_date, end_date, suburb, how_much_data):
         cursor = connection.cursor()
 
         if how_much_data == 'Short':
-            cursor.execute(suburb_listing_shortquery, (dates[0], dates[1], suburb))
+            cursor.execute(SUBURB_LISTING_SHORTQUERY, (dates[0], dates[1], suburb))
             results = cursor.fetchall()
 
             print("Column names:", COLUMN_NAMES_SHORT)
             display_suburb_listings(results, COLUMN_NAMES_SHORT, suburb)
 
         elif how_much_data == 'All':
-            cursor.execute(suburb_listing_longquery, (dates[0], dates[1], suburb))
+            cursor.execute(SUBURB_LISTING_LONG_QUERY, (dates[0], dates[1], suburb))
             results = cursor.fetchall()
             cursor.execute(f"PRAGMA table_info(listingsDec)")
             columns_info = cursor.fetchall()
@@ -35,7 +35,7 @@ def get_price_chart_data(start_date, end_date, suburb):
     with sqlite3.connect('data.db') as connection:
         cursor = connection.cursor()
 
-        cursor.execute(price_chart_query, (dates[0], dates[1], suburb))
+        cursor.execute(PRICE_CHART_QUERY, (dates[0], dates[1], suburb))
         results = cursor.fetchall()
         the_names = [row[0] for row in results]
         the_prices = [row[1] for row in results]
@@ -54,7 +54,7 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
 
         if how_much_data == 'Short':
             like_conditions = " OR ".join([f"l.amenities LIKE ?" for _ in cleaned_words])
-            query = base_keyword_query.format(like_conditions)
+            query = BASE_KEYWORD_QUERY.format(like_conditions)
             params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleaned_words)
 
             cursor.execute(query, params)
@@ -64,7 +64,7 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
 
         elif how_much_data == 'All':
             like_conditions = " OR ".join([f"l.amenities LIKE ?" for _ in cleaned_words])
-            query = base_keyword_query.format(like_conditions)
+            query = BASE_KEYWORD_QUERY.format(like_conditions)
             params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleaned_words)
 
             cursor.execute(query, params)
@@ -78,70 +78,51 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
             display_keyword_results(results, column_names, key_words)
 
 
-
-
 # get the cleanliness data for the displayCleanliness()
 def get_cleanliness_data(keywords, suburb, label3):
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
-    query = "SELECT r.* FROM reviewsDec r INNER JOIN listingsDec l ON r.listing_id = l.id WHERE l.city = ? \
-    AND (" + "OR ".join(["comments LIKE ?"] * len(keywords)) + ")"
+    with sqlite3.connect('data.db') as connection:
+        cursor = connection.cursor()
 
-    modified_keywords = ['%{}%'.format(keyword) for keyword in keywords]
-    params = (suburb,) + tuple(modified_keywords)
-    cursor.execute(query, params)
-    results = cursor.fetchall()
+        modified_keywords = ['%{}%'.format(keyword) for keyword in keywords]
+        like_clauses = ' OR '.join(f'comments LIKE ?' for keyword in modified_keywords)
 
-    print("the total cleanliness results=", len(results))
+        query = CLEANLINESS_QUERY.format(like_clauses=like_clauses)
+        params = (suburb,) + tuple(modified_keywords)
+        cursor.execute(query, params)
+        results = cursor.fetchall()
 
-    connection.close()
+        print("the total cleanliness results=", len(results))
+        display_cleanliness(len(results), suburb, label3)
 
-    display_cleanliness(len(results), suburb, label3)
 
 # get suburb ratings data
 def get_suburb_ratings(suburb, how_much_data, data_type):
     print(how_much_data)
     print("get suburb ratings" + suburb)
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
+    with sqlite3.connect('data.db') as connection:
+        cursor = connection.cursor()
 
-    limit = 'LIMIT 100' if how_much_data == 'Short' else ''
-    select_columns = '*' if how_much_data == 'All' else 'l.id, l.listing_url, l.name, l.description, l.transit, l.street, l.neighbourhood, l.city, l.state, l.zipcode, l.accommodates, l.bathrooms, l.bedrooms, l.amenities, l.price, l.review_scores_rating, l.cancellation_policy'
-
-    if data_type == 'Record':
-        query = f"""
-            SELECT {select_columns} FROM listingsDec l
-            WHERE l.city = ? AND l.review_scores_rating > 75
-            ORDER BY l.review_scores_rating ASC
-            {limit}
-            """
-        cursor.execute(query, (suburb,))
-        results = cursor.fetchall()
-
-        if how_much_data == 'Short':
-            column_names = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city',
-                            'state', 'zipcode', 'accommodates', 'bathrooms', 'bedrooms', 'amenities', 'price',
-                            'review_scores_rating', 'cancellation_policy']
+        if how_much_data == 'All':
+            select_columns = '*'
         else:
-            cursor.execute("PRAGMA table_info(listingsDec)")
-            columns_info = cursor.fetchall()
-            column_names = [col[1] for col in columns_info]
+            select_columns = ', '.join(COLUMN_NAMES_SHORT)
 
-        print("Column names:", column_names)
-        return results, column_names, suburb
+        if data_type == 'Record':
+            cursor.execute(QUERY_RECORD.format(columns=select_columns), (suburb,))
+            results = cursor.fetchall()
 
-    elif data_type == 'Chart':
-        query = f"""
-            SELECT l.name, l.review_scores_rating 
-            FROM listingsDec l
-            WHERE l.city = ? AND l.review_scores_rating > 75
-            ORDER BY l.review_scores_rating ASC
-            {limit}
-            """
-        cursor.execute(query, (suburb,))
-        results = cursor.fetchall()
-        the_score = [row[1] for row in results]
-        the_names = [row[0] for row in results]
-        return the_score, suburb, the_names
+            if how_much_data == 'Short':
+                column_names = COLUMN_NAMES_SHORT
+            else:
+                columns_info = cursor.execute("PRAGMA table_info(listingsDec)").fetchall()
+                column_names = [col[1] for col in columns_info]
+            print("Column names:", column_names)
+            return results, column_names, suburb
 
-    connection.close()
+        elif data_type == 'Chart':
+            cursor.execute(QUERY_CHART, (suburb,))
+            results = cursor.fetchall()
+            the_score = [row[1] for row in results]
+            the_names = [row[0] for row in results]
+            return the_score, suburb, the_names
+

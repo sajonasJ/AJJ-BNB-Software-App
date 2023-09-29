@@ -1,31 +1,35 @@
+# This file is used for constant's storage
+
+
 # List of keywords for cleanliness
-cleanliness_keywords = ['dirty', 'clean', 'cleanliness', 'disgusting', 'disgust', 'mold', 'neat', 'filthy',
+CLEANLINESS_KEYWORDS = ['dirty', 'clean', 'cleanliness', 'disgusting', 'disgust', 'mold', 'neat', 'filthy',
                         'fresh', 'spotless', 'dust', 'germ', 'immaculate', 'tidy', 'hygiene', 'hygenic',
                         'gleaming''unsoiled', 'sanitary', 'contaminated''mop', 'vacuum''decontaminate', 'orderly',
                         'rinse', 'cob', 'cobwebs', 'rodents', 'rodent', 'vermin', 'mice', 'mouse']
 
 # column_names
 COLUMN_NAMES_SHORT = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city',
-                'state', 'zipcode', 'accommodates', 'bathrooms', 'bedrooms', 'amenities', 'price',
-                'review_scores_rating', 'cancellation_policy']
+                      'state', 'zipcode', 'accommodates', 'bathrooms', 'bedrooms', 'amenities', 'price',
+                      'review_scores_rating', 'cancellation_policy']
 
 # Queries
-
-# suburb_rating_query
-SUBURB_RATING_QUERY_100 = f"""
+# query for get_suburb_ratings
+QUERY_CHART = """
     SELECT l.name, l.review_scores_rating 
     FROM listingsDec l
     WHERE l.city = ? AND l.review_scores_rating > 75
-    ORDER BY l.review_scores_rating ASC
-    LIMIT 100 """
+    ORDER BY l.review_scores_rating ASC"""
 
-SUBURB_RATING_QUERY_ALL = """
-    SELECT * FROM listingsDec l
+
+# query for get_suburb_ratings
+QUERY_RECORD = """
+    SELECT {columns} FROM listingsDec l
     WHERE l.city = ? AND l.review_scores_rating > 75
-    ORDER BY l.review_scores_rating ASC """
+    ORDER BY l.review_scores_rating ASC"""
 
 
-suburb_listing_shortquery = """
+# query for get_suburb_listings
+SUBURB_LISTING_SHORTQUERY = """
     SELECT DISTINCT
         l.id,
         l.listing_url,
@@ -49,20 +53,26 @@ suburb_listing_shortquery = """
     WHERE c.date BETWEEN ? AND ? AND l.city = ?
     ORDER BY l.id """
 
-suburb_listing_longquery = """
+
+# query for get_suburb_listings
+SUBURB_LISTING_LONG_QUERY = """
     SELECT DISTINCT l.* 
     FROM listingsDec l 
     INNER JOIN calendarDec c ON c.listing_id = l.id 
     WHERE c.date BETWEEN ? AND ? AND l.city = ? 
     ORDER BY l.id;"""
 
-price_chart_query = """
+
+# query for get_price_chart_data
+PRICE_CHART_QUERY = """
     SELECT l.name, c.price, c.date 
     FROM calendarDec c 
     INNER JOIN listingsDec l ON c.listing_id = l.id 
     WHERE c.date BETWEEN ? AND ? AND c.price NOT NULL AND l.city = ? """
 
-base_keyword_query = """
+
+# query for get_keyword_results
+BASE_KEYWORD_QUERY = """
     SELECT DISTINCT 
         l.id, l.listing_url, l.name, l.description, 
         l.transit, l.street, l.neighbourhood, l.city, 
@@ -74,4 +84,14 @@ base_keyword_query = """
     WHERE c.date BETWEEN ? AND ? AND ({})
     ORDER BY l.id """
 
-city_query = "SELECT DISTINCT city FROM listingsDec"
+
+# query for city_query
+CITY_QUERY = "SELECT DISTINCT city FROM listingsDec"
+
+
+# query for get_cleanliness_data
+CLEANLINESS_QUERY = """
+            SELECT rev.*
+            FROM reviewsDec rev
+            INNER JOIN listingsDec l ON rev.listing_id = l.id
+            WHERE l.city = ? AND ({like_clauses})"""

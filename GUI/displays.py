@@ -1,9 +1,11 @@
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, \
     HORIZONTAL, BOTH, END, TOP
 from tkinter import ttk
+import tkinter as tk
 import matplotlib.pyplot as plt
 import mplcursors
 import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from utils import *
 
 
@@ -13,21 +15,12 @@ def make_window():
     window.configure(bg="#E8E8E8")
     window_height = 626
     window_width = 932
+    center_screen(window, window_width, window_height)
     return window, window_height, window_width
 
 
 window, window_height, window_width = make_window()
 global screen_height, screen_width, x_cordinate, y_cordinate
-
-
-def center_screen():
-    """ gets the coordinates of the center of the screen """
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    # Coordinates of the upper left corner of the window to make the window appear in the center
-    x_cordinate = int((screen_width / 2) - (window_width / 2))
-    y_cordinate = int((screen_height / 2) - (window_height / 2))
-    window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
 
 def display_suburb_listings(results, column_names, suburb):
@@ -79,7 +72,7 @@ def display_price_chart(the_prices, suburb, the_names, the_dates):
     ax.set_title(f"Price Data for {suburb}")
     ax.legend()
     mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover(sel, the_prices, the_names, the_dates))
-    plt.show()
+    show_chart(fig)
 
 
 def display_keyword_results(results, column_names, keywords):
@@ -153,3 +146,21 @@ def display_cleanliness(result_number, suburb, label3):
 #
 #     mplcursors.cursor(ax, hover=True).connect('add', lambda sel: onHoverRatings(sel, theScore, theNames))
 #     plt.show()
+
+
+def show_chart(fig):
+    print('This chart is shown by tkinter')
+    chart = tk.Tk()
+    chart.title('Price Chart')
+    window_width = 932
+    window_height = 626
+    center_screen(chart, window_width, window_height)
+
+    frame = Frame(master=chart)
+    frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    canvas = FigureCanvasTkAgg(fig, master=frame)  # A tk.DrawingArea.
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    tk.mainloop()

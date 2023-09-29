@@ -29,3 +29,13 @@ def clear_search_query():
 # display error messages
 def display_error_message(error_message):
     print("display error message" + error_message)
+
+
+def center_screen(window, window_width, window_height):
+    """ gets the coordinates of the center of the screen """
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    # Coordinates of the upper left corner of the window to make the window appear in the center
+    x_cordinate = int((screen_width / 2) - (window_width / 2))
+    y_cordinate = int((screen_height / 2) - (window_height / 2))
+    window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))

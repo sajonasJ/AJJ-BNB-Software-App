@@ -4,6 +4,7 @@ import sys
 import tkinter as tk
 from tkinter import ttk
 import math
+from utils import *
 
 connection = sqlite3.connect("data.db")
 cursor = connection.cursor()
@@ -21,6 +22,7 @@ root.geometry('500x300')
 root.title('AJJ BNB')
 root_height = 626
 root_width = 932
+center_screen(root, root_width,root_height)
 
 global screen_height, screen_width, x_cordinate, y_cordinate
 
@@ -35,8 +37,6 @@ def center_screen():
     y_cordinate = int((screen_height / 2) - (root_height / 2))
     root.geometry("{}x{}+{}+{}".format(root_width, root_height, x_cordinate, y_cordinate))
 
-
-center_screen()
 
 root.grid_rowconfigure(0, weight=1, minsize=200)
 root.grid_columnconfigure(0, weight=1, minsize=250)
