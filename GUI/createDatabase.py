@@ -1,3 +1,5 @@
+# This file loads the csv files, read and output a database to be read by sqlite3
+
 import sqlite3
 import pandas as pd
 import sys

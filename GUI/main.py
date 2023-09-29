@@ -1,9 +1,9 @@
 import createDatabase
 import os
-from clean import *
+from constants import *
 from pathlib import Path
 from displays import *
-from get import *
+from getData import *
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
@@ -379,39 +379,6 @@ def show_canvas3():
     current_canvas = canvas_cleanliness
 
 
-def display_suburb_ratings_records(the_suburb, how_much_data):
-    results, column_names, suburb = get_suburb_ratings(the_suburb, how_much_data, 'Record')
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    new_window = Toplevel(window)
-    new_window.title(f"Listings for {suburb}")
-    new_window.geometry(f"{screen_width}x{screen_height - 100}")
-    tree = ttk.Treeview(new_window, columns=column_names, show='headings')
-    for index, value in enumerate(column_names):
-        tree.column(f"#{index + 1}", anchor=CENTER)
-        tree.heading(f"#{index + 1}", text=f"{value}")
-    for row in results:
-        tree.insert("", END, values=row)
-    scrollbar = ttk.Scrollbar(new_window, orient=VERTICAL, command=tree.yview)
-    scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
-    tree.configure(yscrollcommand=scrollbar.set)
-    x_scrollbar = ttk.Scrollbar(new_window, orient=HORIZONTAL, command=tree.xview)
-    x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
-    tree.configure(xscrollcommand=x_scrollbar.set)
-    tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
-
-
-def display_suburb_ratings_chart(suburb, how_much_data):
-    the_score, the_suburb, the_names = get_suburb_ratings(suburb, how_much_data, 'Chart')
-    fig, ax = plt.subplots(figsize=(5, 2.7))
-    ax.scatter(np.arange(len(the_score)), the_score, label='Rating')
-    ax.set_yticklabels([])
-    ax.set_title(f"Ratings over 75 for {the_suburb}")
-    ax.legend()
-    mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover_ratings(sel, the_score, the_names))
-    plt.show()
-
-
 def show_canvas6():
     print("canvas 6")
     canvas.pack_forget()
@@ -432,13 +399,13 @@ def show_canvas6():
     button_image_1 = PhotoImage(file=relative_to_assets("display_list.png"))
     window.negativenegative = button_image_1
     button_111 = Button(image=button_image_1, borderwidth=0, highlightthickness=0,
-                        command=lambda: display_suburb_ratings_records(city_select.get(), data_select.get()),
+                        command=lambda: get_suburb_ratings(city_select.get(), data_select.get(),'Record'),
                         relief="flat")
     button_111.place(x=284.0, y=536.0, width=218.0, height=39.0)
     button_image_2 = PhotoImage(file=relative_to_assets("display_chart.png"))
     window.negativenegativenegative = button_image_2
     button_2 = Button(image=button_image_2, borderwidth=0, highlightthickness=0,
-                      command=lambda: display_suburb_ratings_chart(city_select.get(), data_select.get()), relief="flat")
+                      command=lambda: get_suburb_ratings(city_select.get(), data_select.get(),'Chart'), relief="flat")
     button_2.place(x=626.0, y=536.0, width=218.0, height=39.0)
     image_image_1 = PhotoImage(file=relative_to_assets("display_listings_by_ratings.png"))
     window.two = image_image_1

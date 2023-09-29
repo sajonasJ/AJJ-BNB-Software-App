@@ -41,7 +41,7 @@ def display_suburb_listings(results, column_names, suburb):
     new_window.geometry(f"{initial_width}x{initial_height}")
 
     # Treeview Configuration
-    tree = ttk.Treeview(new_window, column=column_names, show='headings')
+    tree = ttk.Treeview(new_window, columns=column_names, show='headings')
     max_widths = [max(len(str(row[i])) for row in results) for i in range(len(column_names))]
     min_width = 50
     max_col_width = 200
@@ -83,7 +83,7 @@ def display_keyword_results(results, column_names, keywords):
     new_window.title(f"Listings for {keywords}")
     new_window.geometry(f"{screen_width}x{screen_height - 100}")
 
-    tree = ttk.Treeview(new_window, column=column_names, show='headings')
+    tree = ttk.Treeview(new_window, columns=column_names, show='headings')
     for index, value in enumerate(column_names):
         tree.column(f"#{index + 1}", anchor=CENTER)
         tree.heading(f"#{index + 1}", text=f"{value}")
@@ -104,48 +104,36 @@ def display_cleanliness(result_number, suburb, label3):
     print("display cleanliness")
     label3.config(text=f"The number of reviews that mention cleanliness in {suburb} is: {result_number}")
 
-# "Display by Ratings" button, "Display List" button
-# def displaySuburbRatingsRecords(results, columnNames, suburb):
-#     # results, columnNames, suburb = getSuburbRatings(theSuburb, howMuchData, 'Record')
-#
-#     screen_width = window.winfo_screenwidth()
-#     screen_height = window.winfo_screenheight()
-#     newWindow = Toplevel(window)
-#     newWindow.title(f"Listings for {suburb}")
-#     newWindow.geometry(f"{screen_width}x{screen_height - 100}")
-#
-#     tree = ttk.Treeview(newWindow, column=columnNames, show='headings')
-#     for index, value in enumerate(columnNames):
-#         tree.column(f"#{index + 1}", anchor=CENTER)
-#         tree.heading(f"#{index + 1}", text=f"{value}")
-#
-#     for row in results:
-#         tree.insert("", END, values=row)
-#
-#     scrollbar = ttk.Scrollbar(newWindow, orient=VERTICAL, command=tree.yview)
-#     scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
-#
-#     tree.configure(yscrollcommand=scrollbar.set)
-#
-#     x_scrollbar = ttk.Scrollbar(newWindow, orient=HORIZONTAL, command=tree.xview)
-#     x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
-#
-#     tree.configure(xscrollcommand=x_scrollbar.set)
-#
-#     tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
+
+def display_suburb_ratings_records(results, column_names, suburb):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    new_window = Toplevel(window)
+    new_window.title(f"Listings for {suburb}")
+    new_window.geometry(f"{screen_width}x{screen_height - 100}")
+    tree = ttk.Treeview(new_window, columns=column_names, show='headings')
+    for index, value in enumerate(column_names):
+        tree.column(f"#{index + 1}", anchor=CENTER)
+        tree.heading(f"#{index + 1}", text=f"{value}")
+    for row in results:
+        tree.insert("", END, values=row)
+    scrollbar = ttk.Scrollbar(new_window, orient=VERTICAL, command=tree.yview)
+    scrollbar.place(x=screen_width - 20, y=0, height=screen_height - 200)
+    tree.configure(yscrollcommand=scrollbar.set)
+    x_scrollbar = ttk.Scrollbar(new_window, orient=HORIZONTAL, command=tree.xview)
+    x_scrollbar.place(x=0, y=screen_height - 180, width=screen_width - 40)
+    tree.configure(xscrollcommand=x_scrollbar.set)
+    tree.place(x=10, y=10, width=screen_width - 40, height=screen_height - 200)
 
 
-# "Display by Ratings" button, "Display Chart" button
-# def displaySuburbRatingsChart(theScore, suburb, theNames):
-#     # theScore, theSuburb, theNames = getSuburbRatings(suburb, howMuchData, 'Chart')
-#     fig, ax = plt.subplots(figsize=(5, 2.7))
-#     ax.scatter(np.arange(len(theScore)), theScore, label='Rating')
-#     ax.set_yticklabels([])
-#     ax.set_title(f"Ratings over 75 for {suburb}")
-#     ax.legend()
-#
-#     mplcursors.cursor(ax, hover=True).connect('add', lambda sel: onHoverRatings(sel, theScore, theNames))
-#     plt.show()
+def display_suburb_ratings_chart(the_score, the_suburb, the_names):
+    fig, ax = plt.subplots(figsize=(5, 2.7))
+    ax.scatter(np.arange(len(the_score)), the_score, label='Rating')
+    ax.set_yticklabels([])
+    ax.set_title(f"Ratings over 75 for {the_suburb}")
+    ax.legend()
+    mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover_ratings(sel, the_score, the_names))
+    plt.show()
 
 
 def show_chart(fig):
