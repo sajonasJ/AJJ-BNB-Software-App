@@ -18,10 +18,10 @@ def make_window():
 
 window, window_height, window_width = make_window()
 
-
+global screen_height, screen_width, x_cordinate, y_cordinate
 def center_screen():
     """ gets the coordinates of the center of the screen """
-    global screen_height, screen_width, x_cordinate, y_cordinate
+
 
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()

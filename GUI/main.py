@@ -3,11 +3,10 @@
 # https://github.com/ParthJadhav/Tkinter-Designer
 import createDatabase
 import os
-from clean import cleanlinesskeywords
+from clean import *
 from pathlib import Path
 from displays import *
 from get import *
-
 
 
 # from tkinter import *
@@ -25,8 +24,6 @@ from tkcalendar import Calendar
 import numpy as np
 import mplcursors
 
-if not os.path.exists('data.db'):
-    createDatabase.create_database()
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
@@ -34,6 +31,7 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
+
 
 
 center_screen()
@@ -70,8 +68,8 @@ def show_canvas2():
     if current_canvas:
         current_canvas.pack_forget()
 
-    canvaslistsuburb=Canvas(window, bg="#E8E8E8", height=626, width=932, bd=0, highlightthickness=0, relief="ridge")
-    canvaslistsuburb.place(x = 0, y = 0)
+    canvaslistsuburb = Canvas(window, bg="#E8E8E8", height=626, width=932, bd=0, highlightthickness=0, relief="ridge")
+    canvaslistsuburb.place(x=0, y=0)
     canvaslistsuburb.update()  # Update the canvas before getting dimensions
     canvaslistsuburb.create_rectangle(228.0, 122.0, 899.0, 517.0, fill="#FFFFFF", outline="")
     canvaslistsuburb.create_rectangle(0.0, 0.0, 195.0, 626.0, fill="#32213A", outline="")
@@ -155,7 +153,7 @@ def show_canvas2():
 
     label.place(x=250, y=130)
 
-    cal = Calendar(window,selectmode = 'day', year = 2019, month = 1, day = 1, date_pattern='y-mm-dd')
+    cal = Calendar(window, selectmode='day', year=2019, month=1, day=1, date_pattern='y-mm-dd')
 
     window.fifty = cal
     cal.place(x=250, y=150)
@@ -165,7 +163,7 @@ def show_canvas2():
 
     endLabel.place(x=630, y=130)
 
-    calendarEnd = Calendar(window, selectmode = 'day', year = 2019, month = 1, day = 1, date_pattern='y-mm-dd')
+    calendarEnd = Calendar(window, selectmode ='day', year = 2019, month = 1, day = 1, date_pattern='y-mm-dd')
 
     window.fiftytwo = calendarEnd
     calendarEnd.place(x=630, y=150)
