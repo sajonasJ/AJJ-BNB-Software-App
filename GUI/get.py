@@ -15,8 +15,8 @@ def get_suburb_listings(start_date, end_date, suburb, how_much_data):
             cursor.execute(suburb_listing_shortquery, (dates[0], dates[1], suburb))
             results = cursor.fetchall()
 
-            print("Column names:", COLUMN_NAMES)
-            display_suburb_listings(results, COLUMN_NAMES, suburb)
+            print("Column names:", COLUMN_NAMES_SHORT)
+            display_suburb_listings(results, COLUMN_NAMES_SHORT, suburb)
 
         elif how_much_data == 'All':
             cursor.execute(suburb_listing_longquery, (dates[0], dates[1], suburb))
@@ -29,6 +29,7 @@ def get_suburb_listings(start_date, end_date, suburb, how_much_data):
 
 
 def get_price_chart_data(start_date, end_date, suburb):
+    """get price data and display chart"""
     dates = select_date(start_date, end_date)
     print('startDate=', dates[0], 'endDate=', dates[1])
     with sqlite3.connect('data.db') as connection:
@@ -48,49 +49,35 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
     cleaned_words = clean_user_input(key_words)
     dates = select_date(start_date, end_date)
     print('startDate=', dates[0], 'endDate=', dates[1])
+    with sqlite3.connect('data.db') as connection:
+        cursor = connection.cursor()
 
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
+        if how_much_data == 'Short':
+            like_conditions = " OR ".join([f"l.amenities LIKE ?" for _ in cleaned_words])
+            query = base_keyword_query.format(like_conditions)
+            params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleaned_words)
 
-    if how_much_data == 'Short':
-        column_names = ['id', 'listing_url', 'name', 'description', 'transit', 'street', 'neighbourhood', 'city',
-                        'state', 'zipcode', 'accommodates', 'bathrooms', 'bedrooms', 'amenities', 'price',
-                        'review_scores_rating', 'cancellation_policy']
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            print("Column names:", COLUMN_NAMES_SHORT)
+            display_keyword_results(results, COLUMN_NAMES_SHORT, key_words)
 
-        query = "SELECT DISTINCT l.id,l.listing_url,l.name,l.description,l.transit,l.street,l.neighbourhood,l.city," \
-                "l.state,l.zipcode,l.accommodates,l.bathrooms,l.bedrooms,l.amenities,l.price,l.review_scores_rating," \
-                "l.cancellation_policy FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE " \
-                "c.date BETWEEN ? AND ? AND ("
-        query += " OR ".join(["l.amenities LIKE ?" for _ in cleaned_words])
-        query += ") ORDER BY l.id"
-        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleaned_words)
-        cursor.execute(query, params)
+        elif how_much_data == 'All':
+            like_conditions = " OR ".join([f"l.amenities LIKE ?" for _ in cleaned_words])
+            query = base_keyword_query.format(like_conditions)
+            params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleaned_words)
 
-        results = cursor.fetchall()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
 
-        # Print the column names
-        print("Column names:", column_names)
+            cursor.execute(f"PRAGMA table_info(listingsDec)")
+            columns_info = cursor.fetchall()
+            column_names = [col[1] for col in columns_info]
 
-        display_keyword_results(results, column_names, key_words)
+            print("Column names:", column_names)
+            display_keyword_results(results, column_names, key_words)
 
-    elif how_much_data == 'All':
-        query = "SELECT DISTINCT l.* FROM listingsDec l INNER JOIN calendarDec c ON c.listing_id = l.id WHERE c.date " \
-                "BETWEEN ? AND ? AND ("
-        query += " OR ".join(["l.amenities LIKE ?" for _ in cleaned_words])
-        query += ") ORDER BY l.id"
-        params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleaned_words)
-        cursor.execute(query, params)
 
-        results = cursor.fetchall()
-
-        cursor.execute(f"PRAGMA table_info(listingsDec)")
-        columns_info = cursor.fetchall()
-
-        column_names = [col[1] for col in columns_info]
-        display_keyword_results(results, column_names, key_words)
-        print("Column names:", column_names)
-
-    connection.close()
 
 
 # get the cleanliness data for the displayCleanliness()

@@ -31,16 +31,15 @@ def relative_to_assets(path: str) -> Path:
 center_screen()
 photo_images = {}
 current_canvas = None
-connection = sqlite3.connect('data.db')
-cursor = connection.cursor()
-query = "SELECT DISTINCT city FROM listingsDec"
-cursor.execute(query)
-results = cursor.fetchall()
 
-cityArray = []
-for row in results:
-    cityArray.append(row[0])
-connection.close()
+with sqlite3.connect('data.db') as connection:
+    cursor = connection.cursor()
+    cursor.execute(city_query)
+    results = cursor.fetchall()
+    cityArray = []
+    for row in results:
+        cityArray.append(row[0])
+
 
 
 def show_canvas2():
@@ -53,7 +52,7 @@ def show_canvas2():
 
     canvas_list_suburb = Canvas(window, bg="#E8E8E8", height=626, width=932, bd=0, highlightthickness=0, relief="ridge")
     canvas_list_suburb.place(x=0, y=0)
-    canvas_list_suburb.update()  # Update the canvas before getting dimensions
+    canvas_list_suburb.update()
     canvas_list_suburb.create_rectangle(228.0, 122.0, 899.0, 517.0, fill="#FFFFFF", outline="")
     canvas_list_suburb.create_rectangle(0.0, 0.0, 195.0, 626.0, fill="#32213A", outline="")
     canvas_list_suburb.create_text(56.0, 36.0, anchor="nw", text="AJJ", fill="#FFFFFF", font=("Inter Bold", 40 * -1))
