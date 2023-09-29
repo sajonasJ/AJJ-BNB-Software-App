@@ -41,6 +41,7 @@ with sqlite3.connect('data.db') as connection:
 
 
 def show_canvas2():
+    """Show Display listings for suburb interface"""
     print('canvas 2')
     canvas.pack_forget()
     global current_canvas
@@ -57,7 +58,7 @@ def show_canvas2():
     image_image_6 = PhotoImage(file=relative_to_assets("home.png"))
     window.one = image_image_6
     # Create and place the image on canvas_list_suburb
-    image_6 = canvas_list_suburb.create_image(96.0, 145.0, image=image_image_6)
+    canvas_list_suburb.create_image(96.0, 145.0, image=image_image_6)
     button_image_1 = PhotoImage(file=relative_to_assets("display.png"))
     window.negative = button_image_1
     button_1 = Button(image=button_image_1, borderwidth=0, highlightthickness=0,
@@ -66,7 +67,7 @@ def show_canvas2():
     button_1.place(x=454.0, y=536.0, width=218.0, height=39.0)
     image_image_7 = PhotoImage(file=relative_to_assets("display_listings_for_suburb_img.png"))
     window.two = image_image_7
-    image_7 = canvas_list_suburb.create_image(564.0, 70.0, image=image_image_7)
+    canvas_list_suburb.create_image(564.0, 70.0, image=image_image_7)
     label55 = Label(window, text="How Many Columns?")
     window.aaaaaeeeeeeea = label55
     label55.place(x=250, y=350)
@@ -130,7 +131,8 @@ def show_canvas2():
 
 
 def show_canvas4():
-    print("canvas4")
+    """Show Display Price Distribution interface"""
+    print("canvas 4")
     canvas.pack_forget()
     global current_canvas
 
@@ -147,7 +149,7 @@ def show_canvas4():
     image_image_6 = PhotoImage(file=relative_to_assets("home.png"))
     window.one = image_image_6
     # Create and place the image on canvasPriceListings
-    image_6 = canvas_price_listings.create_image(96.0, 145.0, image=image_image_6)
+    canvas_price_listings.create_image(96.0, 145.0, image=image_image_6)
     button_image_1 = PhotoImage(file=relative_to_assets("display.png"))
     window.negative = button_image_1
     button_1 = Button(image=button_image_1, borderwidth=0, highlightthickness=0,
@@ -159,7 +161,7 @@ def show_canvas4():
 
     image_image_1 = PhotoImage(file=relative_to_assets("display_price_distribution.png"))
     window.two = image_image_1
-    image_1 = canvas_price_listings.create_image(564.0, 70.0, image=image_image_1)
+    canvas_price_listings.create_image(564.0, 70.0, image=image_image_1)
 
     button_image_1 = PhotoImage(file=relative_to_assets("display_by_ratings.png"))
     window.six = button_image_1
@@ -216,8 +218,8 @@ def show_canvas4():
     current_canvas = canvas_price_listings
 
 
-# Display search records function (Search button)
 def show_canvas5():
+    """Display Search Records Interface"""
     print("canvas5")
     canvas.pack_forget()
     global current_canvas
@@ -234,7 +236,7 @@ def show_canvas5():
     image_image_6 = PhotoImage(file=relative_to_assets("home.png"))
     window.one = image_image_6
 
-    image_6 = canvas_search.create_image(96.0, 145.0, image=image_image_6)
+    canvas_search.create_image(96.0, 145.0, image=image_image_6)
     button_image_1 = PhotoImage(file=relative_to_assets("display.png"))
     window.negative = button_image_1
     button_1 = Button(image=button_image_1, borderwidth=0, highlightthickness=0,
@@ -243,7 +245,7 @@ def show_canvas5():
     button_1.place(x=454.0, y=536.0, width=218.0, height=39.0)
     image_image_1 = PhotoImage(file=relative_to_assets("Display_Search_Records.png"))
     window.two = image_image_1
-    image_1 = canvas_search.create_image(564.0, 70.0, image=image_image_1)
+    canvas_search.create_image(564.0, 70.0, image=image_image_1)
     labelf = Label(window, text="Enter Keywords separated by comma")
     window.sixtyt = labelf
     labelf.place(x=462, y=425)
@@ -308,6 +310,7 @@ def show_canvas5():
 
 
 def show_canvas3():
+    """Display Chart by Cleanliness Interface"""
     print('canvas 3')
     canvas.pack_forget()
     global current_canvas
@@ -380,6 +383,7 @@ def show_canvas3():
 
 
 def show_canvas6():
+    """Display Listings by Ratings Interface"""
     print("canvas 6")
     canvas.pack_forget()
     global current_canvas
@@ -399,17 +403,17 @@ def show_canvas6():
     button_image_1 = PhotoImage(file=relative_to_assets("display_list.png"))
     window.negativenegative = button_image_1
     button_111 = Button(image=button_image_1, borderwidth=0, highlightthickness=0,
-                        command=lambda: get_suburb_ratings(city_select.get(), data_select.get(),'Record'),
+                        command=lambda: get_suburb_ratings(city_select.get(), data_select.get(), 'Record'),
                         relief="flat")
     button_111.place(x=284.0, y=536.0, width=218.0, height=39.0)
     button_image_2 = PhotoImage(file=relative_to_assets("display_chart.png"))
     window.negativenegativenegative = button_image_2
     button_2 = Button(image=button_image_2, borderwidth=0, highlightthickness=0,
-                      command=lambda: get_suburb_ratings(city_select.get(), data_select.get(),'Chart'), relief="flat")
+                      command=lambda: get_suburb_ratings(city_select.get(), data_select.get(), 'Chart'), relief="flat")
     button_2.place(x=626.0, y=536.0, width=218.0, height=39.0)
     image_image_1 = PhotoImage(file=relative_to_assets("display_listings_by_ratings.png"))
     window.two = image_image_1
-    image_1 = canvas_listings_by_ratings.create_image(564.0, 70.0, image=image_image_1)
+    canvas_listings_by_ratings.create_image(564.0, 70.0, image=image_image_1)
     canvas_listings_by_ratings.create_text(56.0, 36.0, anchor="nw", text="AJJ", fill="#FFFFFF",
                                            font=("Inter Bold", 40 * -1))
     label55 = Label(window, text="How Many Columns?")
@@ -462,6 +466,7 @@ def show_canvas6():
     current_canvas = canvas_listings_by_ratings
 
 
+# Landing Canvass
 canvas = Canvas(window, bg="#E8E8E8", height=626, width=932, bd=0, highlightthickness=0, relief="ridge")
 canvas.place(x=0, y=0)
 image_image_1 = PhotoImage(file=relative_to_assets("welcome_img.png"))

@@ -1,5 +1,9 @@
 # This file is used for constant's storage
 
+MAX_WIDTH = 1200
+MAX_HEIGHT = 800
+MIN_WIDTH = 50
+MAX_COL_WIDTH = 200
 
 # List of keywords for cleanliness
 CLEANLINESS_KEYWORDS = ['dirty', 'clean', 'cleanliness', 'disgusting', 'disgust', 'mold', 'neat', 'filthy',
@@ -79,6 +83,15 @@ BASE_KEYWORD_QUERY = """
         l.state, l.zipcode, l.accommodates, l.bathrooms, 
         l.bedrooms, l.amenities, l.price, l.review_scores_rating, 
         l.cancellation_policy 
+    FROM listingsDec l 
+    INNER JOIN calendarDec c ON c.listing_id = l.id 
+    WHERE c.date BETWEEN ? AND ? AND ({})
+    ORDER BY l.id """
+
+
+# query for get_keyword_results
+LONG_KEYWORD_QUERY = """
+    SELECT DISTINCT l.*
     FROM listingsDec l 
     INNER JOIN calendarDec c ON c.listing_id = l.id 
     WHERE c.date BETWEEN ? AND ? AND ({})

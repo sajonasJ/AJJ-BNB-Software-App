@@ -71,7 +71,7 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
         elif how_much_data == 'All':
             # All columns
             like_conditions = " OR ".join([f"l.amenities LIKE ?" for _ in cleaned_words])
-            query = BASE_KEYWORD_QUERY.format(like_conditions)
+            query = LONG_KEYWORD_QUERY.format(like_conditions)
             params = (dates[0], dates[1]) + tuple(f"%{word}%" for word in cleaned_words)
 
             cursor.execute(query, params)
@@ -128,7 +128,7 @@ def get_suburb_ratings(suburb, how_much_data, data_type):
                 columns_info = cursor.execute("PRAGMA table_info(listingsDec)").fetchall()
                 column_names = [col[1] for col in columns_info]
                 print("Column names:", column_names)
-                display_suburb_ratings_records(results,column_names, suburb)
+                display_suburb_ratings_records(results, column_names, suburb)
 
         elif data_type == 'Chart':
             # display the data in a chart
@@ -136,5 +136,4 @@ def get_suburb_ratings(suburb, how_much_data, data_type):
             results = cursor.fetchall()
             the_score = [row[1] for row in results]
             the_names = [row[0] for row in results]
-            display_suburb_ratings_chart(the_score, suburb, the_names )
-
+            display_suburb_ratings_chart(the_score, suburb, the_names)
