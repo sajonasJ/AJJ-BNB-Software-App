@@ -6,8 +6,9 @@ from utils import *
 from constants import *
 
 
-def get_suburb_listings(start_date, end_date, suburb, how_much_data):
+def get_suburb_listings( start_date, end_date, suburb, how_much_data):
     """retrieves the suburb listings using date and queries"""
+    print('get suburb listings')
     dates = select_date(start_date, end_date)
     print('start Date=', dates[0], 'end Date=', dates[1], 'suburb=', suburb)
     with sqlite3.connect('data.db') as connection:
@@ -17,9 +18,8 @@ def get_suburb_listings(start_date, end_date, suburb, how_much_data):
             # preselected columns
             cursor.execute(SUBURB_LISTING_SHORTQUERY, (dates[0], dates[1], suburb))
             results = cursor.fetchall()
-
             print("Column names:", COLUMN_NAMES_SHORT)
-            display_suburb_listings(results, COLUMN_NAMES_SHORT, suburb)
+            display_suburb_listings( results, COLUMN_NAMES_SHORT, suburb)
 
         elif how_much_data == 'All':
             # all columns
@@ -29,11 +29,13 @@ def get_suburb_listings(start_date, end_date, suburb, how_much_data):
             columns_info = cursor.fetchall()
             column_names = [col[1] for col in columns_info]
             print("Column names:", column_names)
-            display_suburb_listings(results, column_names, suburb)
+            display_suburb_listings( results, column_names, suburb)
 
 
 def get_price_chart_data(start_date, end_date, suburb):
     """get price data and display chart"""
+    print('get price chart data')
+
     dates = select_date(start_date, end_date)
     print('startDate=', dates[0], 'endDate=', dates[1])
     with sqlite3.connect('data.db') as connection:
@@ -51,6 +53,8 @@ def get_price_chart_data(start_date, end_date, suburb):
 
 def get_keyword_results(start_date, end_date, key_words, how_much_data):
     """Display the results of Search Bar"""
+    print('get keyword results')
+
     cleaned_words = clean_user_input(key_words)
     dates = select_date(start_date, end_date)
     print('startDate=', dates[0], 'endDate=', dates[1])
@@ -87,6 +91,8 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
 
 def get_cleanliness_data(keywords, suburb, label3):
     """ get the cleanliness data for the displayCleanliness() """
+    print('get cleanliness')
+
     with sqlite3.connect('data.db') as connection:
         cursor = connection.cursor()
 
@@ -105,6 +111,8 @@ def get_cleanliness_data(keywords, suburb, label3):
 
 def get_suburb_ratings(suburb, how_much_data, data_type):
     """ get suburb ratings data"""
+    print('get suburb ratings')
+
     print(how_much_data)
     print("get suburb ratings" + suburb)
     with sqlite3.connect('data.db') as connection:

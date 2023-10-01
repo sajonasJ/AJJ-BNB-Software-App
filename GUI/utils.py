@@ -124,3 +124,5 @@ def show_chart(fig, title):
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     tk.mainloop()
+
+

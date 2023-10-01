@@ -1,19 +1,17 @@
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, \
-    HORIZONTAL, BOTH, END, TOP
-from tkinter import ttk
-import tkinter as tk
 import matplotlib.pyplot as plt
 import mplcursors
 import numpy as np
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from utils import *
 from constants import *
 
 
-window = make_window()
+def initial_window():
+    global window
+    window = make_window()
+    return window
 
 
-def display_suburb_listings(results, column_names, suburb):
+def display_suburb_listings( results, column_names, suburb):
     """displays the suburb listings"""
     initial_width = min(window.winfo_screenwidth(), MAX_WIDTH)
     initial_height = min(window.winfo_screenheight() - 100, MAX_HEIGHT)
@@ -34,7 +32,7 @@ def display_price_chart(the_prices, suburb, the_names, the_dates):
     show_chart(fig, f"Price Data for {suburb}")
 
 
-def display_keyword_results(results, column_names, keywords):
+def display_keyword_results( results, column_names, keywords):
     """displays the search for keywords"""
     initial_width = min(window.winfo_screenwidth(), MAX_WIDTH)
     initial_height = min(window.winfo_screenheight() - 100, MAX_HEIGHT)
@@ -50,7 +48,7 @@ def display_cleanliness(result_number, suburb, label3):
     label3.config(text=f"The number of reviews that mention cleanliness in {suburb} is: {result_number}")
 
 
-def display_suburb_ratings_records(results, column_names, suburb):
+def display_suburb_ratings_records( results, column_names, suburb):
     """displays the suburb ratings in a table"""
     initial_width = min(window.winfo_screenwidth(), MAX_WIDTH)
     initial_height = min(window.winfo_screenheight() - 100, MAX_HEIGHT)

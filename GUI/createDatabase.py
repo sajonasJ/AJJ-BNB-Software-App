@@ -2,146 +2,144 @@
 
 import sqlite3
 import pandas as pd
-import sys
-import tkinter as tk
-from tkinter import ttk
-import math
 from utils import *
 
-with sqlite3.connect('data.db') as connection:
-    cursor = connection.cursor()
 
-    cursor.execute("CREATE TABLE IF NOT EXISTS reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS calendarDec(listing_id,date,available,price)")
+def run_create_db():
+    with sqlite3.connect('data.db') as connection:
+        cursor = connection.cursor()
 
-    # create window
-    root = tk.Tk()
-    root.geometry('500x300')
-    root.title('AJJ BNB')
-    root_height, root_width = 626, 932
-    center_screen(root, root_width, root_height)
-    # grid config
-    root.grid_rowconfigure(0, weight=1, minsize=200)
-    root.grid_columnconfigure(0, weight=1, minsize=250)
-    root.grid_columnconfigure(1, weight=1, minsize=250)
+        cursor.execute("CREATE TABLE IF NOT EXISTS reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS calendarDec(listing_id,date,available,price)")
 
-    # start button
-    start_button = ttk.Button(root, text='Get Data', command=lambda: get_data())
-    start_button.grid(column=0, row=1, padx=10, pady=10, sticky=tk.E)
+        # create window
+        root = tk.Tk()
+        root.geometry('500x300')
+        root.title('AJJ BNB')
+        root_height, root_width = 626, 932
+        center_screen(root, root_width, root_height)
+        # grid config
+        root.grid_rowconfigure(0, weight=1, minsize=200)
+        root.grid_columnconfigure(0, weight=1, minsize=250)
+        root.grid_columnconfigure(1, weight=1, minsize=250)
 
-    # stop button
-    stop_button = ttk.Button(root, text='Close', command=lambda: close())
-    stop_button.grid(column=1, row=1, padx=10, pady=10, sticky=tk.W)
+        # start button
+        start_button = ttk.Button(root, text='Get Data', command=lambda: get_data())
+        start_button.grid(column=0, row=1, padx=10, pady=10, sticky=tk.E)
 
-    output_text = tk.Text(root, height=30, width=90)
-    output_text.grid(row=0, column=0, columnspan=3)
-    output_text.insert(tk.END, "If data.db exists in the directory please close this window\n")
+        # stop button
+        stop_button = ttk.Button(root, text='Close', command=lambda: close())
+        stop_button.grid(column=1, row=1, padx=10, pady=10, sticky=tk.W)
 
-
-    def get_the_data():
-        """function to start getting the data using pandas and convert them to sqlite3"""
-        count = 0
-        output_text.insert(tk.END, "Creating Database...\n")
-        output_text.insert(tk.END, "Please wait...\n")
-        root.update_idletasks()  # updating the Text widget immediately Simulating some delay in database creation
-
-        df_listings = pd.read_csv('../bnb_data/listings_dec18.csv', low_memory=False)
-        df_reviews = pd.read_csv('../bnb_data/reviews_dec18.csv', low_memory=False)
-        df_calendar = pd.read_csv('../bnb_data/calendar_dec18.csv', low_memory=False)
-
-        # the total number of records in each dataframe
-        num_records_listings = df_listings.shape[0]
-        num_records_reviews = df_reviews.shape[0]
-        num_records_calendar = df_calendar.shape[0]
-
-        print(num_records_calendar)
-        total_records = num_records_listings + num_records_reviews + num_records_calendar
-
-        columns = df_listings.columns.tolist()
-
-        create_table_statement = "CREATE TABLE IF NOT EXISTS listingsDec ({})".format(','.join(columns))
-        cursor.execute(create_table_statement)
-        print(columns)
-
-        for row in df_listings.itertuples():
-            values = tuple(getattr(row, col) for col in columns)
-
-            cursor.execute('''INSERT INTO listingsDec ({})VALUES ({})'''.format(','.join(columns), ','
-                                                                                .join(['?'] * len(columns))), values)
-            count += 1
-
-            if 0.2 * total_records == count:
-                print("20% done.\n")
-            elif 0.4 * total_records == count:
-                print("40% done.\n")
-            elif 0.6 * total_records == count:
-                print("60% done.\n")
-            elif 0.8 * total_records == count:
-                print("80% done.\n")
-            elif total_records == count:
-                print("100% done!\n")
-        connection.commit()
-
-        for row in df_reviews.itertuples():
-            # Add this line to see the structure of row
-            values = (row.listing_id, row.id, row.date, row.reviewer_id, row.reviewer_name, row.comments)
-            # print("reviews", values)
-            cursor.execute('''INSERT INTO reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)
-                        VALUES (?,?,?,?,?,?)''', values)
-            count += 1
-
-            if 0.2 * total_records == count:
-                print("20% done.\n")
-            elif 0.4 * total_records == count:
-                print("40% done.\n")
-            elif 0.6 * total_records == count:
-                print("60% done.\n")
-            elif 0.8 * total_records == count:
-                print("80% done.\n")
-            elif total_records == count:
-                print("100% done!\n")
-        connection.commit()
-
-        for row in df_calendar.itertuples():
-            # Add this line to see the structure of row
-            values = (row.listing_id, row.date, row.available, row.price)
-            # print("calendar", values)
-            cursor.execute('''INSERT INTO calendarDec(listing_id,date,available,price)VALUES (?,?,?,?)''', values)
-            count += 1
-            if 0.2 * total_records == count:
-                output_text.insert(tk.END, "Total Records 20% done.\n")
-                root.update_idletasks()  # Refresh the Tkinter window
-                print("20% done.\n")
-            elif 0.4 * total_records == count:
-                output_text.insert(tk.END, "Total Records 40% done.\n")
-                root.update_idletasks()  # Refresh the Tkinter window
-                print("40% done.\n")
-            elif 0.6 * total_records == count:
-                output_text.insert(tk.END, "Total Records 60% done.\n")
-                root.update_idletasks()  # Refresh the Tkinter window
-                print("60% done.\n")
-            elif 0.8 * total_records == count:
-                output_text.insert(tk.END, "Total Records 80% done.\n")
-                root.update_idletasks()  # Refresh the Tkinter window
-                print("80% done.\n")
-            elif total_records == count:
-                output_text.insert(tk.END, "Total Records 100% done.\n")
-                root.update_idletasks()  # Refresh the Tkinter window
-                print("100% done!\n")
-                output_text.insert(tk.END, "Database Created Successfully!\n")
-                output_text.insert(tk.END, "You can now close this window.\n")
-        connection.commit()
+        output_text = tk.Text(root, height=30, width=90)
+        output_text.grid(row=0, column=0, columnspan=3)
+        output_text.insert(tk.END, "If data.db exists in the directory please close this window\n")
 
 
-    def get_data():
-        """func to get the data"""
-        get_the_data()
+        def get_the_data():
+            """function to start getting the data using pandas and convert them to sqlite3"""
+            count = 0
+            output_text.insert(tk.END, "Creating Database...\n")
+            output_text.insert(tk.END, "Please wait...\n")
+            root.update_idletasks()  # updating the Text widget immediately Simulating some delay in database creation
+
+            df_listings = pd.read_csv('../bnb_data/listings_dec18.csv', low_memory=False)
+            df_reviews = pd.read_csv('../bnb_data/reviews_dec18.csv', low_memory=False)
+            df_calendar = pd.read_csv('../bnb_data/calendar_dec18.csv', low_memory=False)
+
+            # the total number of records in each dataframe
+            num_records_listings = df_listings.shape[0]
+            num_records_reviews = df_reviews.shape[0]
+            num_records_calendar = df_calendar.shape[0]
+
+            print(num_records_calendar)
+            total_records = num_records_listings + num_records_reviews + num_records_calendar
+
+            columns = df_listings.columns.tolist()
+
+            create_table_statement = "CREATE TABLE IF NOT EXISTS listingsDec ({})".format(','.join(columns))
+            cursor.execute(create_table_statement)
+            print(columns)
+
+            for row in df_listings.itertuples():
+                values = tuple(getattr(row, col) for col in columns)
+
+                cursor.execute('''INSERT INTO listingsDec ({})VALUES ({})'''.format(','.join(columns), ','
+                                                                                    .join(['?'] * len(columns))), values)
+                count += 1
+
+                if 0.2 * total_records == count:
+                    print("20% done.\n")
+                elif 0.4 * total_records == count:
+                    print("40% done.\n")
+                elif 0.6 * total_records == count:
+                    print("60% done.\n")
+                elif 0.8 * total_records == count:
+                    print("80% done.\n")
+                elif total_records == count:
+                    print("100% done!\n")
+            connection.commit()
+
+            for row in df_reviews.itertuples():
+                # Add this line to see the structure of row
+                values = (row.listing_id, row.id, row.date, row.reviewer_id, row.reviewer_name, row.comments)
+                # print("reviews", values)
+                cursor.execute('''INSERT INTO reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)
+                            VALUES (?,?,?,?,?,?)''', values)
+                count += 1
+
+                if 0.2 * total_records == count:
+                    print("20% done.\n")
+                elif 0.4 * total_records == count:
+                    print("40% done.\n")
+                elif 0.6 * total_records == count:
+                    print("60% done.\n")
+                elif 0.8 * total_records == count:
+                    print("80% done.\n")
+                elif total_records == count:
+                    print("100% done!\n")
+            connection.commit()
+
+            for row in df_calendar.itertuples():
+                # Add this line to see the structure of row
+                values = (row.listing_id, row.date, row.available, row.price)
+                # print("calendar", values)
+                cursor.execute('''INSERT INTO calendarDec(listing_id,date,available,price)VALUES (?,?,?,?)''', values)
+                count += 1
+                if 0.2 * total_records == count:
+                    output_text.insert(tk.END, "Total Records 20% done.\n")
+                    root.update_idletasks()  # Refresh the Tkinter window
+                    print("20% done.\n")
+                elif 0.4 * total_records == count:
+                    output_text.insert(tk.END, "Total Records 40% done.\n")
+                    root.update_idletasks()  # Refresh the Tkinter window
+                    print("40% done.\n")
+                elif 0.6 * total_records == count:
+                    output_text.insert(tk.END, "Total Records 60% done.\n")
+                    root.update_idletasks()  # Refresh the Tkinter window
+                    print("60% done.\n")
+                elif 0.8 * total_records == count:
+                    output_text.insert(tk.END, "Total Records 80% done.\n")
+                    root.update_idletasks()  # Refresh the Tkinter window
+                    print("80% done.\n")
+                elif total_records == count:
+                    output_text.insert(tk.END, "Total Records 100% done.\n")
+                    root.update_idletasks()  # Refresh the Tkinter window
+                    print("100% done!\n")
+                    output_text.insert(tk.END, "Database Created Successfully!\n")
+                    output_text.insert(tk.END, "You can now close this window.\n")
+            connection.commit()
 
 
-    def close():
-        """funct to close the window"""
-        root.destroy()
+        def get_data():
+            """func to get the data"""
+            get_the_data()
 
 
-    root.resizable(False, False)  # does not allow the window to resize
-    root.mainloop()
+        def close():
+            """funct to close the window"""
+            root.destroy()
+
+
+        root.resizable(False, False)  # does not allow the window to resize
+        root.mainloop()
