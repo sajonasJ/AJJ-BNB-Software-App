@@ -157,9 +157,11 @@ def test_get_data(mock_tk, mock_text, mock_get_data):
     mock_tk.update_idletasks.assert_called_once()
     mock_get_data.assert_called_once()  # add appropriate arguments
 
-@patch('tkinter.Tk')
-@patch('createDatabase.close')
-def test_close(mock_close,mock_tk):
+#@patch('tkinter.Tk')
+#@patch('createDatabase.close')
+def test_close():
+    mock = MagicMock()
+    '''
     # Setup
     mock_tk_instance = mock_tk.return_value
     mock_tk.return_value = mock_tk_instance  # Make sure that your mock Tk is being returned when Tk() is called
@@ -170,7 +172,11 @@ def test_close(mock_close,mock_tk):
     # Assert
     mock_tk.destroy.assert_called_once()
     mock_tk_instance.destroy.assert_called_once()
-
+    '''
+    db.close(mock)
+    mock.destroy.assert_called_once()
+    
+    
 @patch('createDatabase.get_data')
 @patch('createDatabase.close')
 @patch('tkinter.Tk')
@@ -183,12 +189,21 @@ def test_show_app(mock_tk, mock_close, mock_get_data):
 
 class TestYourModule(TestCase):
     @mock.patch('createDatabase.sqlite3.connect')
-    @mock.patch('createDatabase.open_window')
-    def test_run_create_db(self, mock_open_window, mock_connect):
+    #@mock.patch('createDatabase.open_window')
+    def test_run_create_db(self, mock_connect):
+        mock = MagicMock()
+        '''
+    with sqlite3.connect('data.db') as connection:
+    cursor = connection.cursor()
+    cursor.execute("CREATE TABLE IF NOT EXISTS reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS calendarDec(listing_id,date,available,price)")
+    show_app(cursor, connection
+        '''
         # Set up the mock objects
-        mock_connection = mock_connect.return_value.__enter__.return_value
-        mock_cursor = mock_connection.cursor.return_value
+        #mock_connection = mock_connect.return_value.__enter__.return_value
+        #mock_cursor = mock_connection.cursor.return_value
 
+        mock_connect.return_value = mock
         # Call the function
         db.run_create_db()
 
