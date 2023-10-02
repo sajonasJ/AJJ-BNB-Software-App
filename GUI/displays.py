@@ -8,6 +8,7 @@ from constants import *
 def initial_window():
     global window
     window = make_window()
+    print('initial window Created')
     return window
 
 

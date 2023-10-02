@@ -1,17 +1,19 @@
-from getData import *
-from widgets import *
+from getData import get_suburb_ratings,get_cleanliness_data,get_price_chart_data,get_keyword_results,get_suburb_listings
+from widgets import load_images, create_button, create_canvas
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, \
     HORIZONTAL, BOTH, END, TOP
 from tkinter import ttk
 import sqlite3
 from tkcalendar import Calendar
-import createDatabase
-
+from createDatabase import run_create_db
+from displays import initial_window
+from constants import *
 
 def main():
     global current_canvas
     current_canvas = None
     window = initial_window()
+    print('main Created')
     img = load_images()
 
     with sqlite3.connect('data.db') as connection:
@@ -35,7 +37,7 @@ def main():
         canvas_list_suburb.update()
 
         canvas_list_suburb.create_image(564.0, 70.0, image=img['display_list_img'])
-        label55 = Label(window, text="How Many Columns?")
+        label55 = Label(window, text="How Many Columns?", bg="white")
         label55.place(x=250, y=350)
 
         n = StringVar()
@@ -44,18 +46,18 @@ def main():
         data_select.set('Short')
 
         data_select.place(x=250, y=378)
-        label2 = Label(window, text="Pick A Suburb")
+        label2 = Label(window, text="Pick A Suburb", bg="white")
         label2.place(x=532, y=350)
         n = StringVar()
         city_select = ttk.Combobox(window, width=27, height=13, textvariable=n,state='readonly')
         city_select['values'] = city_array
         city_select.place(x=472, y=378)
 
-        label = Label(window, text="Start date")
+        label = Label(window, text="Start date", bg="white")
         label.place(x=250, y=130)
         cal = Calendar(window, selectmode='day', year=2019, month=1, day=1, date_pattern='y-mm-dd')
         cal.place(x=250, y=150)
-        end_label = Label(window, text="End date")
+        end_label = Label(window, text="End date", bg="white")
         end_label.place(x=630, y=130)
         calendar_end = Calendar(window, selectmode='day', year=2019, month=1, day=1, date_pattern='y-mm-dd')
         calendar_end.place(x=630, y=150)
@@ -81,18 +83,18 @@ def main():
         canvas_price_listings.update()  # Update the canvas before getting dimensions
         canvas_price_listings.create_image(564.0, 70.0, image=img['display_records'])
 
-        label2 = Label(window, text="Pick A Suburb")
+        label2 = Label(window, text="Pick A Suburb", bg="white")
         label2.place(x=532, y=350)
 
         n = StringVar()
         city_select = ttk.Combobox(window, width=27, height=13, textvariable=n, state='readonly')
         city_select['values'] = city_array
         city_select.place(x=472, y=378)
-        label = Label(window, text="Start date")
+        label = Label(window, text="Start date", bg="white")
         label.place(x=250, y=130)
         cal = Calendar(window, selectmode='day', year=2019, month=1, day=1, date_pattern='y-mm-dd')
         cal.place(x=250, y=150)
-        end_label = Label(window, text="End date")
+        end_label = Label(window, text="End date", bg="white")
         end_label.place(x=630, y=130)
         calendar_end = Calendar(window, selectmode='day', year=2019, month=1, day=1, date_pattern='y-mm-dd')
         calendar_end.place(x=630, y=150)
@@ -117,13 +119,14 @@ def main():
         canvas_search = create_canvas(window, show_suburb, show_cleanliness, show_price, show_search, show_listings)
         canvas_search.update()  # Update the canvas before getting dimensions
         canvas_search.create_image(564.0, 70.0, image=img['display_records'])
-        labelf = Label(window, text="Enter Keywords separated by comma")
+
+        labelf = Label(window, text="Enter Keywords separated by comma", bg="white")
         labelf.place(x=462, y=425)
 
-        canvas_search.create_image(563.5, 474.5, image=img['entry_image_1'])
-        entry_1 = Entry(bd=0, bg="#E8E8E8", fg="#000716", highlightthickness=0)
+        entry_1 = Entry(bd=1, bg="white", fg="#000716", highlightthickness=0)
         entry_1.place(x=446.0, y=455.0, width=235.0, height=37.0)
-        label55 = Label(window, text="How Many Columns?")
+
+        label55 = Label(window, text="How Many Columns?", bg="white")
         label55.place(x=250, y=350)
 
         n = StringVar()
@@ -132,11 +135,11 @@ def main():
         data_select.set('Short')
 
         data_select.place(x=250, y=378)
-        label = Label(window, text="Start date")
+        label = Label(window, text="Start date", bg="white")
         label.place(x=250, y=130)
         cal = Calendar(window, selectmode='day', year=2019, month=1, day=1, date_pattern='y-mm-dd')
         cal.place(x=250, y=150)
-        end_label = Label(window, text="End date")
+        end_label = Label(window, text="End date", bg="white")
         end_label.place(x=630, y=130)
         calendar_end = Calendar(window, selectmode='day', year=2019, month=1, day=1, date_pattern='y-mm-dd')
         calendar_end.place(x=630, y=150)
@@ -164,7 +167,7 @@ def main():
 
         label3 = Label(window, text="", bg="#FFFFFF")
         label3.place(x=232, y=150)
-        label2 = Label(window, text="Pick A Suburb")
+        label2 = Label(window, text="Pick A Suburb", bg="white")
         label2.place(x=532, y=350)
 
         n = StringVar()
@@ -192,7 +195,7 @@ def main():
 
         canvas_listings_by_ratings = create_canvas(window, show_suburb, show_cleanliness, show_price, show_search, show_listings)
         canvas_listings_by_ratings.create_image(564.0, 70.0, image=img['display_listings_ratings'])
-        label55 = Label(window, text="How Many Columns?")
+        label55 = Label(window, text="How Many Columns?", bg="white")
         label55.place(x=250, y=150)
 
         n = StringVar()
@@ -200,7 +203,7 @@ def main():
         data_select['values'] = ['Short', 'All']
         data_select.set('Short')
         data_select.place(x=250, y=178)
-        label2 = Label(window, text="Pick A Suburb")
+        label2 = Label(window, text="Pick A Suburb", bg="white")
         label2.place(x=532, y=150)
 
         n = StringVar()
@@ -230,7 +233,7 @@ def main():
 
 
 if __name__ == "__main__":
-    createDatabase.run_create_db()
+    run_create_db()
     main()
 
 
