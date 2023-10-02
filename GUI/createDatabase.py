@@ -3,6 +3,7 @@ import time
 import sqlite3
 import pandas as pd
 from utils import *
+import os
 
 
 def run_create_db():
@@ -147,6 +148,7 @@ def show_app(cursor, connection):
     # start button
     start_button = ttk.Button(root, text='Get Data', command=lambda: get_data(root, cursor, connection))
     start_button.grid(column=0, row=1, padx=10, pady=10, sticky=tk.E)
+
 
     # stop button
     stop_button = ttk.Button(root, text='Close', command=lambda: close(root))
