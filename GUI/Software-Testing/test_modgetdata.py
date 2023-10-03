@@ -1,13 +1,11 @@
 # test_modgetdata.py
 import pytest
 from unittest.mock import patch, Mock, MagicMock
-from modgetdata import get_suburb_listings, get_price_chart_data
-import modgetdata
+from mod_getdata import *
 import sqlite3
 from unittest.mock import patch
-from modgetdata import get_cleanliness_data, get_keyword_results, get_suburb_ratings
-import utils
-import constants
+from mod_utils import *
+from mod_constants import *
 
 
 def test_get_price_chart_data():
@@ -37,9 +35,6 @@ def test_get_cleanliness_data(mocker, mock_connection):
         CLEANLINESS_QUERY.format(like_clauses='comments LIKE ? OR comments LIKE ?'),
         (suburb, '%keyword1%', '%keyword2%')
     )
-
-
-
 
 CLEANLINESS_QUERY = """
             SELECT rev.*

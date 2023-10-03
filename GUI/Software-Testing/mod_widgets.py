@@ -3,7 +3,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, S
     HORIZONTAL, BOTH, END, TOP
 from tkinter import ttk
 from pathlib import Path
-from utils import *
+from mod_utils import *
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")

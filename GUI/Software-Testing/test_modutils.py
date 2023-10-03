@@ -1,12 +1,14 @@
 import pytest
 from unittest.mock import MagicMock, Mock, call
-from modutils import *
+from mod_utils import *
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, \
     HORIZONTAL, BOTH, END, TOP
-from constants import *
+from mod_constants import *
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from unittest.mock import MagicMock
+
 
 def test_show_chart():
     mock_tk = MagicMock()
@@ -14,13 +16,10 @@ def test_show_chart():
     mock_FigureCanvasTkAgg = MagicMock()
     mock_center_screen = MagicMock()
 
-
     mock_fig = MagicMock()
     title = "Test Title"
 
-
     show_chart(mock_fig, title, tk=mock_tk, Frame=mock_Frame, FigureCanvasTkAgg=mock_FigureCanvasTkAgg, center_screen=mock_center_screen)
-
 
     mock_tk.Tk.assert_called_once()
     mock_Frame.assert_called_once_with(master=mock_tk.Tk())
@@ -43,7 +42,6 @@ def test_add_scrollbars_to_treeview():
     assert mock_tree.configure.call_args_list[1] == call(xscrollcommand=mock_scrollbar.set)
     mock_scrollbar.place.assert_called()
 
-from unittest.mock import MagicMock
 
 def test_configure_treeview():
     # Set up
@@ -58,7 +56,9 @@ def test_configure_treeview():
 
     # Verify
     mock_treeview_constructor.assert_called_once_with(mock_window, columns=column_names, show='headings')
-    # ... any other assertions needed for column, heading, and insert
+
+
+
 def test_create_new_window():
     # Set up
     mock_toplevel_constructor = MagicMock()
@@ -75,6 +75,7 @@ def test_create_new_window():
     mock_toplevel_constructor.assert_called_once_with(mock_parent_window)
     mock_center_func.assert_called_once_with(mock_toplevel_constructor.return_value, width, height)
     # ... any other assertions needed
+
 
 def test_calculate_initial_size():
     # Set up
@@ -136,6 +137,7 @@ def test_display_error_message(capsys):
     captured = capsys.readouterr()
     assert captured.out == expected_output
 
+
 def test_clean_user_input():
     input_string = "  item1, item2,   item3  "
     expected_output = ['item1', 'item2', 'item3']
@@ -166,6 +168,7 @@ def test_on_hover_ratings():
 
     # Verify
     mock_annotation.set_text.assert_called_once_with(expected_output)
+
 
 def test_select_date():
     mock_start_date = MagicMock()

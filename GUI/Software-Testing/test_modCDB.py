@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import MagicMock, patch, ANY, call
 from unittest import mock
 import unittest
-import createDatabase as db
+import mod_CDB as db
 import tkinter as tk
 import sqlite3
 from unittest import TestCase
@@ -139,6 +139,7 @@ class TestRunCreateDb(unittest.TestCase):
         # Check if show_app was called with the correct arguments
         mock_show_app.assert_called_once_with(mock_cursor, mock_connection)
 
+
 @patch('createDatabase.get_the_data')
 @patch('tkinter.Text')
 @patch('tkinter.Tk')
@@ -163,6 +164,7 @@ def test_close():
     db.close(mock)
     mock.destroy.assert_called_once()
 
+
 @patch('createDatabase.get_data')
 @patch('createDatabase.close')
 @patch('tkinter.Tk')
@@ -177,6 +179,7 @@ def test_show_app(mock_tk, mock_close, mock_get_data):
 def mock_sqlite3_connect():
     with mock.patch('createDatabase.sqlite3.connect') as mock_connect:
         yield mock_connect
+
 
 @pytest.fixture
 def mock_show_app():

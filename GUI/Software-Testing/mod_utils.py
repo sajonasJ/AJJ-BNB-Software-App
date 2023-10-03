@@ -1,7 +1,7 @@
 # This file is for helper functions for the app
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, \
     HORIZONTAL, BOTH, END, TOP
-from constants import *
+from mod_constants import *
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg

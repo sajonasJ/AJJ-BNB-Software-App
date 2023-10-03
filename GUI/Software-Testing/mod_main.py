@@ -1,13 +1,13 @@
-from getData import get_suburb_ratings,get_cleanliness_data,get_price_chart_data,get_keyword_results,get_suburb_listings
-from widgets import load_images, create_button, create_canvas
+from mod_getdata import *
+from mod_widgets import *
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, \
     HORIZONTAL, BOTH, END, TOP
 from tkinter import ttk
 import sqlite3
 from tkcalendar import Calendar
-from createDatabase import run_create_db
-from displays import initial_window
-from constants import *
+from mod_CDB import run_create_db
+from mod_displays import initial_window
+from mod_constants import *
 
 def main():
     global current_canvas
@@ -81,7 +81,7 @@ def main():
 
         canvas_price_listings = create_canvas(window, show_suburb, show_cleanliness, show_price, show_search, show_listings)
         canvas_price_listings.update()  # Update the canvas before getting dimensions
-        canvas_price_listings.create_image(564.0, 70.0, image=img['display_price_dist'])
+        canvas_price_listings.create_image(564.0, 70.0, image=img['display_records'])
 
         label2 = Label(window, text="Pick A Suburb", bg="white")
         label2.place(x=532, y=350)
@@ -156,14 +156,14 @@ def main():
         """Display Price Chart"""
         main_canvas.pack_forget()
         global current_canvas
-        print('cleanliness')
+        print(current_canvas)
 
         if current_canvas:
             current_canvas.pack_forget()
 
         canvas_cleanliness = create_canvas(window, show_suburb, show_cleanliness, show_price, show_search, show_listings)
         canvas_cleanliness.update()
-        canvas_cleanliness.create_image(564.0, 70.0, image=img['display_cleanliness'])
+        canvas_cleanliness.create_image(564.0, 70.0, image=img['display_price_dist'])
 
         label3 = Label(window, text="", bg="#FFFFFF")
         label3.place(x=232, y=150)

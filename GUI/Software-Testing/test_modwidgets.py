@@ -1,9 +1,8 @@
 from unittest.mock import MagicMock, patch, call
-from modwidgets import *
-from modwidgets import relative_to_assets, ASSETS_PATH
+from mod_widgets import *
+from mod_widgets import relative_to_assets, ASSETS_PATH
 import pytest
 from pathlib import Path
-
 
 
 def test_create_canvas():
@@ -39,40 +38,30 @@ def test_create_button():
     MockButtonClass = MagicMock()
     mock_image = MagicMock()
     mock_command = MagicMock()
-    x = 10
-    y = 20
-    w = 30
-    h = 40
+    x, y, w, h = 10, 20, 30, 40
 
     button = create_button(MockButtonClass, mock_image, mock_command, x, y, w, h)
 
     MockButtonClass.assert_called_once_with(image=mock_image, borderwidth=0, highlightthickness=0, command=mock_command, relief="flat")
     button.place.assert_called_once_with(x=x, y=y, width=w, height=h)
 
+
 @patch('modwidgets.PhotoImage')
 def test_load_images(MockPhotoImage):
-    def test_load_images(MockPhotoImage):
-        mock_relative_to_assets = MagicMock(side_effect=lambda x: f"mocked_path/{x}")
+    mock_relative_to_assets = MagicMock(side_effect=lambda x: f"mocked_path/{x}")
 
-        # Call the function under test
-        returned_images = load_images(MockPhotoImage, mock_relative_to_assets)
+    returned_images = load_images(MockPhotoImage, mock_relative_to_assets)
 
-        # Print actual calls for diagnostics
-        print(mock_relative_to_assets.mock_calls)
+    print(mock_relative_to_assets.mock_calls)
 
-        # Adjust your expected calls based on the printed actual calls
-        expected_calls = [call('welcome_img.png'), call('home.png'), call('entry_4.png')]
+    expected_calls = [call('welcome_img.png'), call('home.png'), call('entry_4.png')]
 
-        # Assertions to check if the mock_relative_to_assets was called with correct arguments.
-        mock_relative_to_assets.assert_has_calls(expected_calls, any_order=True)
+    mock_relative_to_assets.assert_has_calls(expected_calls, any_order=True)
+
 
 def test_relative_to_assets():
-    # Define a test case with input string and expected Path object
     test_input = "some_directory/some_file.txt"
     expected_output = ASSETS_PATH / Path(test_input)
-
-    # Call the function with the test case input
     result = relative_to_assets(test_input)
 
-    # Assert that the function's output matches the expected result
     assert result == expected_output, f"Expected {expected_output}, but got {result}"

@@ -1,9 +1,9 @@
 # This file is for retrieving data from the database using queries
 from sqlite3 import connect
 import sqlite3
-from displays import *
-from utils import *
-from constants import *
+from mod_displays import *
+from mod_utils import *
+from mod_constants import *
 
 
 def get_suburb_listings( start_date, end_date, suburb, how_much_data):
