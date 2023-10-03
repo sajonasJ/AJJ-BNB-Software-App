@@ -5,13 +5,13 @@ from displays import *
 from utils import *
 from constants import *
 
-
 def get_suburb_listings( start_date, end_date, suburb, how_much_data):
     """retrieves the suburb listings using date and queries"""
     print('get suburb listings')
     dates = select_date(start_date, end_date)
     print('start Date=', dates[0], 'end Date=', dates[1], 'suburb=', suburb)
     with sqlite3.connect('data.db') as connection:
+        #print('cursor',connection.cursor)
         cursor = connection.cursor()
 
         if how_much_data == 'Short':
@@ -19,6 +19,7 @@ def get_suburb_listings( start_date, end_date, suburb, how_much_data):
             cursor.execute(SUBURB_LISTING_SHORTQUERY, (dates[0], dates[1], suburb))
             results = cursor.fetchall()
             print("Column names:", COLUMN_NAMES_SHORT)
+            print(results)
             display_suburb_listings( results, COLUMN_NAMES_SHORT, suburb)
 
         elif how_much_data == 'All':

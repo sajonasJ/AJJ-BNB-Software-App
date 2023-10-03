@@ -197,3 +197,4 @@ def test_run_create_db(mock_sqlite3_connect, mock_show_app):
     mock_connection.cursor.assert_called_once()
     mock_show_app.assert_called_once_with(mock_connection.cursor.return_value, mock_connection)
 
+
