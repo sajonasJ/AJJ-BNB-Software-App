@@ -15,7 +15,7 @@ def on_hover(sel, the_prices, the_names, the_dates):
 def select_date(start_date, end_date):
     """grab and store the start and end date for a user selected period from 2 calendars"""
     # date.config(text = "Selected Date is: " + cal.get_date())
-    print(start_date.get_date(), end_date.get_date())
+    #print(start_date.get_date(), end_date.get_date())
     return start_date.get_date(), end_date.get_date()
 
 

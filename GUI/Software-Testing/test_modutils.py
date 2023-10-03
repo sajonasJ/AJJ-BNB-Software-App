@@ -7,9 +7,87 @@ from mod_constants import *
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from unittest.mock import MagicMock
+import unittest
+
+class TestUtils(unittest.TestCase):
+    
+    #Test that the clean_user_input function is turning a string into a list
+    def test_clean_user_input_turn_string_into_list(self):
+        input_string = "item1,item2,item3"
+        expected_output = ['item1', 'item2', 'item3']
+
+        self.assertEqual(clean_user_input(input_string),expected_output)
+        
+        
+    #test that the clean_user_input function is stripping the input string
+    def test_clean_user_input_test_strip(self):
+        input_string = "   item1  ,  item2   ,   item3   "
+        expected_output = ['item1', 'item2', 'item3']
+
+        self.assertEqual(clean_user_input(input_string),expected_output)
+        
+    
+    #check that the select_date function returns something
+    def test_select_date_return_something(self):
+        mock_start_date = MagicMock()
+        mock_end_date = MagicMock()
+
+        mock_start_date.get_date.return_value = '2021-01-01'
+        mock_end_date.get_date.return_value = '2021-12-31'
+
+        result = select_date(mock_start_date, mock_end_date)
+        self.assertIsNotNone(result)
+        
+
+    #check if the select_date function returns a tuple
+    def test_select_date_return_tuple(self):
+        mock_start_date = MagicMock()
+        mock_end_date = MagicMock()
+
+        mock_start_date.get_date.return_value = '2021-01-01'
+        mock_end_date.get_date.return_value = '2021-12-31'
+
+        result = select_date(mock_start_date, mock_end_date)
+        self.assertIsInstance(result, tuple)
 
 
+    #check if the select_date function returns 2 results
+    def test_select_date_return_two_results(self):
+        mock_start_date = MagicMock()
+        mock_end_date = MagicMock()
+
+        mock_start_date.get_date.return_value = '2021-01-01'
+        mock_end_date.get_date.return_value = '2021-12-31'
+
+        result = select_date(mock_start_date, mock_end_date)
+        self.assertEqual(len(result), 2)
+        
+    
+    #check if the select_date function check if start_date.get_date gets called once
+    def test_select_date_start_get_date_called(self):
+        mock_start_date = MagicMock()
+        mock_end_date = MagicMock()
+
+        mock_start_date.get_date.return_value = '2021-01-01'
+        mock_end_date.get_date.return_value = '2021-12-31'
+
+        select_date(mock_start_date, mock_end_date)
+        
+        mock_start_date.get_date.assert_called_once()
+
+
+    #check if the select_date function check if end_date.get_date gets called once
+    def test_select_date_end_get_date_called(self):
+        mock_start_date = MagicMock()
+        mock_end_date = MagicMock()
+
+        mock_start_date.get_date.return_value = '2021-01-01'
+        mock_end_date.get_date.return_value = '2021-12-31'
+
+        select_date(mock_start_date, mock_end_date)
+        
+        mock_end_date.get_date.assert_called_once()
+   
 def test_show_chart():
     mock_tk = MagicMock()
     mock_Frame = MagicMock()
@@ -138,12 +216,6 @@ def test_display_error_message(capsys):
     assert captured.out == expected_output
 
 
-def test_clean_user_input():
-    input_string = "  item1, item2,   item3  "
-    expected_output = ['item1', 'item2', 'item3']
-    assert clean_user_input(input_string) == expected_output
-
-
 def test_clear_search_query(capsys):
     expected_output = "clear search fields\n"
 
@@ -168,16 +240,6 @@ def test_on_hover_ratings():
 
     # Verify
     mock_annotation.set_text.assert_called_once_with(expected_output)
-
-
-def test_select_date():
-    mock_start_date = MagicMock()
-    mock_end_date = MagicMock()
-
-    mock_start_date.get_date.return_value = '2021-01-01'
-    mock_end_date.get_date.return_value = '2021-12-31'
-
-    select_date(mock_start_date, mock_end_date)
 
 
 def test_on_hover():
