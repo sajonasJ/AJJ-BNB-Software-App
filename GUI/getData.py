@@ -105,8 +105,14 @@ def get_cleanliness_data(keywords, suburb, label3):
         cursor.execute(query, params)
         results = cursor.fetchall()
 
-        print("the total cleanliness results=", len(results))
-        display_cleanliness(len(results), suburb, label3)
+        #cursor.execute(f"PRAGMA table_info(reviewsDec)")
+        #columns_info = cursor.fetchall()
+        #column_names2 = [col[1] for col in columns_info]
+
+        #print("Column names:", column_names2)
+        #print("the total cleanliness results=", len(results), results)
+        column_names = ['Date', 'Reviewer Name', 'Comments']
+        display_cleanliness(len(results), suburb, label3, results, column_names)
 
 
 def get_suburb_ratings(suburb, how_much_data, data_type):
