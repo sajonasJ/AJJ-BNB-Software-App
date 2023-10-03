@@ -12,26 +12,29 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-def load_images(PhotoImageClass, relative_to_assets_function):
+
+def load_images(PhotoImage, relative_to_assets):
     img = {
-        "welcome_image": PhotoImage(file=relative_to_assets("welcome_img.png")),
-        "home_image": PhotoImage(file=relative_to_assets("home.png")),
-        "display_price_dist": PhotoImage(file=relative_to_assets("display_price_distribution.png")),
-        "display_image": PhotoImage(file=relative_to_assets("display.png")),
-        "display_chart": PhotoImage(file=relative_to_assets("display_chart.png")),
-        "display_list_image": PhotoImage(file=relative_to_assets("display_list.png")),
-        "cleanliness_image": PhotoImage(file=relative_to_assets("cleanliness.png")),
-        "display_ratings_image": PhotoImage(file=relative_to_assets("display_by_ratings.png")),
-        "search_image": PhotoImage(file=relative_to_assets("search.png")),
-        "suburb_listing_image": PhotoImage(file=relative_to_assets("suburb_listing.png")),
-        "price_chart_image": PhotoImage(file=relative_to_assets("price_chart.png")),
-        "display_list_img": PhotoImage(file=relative_to_assets("display_listings_for_suburb_img.png")),
-        "display_cleanliness": PhotoImage(file=relative_to_assets("display_chart_by_cleanliness.png")),
-        "display_listings_ratings": PhotoImage(file=relative_to_assets("display_listings_by_ratings.png")),
-        "display_records": PhotoImage(file=relative_to_assets("Display_Search_Records.png")),
-        "entry_image_1": PhotoImage(file=relative_to_assets("entry_4.png"))
+        "welcome_image": PhotoImage(relative_to_assets("welcome_img.png")),
+        "home_image": PhotoImage(relative_to_assets("home.png")),
+        "display_price_dist": PhotoImage(relative_to_assets("display_price_distribution.png")),
+        "display_image": PhotoImage(relative_to_assets("display.png")),
+        "display_chart": PhotoImage(relative_to_assets("display_chart.png")),
+        "display_list_image": PhotoImage(relative_to_assets("display_list.png")),
+        "cleanliness_image": PhotoImage(relative_to_assets("cleanliness.png")),
+        "display_ratings_image": PhotoImage(relative_to_assets("display_by_ratings.png")),
+        "search_image": PhotoImage(relative_to_assets("search.png")),
+        "suburb_listing_image": PhotoImage(relative_to_assets("suburb_listing.png")),
+        "price_chart_image": PhotoImage(relative_to_assets("price_chart.png")),
+        "display_list_img": PhotoImage(relative_to_assets("display_listings_for_suburb_img.png")),
+        "display_cleanliness": PhotoImage(relative_to_assets("display_chart_by_cleanliness.png")),
+        "display_listings_ratings": PhotoImage(relative_to_assets("display_listings_by_ratings.png")),
+        "display_records": PhotoImage(relative_to_assets("Display_Search_Records.png")),
+        "entry_image_1": PhotoImage(relative_to_assets("entry_4.png"))
     }
     return img
+
+
 
 
 def create_button(ButtonClass, image, command, x, y, w, h):

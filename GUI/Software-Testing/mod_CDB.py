@@ -139,7 +139,6 @@ def show_app(cursor, connection):
     root.geometry('500x300')
     root.title('AJJ BNB')
     root_height, root_width = 626, 932
-    center_screen(root, root_width, root_height)
     # grid config
     root.grid_rowconfigure(0, weight=1, minsize=200)
     root.grid_columnconfigure(0, weight=1, minsize=250)

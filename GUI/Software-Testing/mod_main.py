@@ -9,6 +9,7 @@ from mod_CDB import run_create_db
 from mod_displays import initial_window
 from mod_constants import *
 
+
 def main():
     global current_canvas
     current_canvas = None
@@ -106,6 +107,7 @@ def main():
 
         canvas_price_listings.pack()
         current_canvas = canvas_price_listings
+
 
     def show_search():
         """Display Search Interface """

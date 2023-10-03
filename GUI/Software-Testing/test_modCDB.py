@@ -114,8 +114,8 @@ def test_database_error_on_execute(mock_connect):
 
 
 class TestRunCreateDb(unittest.TestCase):
-    @patch('createDatabase.sqlite3')
-    @patch('createDatabase.show_app')
+    @patch('mod_CDB.sqlite3')
+    @patch('mod_CDB.show_app')
     def test_run_create_db(self, mock_show_app, mock_sqlite3):
         # Set up the mock objects
         mock_connection = MagicMock()
@@ -140,7 +140,7 @@ class TestRunCreateDb(unittest.TestCase):
         mock_show_app.assert_called_once_with(mock_cursor, mock_connection)
 
 
-@patch('createDatabase.get_the_data')
+@patch('mod_CDB.get_the_data')
 @patch('tkinter.Text')
 @patch('tkinter.Tk')
 def test_get_data(mock_tk, mock_text, mock_get_data):
@@ -165,8 +165,8 @@ def test_close():
     mock.destroy.assert_called_once()
 
 
-@patch('createDatabase.get_data')
-@patch('createDatabase.close')
+@patch('mod_CDB.get_data')
+@patch('mod_CDB.close')
 @patch('tkinter.Tk')
 def test_show_app(mock_tk, mock_close, mock_get_data):
     mock_cursor = MagicMock()
@@ -177,13 +177,13 @@ def test_show_app(mock_tk, mock_close, mock_get_data):
 
 @pytest.fixture
 def mock_sqlite3_connect():
-    with mock.patch('createDatabase.sqlite3.connect') as mock_connect:
+    with mock.patch('mod_CDB.sqlite3.connect') as mock_connect:
         yield mock_connect
 
 
 @pytest.fixture
 def mock_show_app():
-    with mock.patch('createDatabase.show_app') as mock_func:
+    with mock.patch('mod_CDB.show_app') as mock_func:
         yield mock_func
 
 

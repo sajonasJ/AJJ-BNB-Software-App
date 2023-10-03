@@ -46,20 +46,26 @@ def test_create_button():
     button.place.assert_called_once_with(x=x, y=y, width=w, height=h)
 
 
-@patch('modwidgets.PhotoImage')
-def test_load_images(MockPhotoImage):
-    mock_relative_to_assets = MagicMock(side_effect=lambda x: f"mocked_path/{x}")
+@patch('mod_widgets.relative_to_assets')
+@patch('mod_widgets.PhotoImage')
+def test_load_images(MockPhotoImage, mock_relative_to_assets):
+    mock_relative_to_assets.side_effect = lambda x: f"mocked_path/{x}"
+    MockPhotoImage.return_value = "Mocked PhotoImage Instance"
+    images = load_images( mock_relative_to_assets,MockPhotoImage)
 
-    returned_images = load_images(MockPhotoImage, mock_relative_to_assets)
+    assert images[
+               'welcome_image'] == "Mocked PhotoImage Instance", "Expected Mocked PhotoImage Instance for welcome_image"
+    assert images['home_image'] == "Mocked PhotoImage Instance", "Expected Mocked PhotoImage Instance for home_image"
+    # Add more assertions as needed for other keys in the images dictionary
 
-    print(mock_relative_to_assets.mock_calls)
+    # Verify the mocks were called with the expected arguments
+    mock_relative_to_assets.assert_any_call("welcome_img.png")
+    mock_relative_to_assets.assert_any_call("home.png")
+    # Add more assertions to verify the calls to mock_relative_to_assets with other file names
+    MockPhotoImage.assert_called()  # This checks that MockPhotoImage was called at least once
 
-    expected_calls = [call('welcome_img.png'), call('home.png'), call('entry_4.png')]
-
-    mock_relative_to_assets.assert_has_calls(expected_calls, any_order=True)
-
-
-def test_relative_to_assets():
+def test_relative_to_assets\
+                ():
     test_input = "some_directory/some_file.txt"
     expected_output = ASSETS_PATH / Path(test_input)
     result = relative_to_assets(test_input)

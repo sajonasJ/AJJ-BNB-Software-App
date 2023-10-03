@@ -58,7 +58,7 @@ def mock_connection(mock_cursor, mocker):
 @pytest.fixture
 def mock_display_cleanliness(mocker):
     """Fixture for mocking the display_cleanliness function."""
-    return mocker.patch('modgetdata.display_cleanliness', autospec=True)
+    return mocker.patch('mod_getdata.display_cleanliness', autospec=True)
 
 
 def test_get_cleanliness_data(mocker):
@@ -67,7 +67,7 @@ def test_get_cleanliness_data(mocker):
     mock_connection = mocker.MagicMock()
     mock_connection.cursor.return_value = mock_cursor
 
-    mock_display = mocker.patch('modgetdata.display_cleanliness')
+    mock_display = mocker.patch('mod_getdata.display_cleanliness')
 
     keywords = ['clean']
     suburb = 'TestSuburb'
@@ -87,9 +87,9 @@ def test_get_keyword_results(mocker):
     mock_connection.cursor.return_value = mock_cursor
 
     mock_display_func = mocker.patch(
-        'modgetdata.display_keyword_results')
-    mock_clean_user_input = mocker.patch('modgetdata.clean_user_input', return_value=['clean'])
-    mock_select_date = mocker.patch('modgetdata.select_date', return_value=('2022-01-01', '2022-12-31'))
+        'mod_getdata.display_keyword_results')
+    mock_clean_user_input = mocker.patch('mod_getdata.clean_user_input', return_value=['clean'])
+    mock_select_date = mocker.patch('mod_getdata.select_date', return_value=('2022-01-01', '2022-12-31'))
 
     start_date = '2022-01-01'
     end_date = '2022-12-31'
@@ -111,8 +111,8 @@ def test_get_suburb_ratings(mocker):
     mock_connection.cursor.return_value = mock_cursor
 
     mock_display_records_func = mocker.patch(
-        'modgetdata.display_suburb_ratings_records')
-    mock_display_chart_func = mocker.patch('modgetdata.display_suburb_ratings_chart')
+        'mod_getdata.display_suburb_ratings_records')
+    mock_display_chart_func = mocker.patch('mod_getdata.display_suburb_ratings_chart')
 
     suburb = 'TestSuburb'
     how_much_data = 'Short'

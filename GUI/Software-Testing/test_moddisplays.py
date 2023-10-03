@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, call
+from unittest import mock
 from mod_displays import *
 
 
@@ -34,7 +35,6 @@ def test_display_suburb_listings():
         mock_configure_treeview_func,
         mock_add_scrollbars_func
     )
-
 
 def test_display_keyword_results():
     # Arrange
@@ -101,20 +101,20 @@ def test_display_suburb_ratings_records():
 
 def test_display_suburb_ratings_chart():
     # Arrange
-    mock_plt = MagicMock()
-    mock_np = MagicMock()
-    mock_mplcursors = MagicMock()
-    mock_on_hover_ratings = MagicMock()
-    mock_show_chart = MagicMock()
-    mock_the_score = [4.5, 4.7, 5.0]
-    mock_the_suburb = "TestSuburb"
-    mock_the_names = ["Place1", "Place2", "Place3"]
+    mock_plt = mock.MagicMock()
+    mock_np = mock.MagicMock()
+    mock_mplcursors = mock.MagicMock()
+    mock_on_hover_ratings_func = mock.MagicMock()
+    mock_show_chart_func = mock.MagicMock()
+
+    mock_plt.subplots.return_value = (mock.MagicMock(), mock.MagicMock())
+    the_score = [4.5, 4.7, 5.0]
+    the_suburb = "TestSuburb"
+    the_names = ["Place1", "Place2", "Place3"]
 
     # Act
-    display_suburb_ratings_chart(
-        mock_the_score, mock_the_suburb, mock_the_names,
-        plt_module=mock_plt, np_module=mock_np, mplcursors_module=mock_mplcursors,
-        on_hover_ratings_func=mock_on_hover_ratings, show_chart_func=mock_show_chart)
+    display_suburb_ratings_chart(the_score, the_suburb, the_names, plt_module=mock_plt, np_module=mock_np, mplcursors_module=mock_mplcursors, on_hover_ratings_func=mock_on_hover_ratings_func, show_chart_func=mock_show_chart_func)
 
     # Assert
-    # Add your assertions here to verify the expected behavior of your function
+    mock_plt.subplots.assert_called_once_with(figsize=(5, 2.7))
+    # ... Add more assertions based on the expected interactions with the mock objects ...
