@@ -27,7 +27,7 @@ def load_images():
         "suburb_listing_image": PhotoImage(file=relative_to_assets("suburb_listing.png")),
         "price_chart_image": PhotoImage(file=relative_to_assets("price_chart.png")),
         "display_list_img": PhotoImage(file=relative_to_assets("display_listings_for_suburb_img.png")),
-        "display_cleanliness": PhotoImage(file=relative_to_assets("display_chart_by_cleanliness.png")),
+        "display_cleanliness": PhotoImage(file=relative_to_assets("display_cleanliness_records.png")),
         "display_listings_ratings": PhotoImage(file=relative_to_assets("display_listings_by_ratings.png")),
         "display_records": PhotoImage(file=relative_to_assets("Display_Search_Records.png")),
         "entry_image_1": PhotoImage(file=relative_to_assets("entry_4.png"))

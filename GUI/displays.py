@@ -43,10 +43,24 @@ def display_keyword_results( results, column_names, keywords):
     tree.place(x=10, y=10, width=initial_width - 40, height=initial_height - 100)
 
 
-def display_cleanliness(result_number, suburb, label3):
+def display_cleanliness(result_number, suburb, label3, results, column_names):
+
     """displays for analysis of comments for cleanliness"""
     print("display cleanliness")
     label3.config(text=f"The number of reviews that mention cleanliness in {suburb} is: {result_number}")
+    initial_width = min(window.winfo_screenwidth(), MAX_WIDTH)
+    initial_height = min(window.winfo_screenheight() - 100, MAX_HEIGHT)
+    new_window = create_new_window(suburb, initial_width, initial_height)
+    tree = configure_treeview(new_window, results, column_names, initial_width, initial_height)
+    add_scrollbars_to_treeview(new_window, tree, initial_width, initial_height)
+    
+    remaining_width = initial_width - 40 - (150 + 150)
+
+    tree.column('Date', width=150, stretch=False)
+    tree.column('Reviewer Name', width=150, stretch=False)
+    tree.column('Comments', width=remaining_width, stretch=False)
+    
+    tree.place(x=10, y=10, width=initial_width - 40, height=initial_height - 100)
 
 
 def display_suburb_ratings_records( results, column_names, suburb):

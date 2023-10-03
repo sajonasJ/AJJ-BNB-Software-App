@@ -104,7 +104,7 @@ CITY_QUERY = "SELECT DISTINCT city FROM listingsDec"
 
 # query for get_cleanliness_data
 CLEANLINESS_QUERY = """
-            SELECT rev.*
+            SELECT rev.date, rev.reviewer_name, rev.comments
             FROM reviewsDec rev
             INNER JOIN listingsDec l ON rev.listing_id = l.id
             WHERE l.city = ? AND ({like_clauses})"""
