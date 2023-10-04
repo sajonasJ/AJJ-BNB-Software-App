@@ -21,8 +21,13 @@ def select_date(start_date, end_date):
 
 def clean_user_input(input):
     """cleans the user input"""
+    if not input:
+        print("Error: empty input")
+        return []
+
     split_input = [item.strip() for item in input.split(',')]
     return split_input
+
 
 
 def on_hover_ratings(sel, the_score, the_names):

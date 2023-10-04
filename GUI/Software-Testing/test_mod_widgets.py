@@ -64,8 +64,7 @@ def test_load_images(MockPhotoImage, mock_relative_to_assets):
     # Add more assertions to verify the calls to mock_relative_to_assets with other file names
     MockPhotoImage.assert_called()  # This checks that MockPhotoImage was called at least once
 
-def test_relative_to_assets\
-                ():
+def test_relative_to_assets():
     test_input = "some_directory/some_file.txt"
     expected_output = ASSETS_PATH / Path(test_input)
     result = relative_to_assets(test_input)

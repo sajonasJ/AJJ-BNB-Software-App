@@ -1,12 +1,9 @@
-import pytest
-from unittest.mock import MagicMock, Mock, call
+from unittest import expectedFailure
+from unittest.mock import MagicMock, Mock, call, patch
 from mod_utils import *
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, Label, StringVar, Toplevel, CENTER, VERTICAL, \
-    HORIZONTAL, BOTH, END, TOP
-from mod_constants import *
-import tkinter as tk
-from tkinter import ttk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import mod_utils
+import sqlite3
+
 import unittest
 
 class TestUtils(unittest.TestCase):
@@ -25,8 +22,15 @@ class TestUtils(unittest.TestCase):
         expected_output = ['item1', 'item2', 'item3']
 
         self.assertEqual(clean_user_input(input_string),expected_output)
-        
-    
+
+    def test_clean_user_input_integer_input(self):
+        with self.assertRaises(ValueError):
+            clean_user_input(12345)
+
+    def test_clean_user_input_none_input(self):
+        with self.assertRaises(ValueError):
+            clean_user_input(None)
+
     #check that the select_date function returns something
     def test_select_date_return_something(self):
         mock_start_date = MagicMock()
@@ -85,173 +89,124 @@ class TestUtils(unittest.TestCase):
         mock_end_date.get_date.return_value = '2021-12-31'
 
         select_date(mock_start_date, mock_end_date)
-        
+
         mock_end_date.get_date.assert_called_once()
-   
-def test_show_chart():
-    mock_tk = MagicMock()
-    mock_Frame = MagicMock()
-    mock_FigureCanvasTkAgg = MagicMock()
-    mock_center_screen = MagicMock()
-
-    mock_fig = MagicMock()
-    title = "Test Title"
-
-    show_chart(mock_fig, title, tk=mock_tk, Frame=mock_Frame, FigureCanvasTkAgg=mock_FigureCanvasTkAgg, center_screen=mock_center_screen)
-
-    mock_tk.Tk.assert_called_once()
-    mock_Frame.assert_called_once_with(master=mock_tk.Tk())
 
 
-def test_add_scrollbars_to_treeview():
-    mock_window = MagicMock()
-    mock_tree = MagicMock()
-    mock_ttk_module = Mock()
-    mock_scrollbar = Mock()
-    mock_ttk_module.Scrollbar.return_value = mock_scrollbar
+    def test_make_window(self):
+        mock_center_screen = MagicMock
+        window = MagicMock
 
-    width = 500
-    height = 400
+        mock_center_screen.return_value = (window, 626, 932)
+        mock_window = make_window(mock_center_screen)
 
-    add_scrollbars_to_treeview(mock_window, mock_tree, width, height, ttk_module=mock_ttk_module)
+        self.assertIsInstance(mock_window, Tk)
 
-    mock_ttk_module.Scrollbar.assert_called()
-    assert mock_tree.configure.call_args_list[0] == call(yscrollcommand=mock_scrollbar.set)
-    assert mock_tree.configure.call_args_list[1] == call(xscrollcommand=mock_scrollbar.set)
-    mock_scrollbar.place.assert_called()
+    @patch('mod_utils.sqlite3.connect')
+    def test_run_create_db(self, mock_connect):
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
 
+        mock_connect.return_value = mock_connection
+        mock_connection.cursor.return_value = mock_cursor
 
-def test_configure_treeview():
-    # Set up
-    mock_window = MagicMock()
-    mock_treeview_constructor = MagicMock()
-    results = [(1, "Alice", 30), (2, "Bob", 28)]
-    column_names = ["ID", "Name", "Age"]
-    width = 800
-    height = 600
+        mod_utils.run_create_db()
+        mock_connect.assert_called_once_with('data.db')
+        mock_connection.cursor.assert_called_once()
 
-    configure_treeview(mock_window, results, column_names, width, height, treeview_constructor=mock_treeview_constructor)
+        expected_calls = [
+            call("CREATE TABLE IF NOT EXISTS reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)"),
+            call("CREATE TABLE IF NOT EXISTS calendarDec(listing_id,date,available,price)")
+        ]
+        mock_cursor.execute.assert_has_calls(expected_calls)
+        self.assertEqual(mock_cursor.execute.call_count, 2, "Execute method call count mismatch")
 
-    # Verify
-    mock_treeview_constructor.assert_called_once_with(mock_window, columns=column_names, show='headings')
+    @patch('mod_utils.sqlite3.connect')
+    @expectedFailure
+    def test_run_create_db_failure(self, mock_connect):
 
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
 
+        mock_connect.return_value = mock_connection
+        mock_connection.cursor.return_value = mock_cursor
 
-def test_create_new_window():
-    # Set up
-    mock_toplevel_constructor = MagicMock()
-    mock_parent_window = MagicMock()
-    mock_center_func = MagicMock()
-    suburb = "TestSuburb"
-    width = 800
-    height = 600
+        mod_utils.run_create_db()
+        mock_connect.assert_called_once_with('data.db')
+        mock_connection.cursor.assert_called_once()
 
-    # Exercise
-    create_new_window(suburb, width, height, toplevel_constructor=mock_toplevel_constructor, parent_window=mock_parent_window, center_func=mock_center_func)
-
-    # Verify
-    mock_toplevel_constructor.assert_called_once_with(mock_parent_window)
-    mock_center_func.assert_called_once_with(mock_toplevel_constructor.return_value, width, height)
-    # ... any other assertions needed
-
-
-def test_calculate_initial_size():
-    # Set up
-    mock_window = MagicMock()
-    mock_window.winfo_screenwidth.return_value = 1200
-    mock_window.winfo_screenheight.return_value = 800
-    max_width = 1000
-    max_height = 700
-
-    # Exercise
-    width, height = calculate_initial_size(mock_window, max_width, max_height)
-
-    # Verify
-    mock_window.winfo_screenwidth.assert_called_once()
-    mock_window.winfo_screenheight.assert_called_once()
-    assert width == 1000  # screen_width is 1200 but max_width is 1000
-    assert height == 700  #
+        # Wrong SQL queries to induce an assertion failure
+        expected_failure_calls = [
+            call("CREATE TABLE IF NOT EXISTS WrongTable(listing_id,id,date,reviewer_id,reviewer_name,comments)"),
+            call("CREATE TABLE IF NOT EXISTS calendarDec(listing_id,date,available,price)")
+        ]
+        mock_cursor.execute.assert_has_calls(expected_failure_calls, any_order=True)
+        self.assertEqual(mock_cursor.execute.call_count, 2, "Execute method call count mismatch")
 
 
-def test_make_window():
-    # Set up
-    mock_window = MagicMock()
-    window_title = "Test Window"
-    bg_color = "#FFFFFF"
-    window_height = 600
-    window_width = 900
+    def test_close(self):
+        mock = MagicMock()
+        close(mock)
+        self.assertTrue(mock.destroy.called)
+        self.assertEqual(mock.destroy.call_count, 1)
 
-    # Define a lambda or function to pass as center_func
-    center_func = lambda win, width, height: center_screen(win, width, height, 1920, 1080)
+    def test_close_not_called(self):
+        mock = MagicMock()
+        # Do not call close(mock)
+        # close(mock)
 
-    # Exercise
-    result = make_window(mock_window, window_title, bg_color, window_height, window_width, center_func)
+        self.assertFalse(mock.destroy.called, "Destroy method was not expected to be called but was called")
 
-    # Your assertions here
+    def test_close_called_multiple_times(self):
+        mock = MagicMock()
+        close(mock)
+        close(mock)  # called twice
 
-
-def test_center_screen():
-    # Set up
-    mock_window = MagicMock()
-    window_width = 800
-    window_height = 600
-    screen_width = 1920
-    screen_height = 1080
-
-    # Exercise
-    center_screen(mock_window, window_width, window_height, screen_width, screen_height)
-
-    # Verify
-    expected_geometry = f"{window_width}x{window_height}+560+240"
-    mock_window.geometry.assert_called_once_with(expected_geometry)
+        self.assertNotEqual(mock.destroy.call_count, 1,
+                            "Destroy method was expected to be called once but was called multiple times")
 
 
-def test_display_error_message(capsys):
-    error = "Test error"
-    expected_output = "display error messageTest error\n"
+    def test_load_images(self):
+        mock_PhotoImage = MagicMock()
+        mock_relative_to_assets = MagicMock(side_effect=lambda x: f"mocked_path/{x}")
 
-    display_error_message(error)
+        # Act
+        result = load_images(mock_PhotoImage, mock_relative_to_assets)
 
-    captured = capsys.readouterr()
-    assert captured.out == expected_output
+        # Assert
+        expected_calls = [
+            call("mocked_path/welcome_img.png"),
+            call("mocked_path/home.png"),
+            call("mocked_path/display_price_distribution.png"),
+            call("mocked_path/display.png"),
+            call("mocked_path/display_chart.png"),
+            call("mocked_path/display_list.png"),
+            call("mocked_path/cleanliness.png"),
+            call("mocked_path/display_by_ratings.png"),
+            call("mocked_path/search.png"),
+            call("mocked_path/suburb_listing.png"),
+            call("mocked_path/price_chart.png"),
+            call("mocked_path/display_listings_for_suburb_img.png"),
+            call("mocked_path/display_chart_by_cleanliness.png"),
+            call("mocked_path/display_listings_by_ratings.png"),
+            call("mocked_path/Display_Search_Records.png"),
+            call("mocked_path/entry_4.png")
+        ]
+        self.assertEqual(mock_PhotoImage.call_args_list, expected_calls,
+                         "PhotoImage was not called with expected arguments")
+        self.assertTrue(all(isinstance(key, str) and isinstance(value, MagicMock) for key, value in result.items()))
+
+    def test_get_price_chart_data(self):
+        mock_select_date_func = Mock(return_value=('2022-01-01', '2022-12-31'))
+        mock_connection = MagicMock()
+        mock_execute_query = Mock(return_value=[('name', 100, '2022-01-01')])
+        mock_display_func = Mock()
+
+        get_price_chart_data('2022-01-01', '2022-12-31', 'TestSuburb', mock_select_date_func, mock_connection,
+                             mock_execute_query, mock_display_func)
+
+        self.assertEqual(mock_select_date_func.call_args, call('2022-01-01', '2022-12-31'))
+        self.assertEqual(mock_execute_query.call_count, 1)
+        self.assertEqual(mock_display_func.call_args, call([100], 'TestSuburb', ['name'], ['2022-01-01']))
 
 
-def test_clear_search_query(capsys):
-    expected_output = "clear search fields\n"
-
-    clear_search_query()
-
-    captured = capsys.readouterr()
-    assert captured.out == expected_output
-
-
-def test_on_hover_ratings():
-    # Set up
-    mock_annotation = MagicMock()
-    mock_selection = MagicMock()
-    mock_selection.index = 1
-    mock_selection.annotation = mock_annotation
-    scores = [3.5, 4.5]
-    names = ["Place1", "Place2"]
-    expected_output = 'Rating: 4.5\nPlace Name: Place2'
-
-    # Exercise
-    on_hover_ratings(mock_selection, scores, names)
-
-    # Verify
-    mock_annotation.set_text.assert_called_once_with(expected_output)
-
-
-def test_on_hover():
-    class MockSel:
-        def __init__(self):
-            self.index = 1
-            self.annotation = MagicMock()
-
-    sel = MockSel()
-    the_prices = [100, 200]
-    the_names = ['Name1', 'Name2']
-    the_dates = ['Date1', 'Date2']
-
-    on_hover(sel, the_prices, the_names, the_dates)
-    sel.annotation.set_text.assert_called_once_with('Price: 200\nName:Name2\nDate: Date2')

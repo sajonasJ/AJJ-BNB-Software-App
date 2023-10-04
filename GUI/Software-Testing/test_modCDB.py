@@ -156,7 +156,7 @@ def test_get_data(mock_tk, mock_text, mock_get_data):
     # Assert
     mock_text.insert.assert_has_calls([call(tk.END, "Creating Database...\n"), call(tk.END, "Please wait...\n")])
     mock_tk.update_idletasks.assert_called_once()
-    mock_get_data.assert_called_once()  # add appropriate arguments
+    mock_get_data.assert_called_once()
 
 
 def test_close():

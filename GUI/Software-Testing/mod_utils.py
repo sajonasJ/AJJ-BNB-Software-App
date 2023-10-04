@@ -5,126 +5,95 @@ from mod_constants import *
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
-
-def on_hover(sel, the_prices, the_names, the_dates):
-    index = sel.index
-    sel.annotation.set_text(f'Price: {the_prices[index]}\nName:{the_names[index]}\nDate: {the_dates[index]}')
-
+# This file loads the csv files, read and output a database to be read by sqlite3
+import time
+import sqlite3
+import pandas as pd
 
 def select_date(start_date, end_date):
-    """grab and store the start and end date for a user selected period from 2 calendars"""
-    # date.config(text = "Selected Date is: " + cal.get_date())
-    #print(start_date.get_date(), end_date.get_date())
     return start_date.get_date(), end_date.get_date()
 
 
 def clean_user_input(input):
-    """cleans the user input"""
+    if not isinstance(input, str):
+        raise ValueError("Input must be a string")
     split_input = [item.strip() for item in input.split(',')]
     return split_input
 
 
-def on_hover_ratings(sel, the_score, the_names):
-    """hover over data function"""
-    index = sel.index
-    sel.annotation.set_text(f'Rating: {the_score[index]}\nPlace Name: {the_names[index]}')
 
-
-def clear_search_query():
-    """clear search fields (button will be needed for it)"""
-    print("clear search fields")
-
-
-def display_error_message(error_message):
-    """display error messages"""
-    print("display error message" + error_message)
-
-
-def center_screen(window, window_width, window_height, screen_width, screen_height):
-    """ gets the coordinates of the center of the screen """
-    x_cordinate = int((screen_width / 2) - (window_width / 2))
-    y_cordinate = int((screen_height / 2) - (window_height / 2))
-    window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
-
-
-
-def make_window(window, window_title="AJJ BNB", bg_color="#E8E8E8", window_height=626, window_width=932, center_func=None):
+def make_window(center_screen):
     """Initial tkinter window"""
-    window.title(window_title)
-    window.configure(bg=bg_color)
-    if center_func:
-        center_func(window, window_width, window_height)  # make sure window is centered
+    window = Tk()
+    window.title("AJJ BNB")
+    window.configure(bg="#E8E8E8")
+    window_height, window_width = 626, 932
+    center_screen(window, window_width, window_height)  # make sure window is centre
     return window
 
 
+def run_create_db():
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+    cursor.execute("CREATE TABLE IF NOT EXISTS reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS calendarDec(listing_id,date,available,price)")
+    connection.close()
+    return
 
-def calculate_initial_size(window, max_width=MAX_WIDTH, max_height=MAX_HEIGHT):
-    """sets the height and width at constant"""
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    initial_width = min(screen_width, max_width)
-    initial_height = min(screen_height - 100, max_height)
-    return initial_width, initial_height
-
-
-def create_new_window(suburb, width, height, toplevel_constructor=Toplevel, parent_window=None, center_func=center_screen):
-    """Creates the new window with defined values"""
-    new_window = toplevel_constructor(parent_window)
-    new_window.title(f"Listings for {suburb}")
-    new_window.geometry(f"{width}x{height}")
-    new_window.maxsize(MAX_WIDTH, MAX_HEIGHT)
-    center_func(new_window, width, height)  # make sure window is centered
-    return new_window
+def close(root):
+    """funct to close the window"""
+    root.destroy()
 
 
 
 
+def load_images(PhotoImage, relative_to_assets):
+    img = {
+        "welcome_image": PhotoImage(relative_to_assets("welcome_img.png")),
+        "home_image": PhotoImage(relative_to_assets("home.png")),
+        "display_price_dist": PhotoImage(relative_to_assets("display_price_distribution.png")),
+        "display_image": PhotoImage(relative_to_assets("display.png")),
+        "display_chart": PhotoImage(relative_to_assets("display_chart.png")),
+        "display_list_image": PhotoImage(relative_to_assets("display_list.png")),
+        "cleanliness_image": PhotoImage(relative_to_assets("cleanliness.png")),
+        "display_ratings_image": PhotoImage(relative_to_assets("display_by_ratings.png")),
+        "search_image": PhotoImage(relative_to_assets("search.png")),
+        "suburb_listing_image": PhotoImage(relative_to_assets("suburb_listing.png")),
+        "price_chart_image": PhotoImage(relative_to_assets("price_chart.png")),
+        "display_list_img": PhotoImage(relative_to_assets("display_listings_for_suburb_img.png")),
+        "display_cleanliness": PhotoImage(relative_to_assets("display_chart_by_cleanliness.png")),
+        "display_listings_ratings": PhotoImage(relative_to_assets("display_listings_by_ratings.png")),
+        "display_records": PhotoImage(relative_to_assets("Display_Search_Records.png")),
+        "entry_image_1": PhotoImage(relative_to_assets("entry_4.png"))
+    }
+    return img
 
-def configure_treeview(window, results, column_names, width, height, treeview_constructor=ttk.Treeview):
-    """creates the treeview inside a tkinter window"""
+def get_price_chart_data(start_date, end_date, suburb, select_date_func=None, connection=None, execute_query=None,
+                         display_func=None):
 
-    tree = treeview_constructor(window, columns=column_names, show='headings')
-    max_widths = [max(len(str(row[i])) for row in results) for i in range(len(column_names))]
-
-    for index, name in enumerate(column_names):
-        col_width = max(MIN_WIDTH, min(max_widths[index] * 8, MAX_COL_WIDTH))
-        tree.column(f"#{index + 1}", anchor=CENTER, width=col_width)
-        tree.heading(f"#{index + 1}", text=f"{name}")
-
-    for row in results:
-        tree.insert("", END, values=row)
-
-    return tree
+    if select_date_func:
+        dates = select_date_func(start_date, end_date)
+    else:
+        dates = (start_date, end_date)
 
 
-def add_scrollbars_to_treeview(window, tree, width, height, ttk_module=ttk, vertical_orient=VERTICAL, horizontal_orient=HORIZONTAL):
-    v_scrollbar = ttk_module.Scrollbar(window, orient=vertical_orient, command=tree.yview)
-    v_scrollbar.place(x=width - 20, y=0, height=height - 100)
-    tree.configure(yscrollcommand=v_scrollbar.set)
+    if connection is None:
+        connection = sqlite3.connect('data.db')
 
-    h_scrollbar = ttk_module.Scrollbar(window, orient=horizontal_orient, command=tree.xview)
-    h_scrollbar.place(x=0, y=height - 80, width=width - 20)
-    tree.configure(xscrollcommand=h_scrollbar.set)
+    cursor = connection.cursor()
 
+    if execute_query:
+        results = execute_query(cursor, PRICE_CHART_QUERY, (dates[0], dates[1], suburb))
+    else:
+        cursor.execute(PRICE_CHART_QUERY, (dates[0], dates[1], suburb))
+        results = cursor.fetchall()
 
-def show_chart(fig, title, tk=tk, Frame=Frame, FigureCanvasTkAgg=None, center_screen=None):
+    the_names = [row[0] for row in results]
+    the_prices = [row[1] for row in results]
+    the_dates = [row[2] for row in results]
 
-    chart = tk.Tk()
-    chart.title(title)
-    window_width = 932
-    window_height = 626
-    if center_screen:
-        center_screen(chart, window_width, window_height)
+    if display_func:
+        display_func(the_prices, suburb, the_names, the_dates)
 
-    frame = Frame(master=chart)
-    frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-    if FigureCanvasTkAgg:
-        canvas = FigureCanvasTkAgg(fig, master=frame)  # A tk.DrawingArea.
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-    tk.mainloop()
 
 
