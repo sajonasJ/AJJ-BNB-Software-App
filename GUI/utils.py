@@ -20,13 +20,12 @@ def select_date(start_date, end_date):
 
 
 def clean_user_input(input):
-    """cleans the user input"""
-    if not input:
-        print("Error: empty input")
-        return []
-
-    split_input = [item.strip() for item in input.split(',')]
+    if not isinstance(input, str) or not input.strip() or input.isdigit():
+        print("Error: Input not a valid string")
+        return None  # or you might want to return an empty list []
+    split_input = [item.strip() for item in input.split(',') if item.strip()]
     return split_input
+
 
 
 
@@ -35,10 +34,6 @@ def on_hover_ratings(sel, the_score, the_names):
     index = sel.index
     sel.annotation.set_text(f'Rating: {the_score[index]}\nPlace Name: {the_names[index]}')
 
-
-def clear_search_query():
-    """clear search fields (button will be needed for it)"""
-    print("clear search fields")
 
 
 def display_error_message(error_message):

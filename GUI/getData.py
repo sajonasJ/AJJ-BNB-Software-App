@@ -67,6 +67,7 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
     cleaned_words = clean_user_input(key_words)
     dates = select_date(start_date, end_date)
 
+
     with sqlite3.connect('data.db') as connection:
         cursor = connection.cursor()
 

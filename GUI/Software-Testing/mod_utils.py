@@ -9,14 +9,18 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import time
 import sqlite3
 import pandas as pd
+from pathlib import Path
+from mod_constants import *
+import sqlparse
 
 def select_date(start_date, end_date):
     return start_date.get_date(), end_date.get_date()
 
 
 def clean_user_input(input):
-    if not isinstance(input, str):
-        raise ValueError("Input must be a string")
+    if not isinstance(input, str) or not input.strip():
+        print("Error: Input not string")
+        raise ValueError("Input must be a string and non-empty")
     split_input = [item.strip() for item in input.split(',')]
     return split_input
 
@@ -43,8 +47,6 @@ def run_create_db():
 def close(root):
     """funct to close the window"""
     root.destroy()
-
-
 
 
 def load_images(PhotoImage, relative_to_assets):
@@ -76,7 +78,6 @@ def get_price_chart_data(start_date, end_date, suburb, select_date_func=None, co
     else:
         dates = (start_date, end_date)
 
-
     if connection is None:
         connection = sqlite3.connect('data.db')
 
@@ -96,4 +97,38 @@ def get_price_chart_data(start_date, end_date, suburb, select_date_func=None, co
         display_func(the_prices, suburb, the_names, the_dates)
 
 
+OUTPUT_PATH = Path(__file__).parent
+ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
 
+
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
+
+
+def connect_to_db():
+    try:
+        with sqlite3.connect('data.db') as connection:
+            print("Connection successful")
+
+    except Exception as e:
+        print(f"Failed to connect to the database: {e}")
+
+
+def read_csv_files():
+    try:
+        df_listings = pd.read_csv('../bnb_data/listings_dec18.csv', low_memory=False)
+        df_reviews = pd.read_csv('../bnb_data/reviews_dec18.csv', low_memory=False)
+        df_calendar = pd.read_csv('../bnb_data/calendar_dec18.csv', low_memory=False)
+        return df_listings, df_reviews, df_calendar
+    except FileNotFoundError as e:
+        print( f"File not found: {e.filename}\n")
+        return None, None, None
+    except pd.errors.EmptyDataError as e:
+        print(f"File is empty or corrupted")
+
+
+def test_sql_syntax():
+    try:
+        sqlparse.parse(SUBURB_LISTING_SHORTQUERY)
+    except sqlparse.exceptions.SQLParseError:
+        assert False, "SQL Syntax is invalid"

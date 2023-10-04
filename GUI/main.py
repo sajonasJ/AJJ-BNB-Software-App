@@ -9,6 +9,7 @@ from createDatabase import run_create_db
 from displays import initial_window
 from constants import *
 
+
 def main():
     global current_canvas
     current_canvas = None

@@ -14,6 +14,7 @@ def run_create_db():
     show_app(cursor, connection)
     return
 
+
 def get_the_data(cursor, connection, root, output_text):
     """function to start getting the data using pandas and convert them to sqlite3"""
     count = 0
@@ -26,6 +27,9 @@ def get_the_data(cursor, connection, root, output_text):
         output_text.insert(tk.END, "File not found: reviews_dec18.csv\n")
         output_text.insert(tk.END, "File not found: calendar_dec18.csv\n")
         return
+    except pd.errors.EmptyDataError as e:
+        print(f"Corrupted file: {e.filename}\n")
+        return None, None, None
 
     # the total number of records in each dataframe
     num_records_listings = df_listings.shape[0]

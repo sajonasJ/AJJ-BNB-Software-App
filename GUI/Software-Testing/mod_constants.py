@@ -5,6 +5,8 @@ MAX_HEIGHT = 800
 MIN_WIDTH = 50
 MAX_COL_WIDTH = 200
 
+
+
 # List of keywords for cleanliness
 CLEANLINESS_KEYWORDS = ['dirty', 'clean', 'cleanliness', 'disgusting', 'disgust', 'mold', 'neat', 'filthy',
                         'fresh', 'spotless', 'dust', 'germ', 'immaculate', 'tidy', 'hygiene', 'hygenic',
@@ -108,3 +110,15 @@ CLEANLINESS_QUERY = """
             FROM reviewsDec rev
             INNER JOIN listingsDec l ON rev.listing_id = l.id
             WHERE l.city = ? AND ({like_clauses})"""
+
+queries_list = [
+    QUERY_CHART,
+    QUERY_RECORD,
+    SUBURB_LISTING_SHORTQUERY,
+    SUBURB_LISTING_LONG_QUERY,
+    PRICE_CHART_QUERY,
+    BASE_KEYWORD_QUERY,
+    LONG_KEYWORD_QUERY,
+    CITY_QUERY,
+    CLEANLINESS_QUERY
+]

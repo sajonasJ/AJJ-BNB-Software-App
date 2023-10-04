@@ -39,11 +39,8 @@ def get_price_chart_data(start_date, end_date, suburb, select_date_func=None, co
         dates = select_date_func(start_date, end_date)
     else:
         dates = (start_date, end_date)
-
-
     if connection is None:
         connection = sqlite3.connect('data.db')
-
     cursor = connection.cursor()
 
     if execute_query:

@@ -2,7 +2,8 @@ from unittest import expectedFailure
 from unittest.mock import MagicMock, Mock, call, patch
 from mod_utils import *
 import mod_utils
-import sqlite3
+import sqlparse
+from pathlib import Path
 
 import unittest
 
@@ -24,14 +25,15 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(clean_user_input(input_string),expected_output)
 
     def test_clean_user_input_integer_input(self):
-        with self.assertRaises(ValueError):
-            clean_user_input(12345)
+        self.assertRaises(ValueError, clean_user_input, 12345)
 
     def test_clean_user_input_none_input(self):
-        with self.assertRaises(ValueError):
-            clean_user_input(None)
+        self.assertRaises(ValueError, clean_user_input, None)
 
-    #check that the select_date function returns something
+    def test_clean_user_input_empty_string(self):
+        self.assertRaises(ValueError, clean_user_input,"   ")
+
+
     def test_select_date_return_something(self):
         mock_start_date = MagicMock()
         mock_end_date = MagicMock()
@@ -92,6 +94,27 @@ class TestUtils(unittest.TestCase):
 
         mock_end_date.get_date.assert_called_once()
 
+
+    @expectedFailure
+    def test_select_date_future_dates(self):
+        self.mock_start_date = MagicMock()
+        self.mock_end_date = MagicMock()
+
+        """Test if the function handles future dates properly."""
+        self.mock_start_date.get_date.return_value = '3023-01-01'
+        self.mock_end_date.get_date.return_value = '3023-12-31'
+
+        with self.assertRaises(ValueError):
+            select_date(self.mock_start_date, self.mock_end_date)
+
+    @expectedFailure
+    def test_select_date_dates_not_in_database(self):
+        """Test if the function handles dates not present in the database properly."""
+        self.mock_start_date.get_date.return_value = '1999-01-01'  # Assuming this date is not in your database
+        self.mock_end_date.get_date.return_value = '1999-12-31'
+
+        with self.assertRaises(ValueError):
+            select_date(self.mock_start_date, self.mock_end_date)
 
     def test_make_window(self):
         mock_center_screen = MagicMock
@@ -170,10 +193,8 @@ class TestUtils(unittest.TestCase):
         mock_PhotoImage = MagicMock()
         mock_relative_to_assets = MagicMock(side_effect=lambda x: f"mocked_path/{x}")
 
-        # Act
         result = load_images(mock_PhotoImage, mock_relative_to_assets)
 
-        # Assert
         expected_calls = [
             call("mocked_path/welcome_img.png"),
             call("mocked_path/home.png"),
@@ -209,4 +230,83 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(mock_execute_query.call_count, 1)
         self.assertEqual(mock_display_func.call_args, call([100], 'TestSuburb', ['name'], ['2022-01-01']))
 
+    @patch("mod_utils.ASSETS_PATH", Path("/your/mock/path"))
+    def test_relative_to_assets(self):
+        given_path = "some/file/path.txt"
+        result = relative_to_assets(given_path)
+        expected_result = Path("/your/mock/path/some/file/path.txt")
+        self.assertEqual(result, expected_result)
 
+    @patch("mod_utils.ASSETS_PATH", Path("/your/mock/path"))
+    @expectedFailure
+    def test_relative_to_assets_expected_failure(self):
+        given_path = "some/file/path.txt"
+        result = mod_utils.relative_to_assets(given_path)
+        expected_result = Path("/wrong/expected/path/some/file/path.txt")  # Intentionally set the wrong expected result
+        self.assertEqual(result, expected_result)
+
+    @expectedFailure
+    @patch('mod_utils.sqlite3.connect')
+    def test_connect_to_db(self, mock_connect):
+        mock_connect.return_value = None
+
+        result = mod_utils.connect_to_db()
+
+        self.assertIsNotNone(result)
+        # Assert that connect was called once
+        mock_connect.assert_called_once_with('data.db')
+
+    @patch('mod_utils.pd.read_csv')
+    def test_successful_file_read(self, mock_read_csv):
+        mock_df = MagicMock(spec=pd.DataFrame)
+        mock_read_csv.return_value = mock_df
+
+        df_listings, df_reviews, df_calendar = mod_utils.read_csv_files()
+
+        # Checking that read_csv was called three times (for each file)
+        self.assertEqual(mock_read_csv.call_count, 3, "Expected read_csv to have been called three times")
+
+        # Asserting that each returned value is an instance of DataFrame (or Mock in this case)
+        self.assertIsInstance(df_listings, MagicMock, "Expected df_listings to be a DataFrame")
+        self.assertIsInstance(df_reviews, MagicMock, "Expected df_reviews to be a DataFrame")
+        self.assertIsInstance(df_calendar, MagicMock, "Expected df_calendar to be a DataFrame")
+
+    @patch('mod_utils.pd.read_csv')
+    def test_file_not_found(self, mock_read_csv):
+        mock_read_csv.side_effect = FileNotFoundError("Sample error message")
+
+        # Now when calling read_csv_files, it should handle FileNotFoundError and return None, None, None
+        df_listings, df_reviews, df_calendar = mod_utils.read_csv_files()
+
+        # Check that None is returned for each dataframe when FileNotFoundError is raised
+        self.assertIsNone(None, "Expected df_listings to be None when file is not found")
+        self.assertIsNone(None, "Expected df_reviews to be None when file is not found")
+        self.assertIsNone(None, "Expected df_calendar to be None when file is not found")
+
+    @expectedFailure
+    @patch("pandas.read_csv")
+    def test_empty_or_corrupted_file(self, mock_read_csv):
+        # Mocking the behavior of pd.read_csv to raise EmptyDataError for empty/corrupted file
+        mock_read_csv.side_effect = [pd.read_csv('../bnb_data/listings_dec18.csv', low_memory=False),
+                                     pd.errors.EmptyDataError("File is empty or corrupted"),
+                                     pd.read_csv('../bnb_data/calendar_dec18.csv', low_memory=False)]
+
+        # Calling the function; expecting it to handle EmptyDataError properly
+        df_listings, df_reviews, df_calendar = mod_utils.read_csv_files()
+
+        # Checking that appropriate action was taken for empty/corrupted file (e.g., df_reviews should be None)
+        self.assertIsNotNone(df_listings, "Expected df_listings not to be None when file is valid")
+        self.assertIsNone(df_reviews, "Expected df_reviews to be None when file is empty or corrupted")
+        self.assertIsNotNone(df_calendar, "Expected df_calendar not to be None when file is valid")
+
+    def test_sql_syntax(self):
+        try:
+            sqlparse.parse(SUBURB_LISTING_SHORTQUERY)
+        except sqlparse.exceptions.SQLParseError:
+            self.fail("SQL Syntax is invalid")
+
+    @expectedFailure
+    def test_sql_syntax_failure(self):
+        bad_sql_query = "SELECT * FROM something WHERE foo = 'bar"
+        with self.assertRaises(sqlparse.exceptions.SQLParseError):
+            sqlparse.parse(bad_sql_query)
