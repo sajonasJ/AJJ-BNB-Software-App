@@ -74,7 +74,8 @@ PRICE_CHART_QUERY = """
     SELECT l.name, c.price, c.date 
     FROM calendarDec c 
     INNER JOIN listingsDec l ON c.listing_id = l.id 
-    WHERE c.date BETWEEN ? AND ? AND c.price NOT NULL AND l.city = ? """
+    WHERE c.date BETWEEN ? AND ? AND c.price NOT NULL AND l.city = ? 
+    ORDER BY c.price ASC"""
 
 
 # query for get_keyword_results
