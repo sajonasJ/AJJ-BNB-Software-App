@@ -166,16 +166,13 @@ def show_app(cursor, connection):
     start_button = ttk.Button(root, text='Get Data', command=lambda: get_data(root, cursor, connection))
     start_button.grid(column=0, row=1, padx=10, pady=10, sticky=tk.E)
 
-
     # stop button
     stop_button = ttk.Button(root, text='Close', command=lambda: close(root))
     stop_button.grid(column=1, row=1, padx=10, pady=10, sticky=tk.W)
     global output_text
     output_text = tk.Text(root, height=30, width=90)
     output_text.grid(row=0, column=0, columnspan=3)
-    output_text.insert(tk.END, "If data.db exists in the directory please close this window\n")
-
-
+    output_text.insert(tk.END, "Please click 'Get Data' to continue.\n")
 
     root.resizable(False, False)  # does not allow the window to resize
     root.mainloop()
