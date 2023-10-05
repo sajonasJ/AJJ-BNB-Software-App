@@ -8,6 +8,8 @@ from tkcalendar import Calendar
 from createDatabase import run_create_db
 from displays import initial_window
 from constants import *
+import time
+from utils import throttle_click
 
 
 def main():
@@ -16,6 +18,7 @@ def main():
     window = initial_window()
     print('main Created')
     img = load_images()
+
 
     with sqlite3.connect('data.db') as connection:
         cursor = connection.cursor()
@@ -27,9 +30,13 @@ def main():
 
     def show_suburb():
         """Show Display listings for suburb interface"""
+        if not throttle_click():
+            return  # Ignore this click if throttle_click returns False
+
+
         main_canvas.pack_forget()
         global current_canvas
-        print(current_canvas)
+        print('show_suburb')
 
         if current_canvas:
             current_canvas.pack_forget()
@@ -70,12 +77,17 @@ def main():
 
         canvas_list_suburb.pack()
         current_canvas = canvas_list_suburb
+        return current_canvas
 
     def show_price():
         """PriceChart"""
+
+        if not throttle_click():
+            return  # Ignore this click if throttle_click returns False
+
         main_canvas.pack_forget()
         global current_canvas
-        print(current_canvas)
+        print('show_price')
 
         if current_canvas:
             current_canvas.pack_forget()
@@ -107,12 +119,17 @@ def main():
 
         canvas_price_listings.pack()
         current_canvas = canvas_price_listings
+        return current_canvas
 
     def show_search():
         """Display Search Interface """
+
+        if not throttle_click():
+            return  # Ignore this click if throttle_click returns False
+
         main_canvas.pack_forget()
         global current_canvas
-        print(current_canvas)
+        print('show_search')
 
         if current_canvas:
             current_canvas.pack_forget()
@@ -152,12 +169,17 @@ def main():
 
         canvas_search.pack()
         current_canvas = canvas_search
+        return current_canvas
 
     def show_cleanliness():
         """Display Price Chart"""
+
+        if not throttle_click():
+            return  # Ignore this click if throttle_click returns False
+
         main_canvas.pack_forget()
         global current_canvas
-        print('cleanliness')
+        print('show_cleanliness')
 
         if current_canvas:
             current_canvas.pack_forget()
@@ -183,12 +205,18 @@ def main():
 
         canvas_cleanliness.pack()
         current_canvas = canvas_cleanliness
+        return  current_canvas
 
 
     def show_listings():
         """Display Listings by Ratings Interface"""
+
+        if not throttle_click():
+            return  # Ignore this click if throttle_click returns False
+
         main_canvas.pack_forget()
 
+        print('show_listings')
         global current_canvas
 
         if current_canvas:
@@ -223,6 +251,7 @@ def main():
 
         canvas_listings_by_ratings.pack()
         current_canvas = canvas_listings_by_ratings
+        return current_canvas
 
 
     # Landing Canvas

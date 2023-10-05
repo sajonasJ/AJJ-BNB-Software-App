@@ -132,3 +132,16 @@ def test_sql_syntax():
         sqlparse.parse(SUBURB_LISTING_SHORTQUERY)
     except sqlparse.exceptions.SQLParseError:
         assert False, "SQL Syntax is invalid"
+
+def throttle_click():
+    delay = 1
+    global last_click_time
+    current_time = time.time()
+
+    # Check if enough time has passed since the last click
+    if current_time - last_click_time < delay:
+        print("Clicking too fast, ignoring this click")
+        return False  # Ignore this click if it's too soon
+
+    last_click_time = current_time  # Update the last click time
+    return True  # Proceed with the click

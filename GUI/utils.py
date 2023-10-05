@@ -5,6 +5,10 @@ from constants import *
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import time
+
+last_click_time = 0  # Initializes the last click time
+delay = 2  # Set your desired delay here, in seconds
 
 
 def on_hover(sel, the_prices, the_names, the_dates):
@@ -124,5 +128,24 @@ def show_chart(fig, title):
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     tk.mainloop()
+
+
+
+def throttle_click():
+    """
+    Throttles the clicks, ignoring clicks that occur too quickly in succession.
+    :return: A boolean indicating whether the click should proceed.
+    """
+    global last_click_time
+    current_time = time.time()
+
+    # Check if enough time has passed since the last click
+    if current_time - last_click_time < delay:
+        print("Clicking too fast, ignoring this click")
+        return False  # Ignore this click if it's too soon
+
+    last_click_time = current_time  # Update the last click time
+    return True  # Proceed with the click
+
 
 

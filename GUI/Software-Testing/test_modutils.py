@@ -310,3 +310,22 @@ class TestUtils(unittest.TestCase):
         bad_sql_query = "SELECT * FROM something WHERE foo = 'bar"
         with self.assertRaises(sqlparse.exceptions.SQLParseError):
             sqlparse.parse(bad_sql_query)
+
+    @patch('mod_utils.time.time')
+    def test_throttle_click(self, mock_time):
+        mod_utils.last_click_time = 0  # reset last_click_time
+
+        # Case 1: Enough time has passed since the last click
+        mock_time.return_value = 2  # Simulating that the current time is 2 seconds since epoch
+        result = mod_utils.throttle_click()
+        self.assertTrue(result)  # Asserting that throttle_click returns True
+
+        # Case 2: Clicking too fast
+        mock_time.return_value = 2.5  # Not enough time has passed since the last click
+        result = mod_utils.throttle_click()
+        self.assertFalse(result)  # Asserting that throttle_click returns False
+
+        # Case 3: Enough time has passed again
+        mock_time.return_value = 4  # Enough time has passed since the last click
+        result = mod_utils.throttle_click()
+        self.assertTrue(result)  # Asserting that throttle_click returns True

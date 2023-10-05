@@ -7,6 +7,8 @@ from constants import *
 
 def get_suburb_listings( start_date, end_date, suburb, how_much_data):
     """retrieves the suburb listings using date and queries"""
+    if not throttle_click():
+        return  # Ignore this click if throttle_click returns False
     print('get suburb listings')
     dates = select_date(start_date, end_date)
     print('start Date=', dates[0], 'end Date=', dates[1], 'suburb=', suburb)
@@ -42,6 +44,9 @@ def get_suburb_listings( start_date, end_date, suburb, how_much_data):
 
 def get_price_chart_data(start_date, end_date, suburb):
     """get price data and display chart"""
+    if not throttle_click():
+        return  # Ignore this click if throttle_click returns False
+
     print('get price chart data')
 
     dates = select_date(start_date, end_date)
@@ -64,6 +69,8 @@ def get_price_chart_data(start_date, end_date, suburb):
 
 def get_keyword_results(start_date, end_date, key_words, how_much_data):
     """Display the results of Search Bar"""
+    if not throttle_click():
+        return  # Ignore this click if throttle_click returns False
     cleaned_words = clean_user_input(key_words)
     dates = select_date(start_date, end_date)
 
@@ -104,6 +111,8 @@ def get_keyword_results(start_date, end_date, key_words, how_much_data):
 
 def get_cleanliness_data(keywords, suburb, label3):
     """ get the cleanliness data for the displayCleanliness() """
+    if not throttle_click():
+        return  # Ignore this click if throttle_click returns False
     print('get cleanliness')
 
     if not suburb:
@@ -127,6 +136,8 @@ def get_cleanliness_data(keywords, suburb, label3):
 
 def get_suburb_ratings(suburb, how_much_data, data_type):
     """ get suburb ratings data"""
+    if not throttle_click():
+        return  # Ignore this click if throttle_click returns False
 
     print(how_much_data)
     print("get suburb ratings" + suburb)

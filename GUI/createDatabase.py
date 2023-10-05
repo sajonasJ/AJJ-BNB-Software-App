@@ -6,7 +6,14 @@ from utils import *
 import os
 
 
+already_run = os.path.isfile('data.db')
+
 def run_create_db():
+    global already_run  # Access the global variable
+    if already_run:  # If data.db already exists, return immediately
+        print("data.db already exists. Exiting run_create_db without creating tables.")
+        return
+
     with sqlite3.connect('data.db') as connection:
         cursor = connection.cursor()
         cursor.execute("CREATE TABLE IF NOT EXISTS reviewsDec(listing_id,id,date,reviewer_id,reviewer_name,comments)")
@@ -122,6 +129,16 @@ def get_the_data(cursor, connection, root, output_text):
 
 def get_data(root, cursor, connection):
     """func to get the data"""
+
+    global already_run  # Declare that we're using the global variable
+
+    if already_run:  # If the function has already been run, return immediately
+        print("Function has already been run. Ignoring subsequent calls.")
+        return
+
+    # If not, proceed with the function and set the flag to True
+    already_run = True
+
     output_text.insert(tk.END, "Creating Database...\n")
     output_text.insert(tk.END, "Please wait...\n")
     root.update_idletasks()  # updating the Text widget immediately Simulating some delay in database creation
