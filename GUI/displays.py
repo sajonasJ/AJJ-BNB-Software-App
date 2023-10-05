@@ -25,7 +25,8 @@ def display_suburb_listings( results, column_names, suburb):
 def display_price_chart(the_prices, suburb, the_names, the_dates):
     """displays the price chart"""
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.scatter(np.arange(len(the_prices)), the_prices, label='Price')
+    sorted_prices = np.sort(the_prices)
+    ax.scatter(np.arange(len(sorted_prices)), sorted_prices, label='Price')
     ax.set_yticklabels([])
 
     ax.set_title(f"Price Data for {suburb}")
@@ -37,7 +38,7 @@ def display_price_chart(the_prices, suburb, the_names, the_dates):
     # ax.set_xticks(np.arange(len(the_dates)))
     # ax.set_xticklabels(the_dates, rotation=45, ha="right", fontsize=8)
 
-    mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover(sel, the_prices, the_names, the_dates))
+    mplcursors.cursor(ax, hover=True).connect('add', lambda sel: on_hover(sel, sorted_prices, the_names, the_dates))
     show_chart(fig, f"Price Data for {suburb}")
 
 
