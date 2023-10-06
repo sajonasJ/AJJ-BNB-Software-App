@@ -1,3 +1,15 @@
+commit f1c5475936daabf5e76ce00911d407134c2eac7e
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Fri Oct 6 22:22:25 2023 +0800
+
+    Few changes to the Executive Summary. Added the user manual
+
+commit 8e47543276a38934c50a1832161bc365e1aaa140
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Oct 6 12:37:38 2023 +1000
+
+    finalised updated documents, added new git log,renamed git_log to old_git_log
+
 commit d3b530d388013bd381650f26decef26845ebf778
 Merge: 1bcf968 0b99135
 Author: Jonas Sajonas <jonas.sajonas@gmail.com>
