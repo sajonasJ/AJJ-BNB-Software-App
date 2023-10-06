@@ -1,0 +1,515 @@
+commit d3b530d388013bd381650f26decef26845ebf778
+Merge: 1bcf968 0b99135
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Oct 6 12:26:57 2023 +1000
+
+    Merge branch 'main' of https://github.com/sajonasJ/SoftwareTech-Group17
+
+commit 1bcf96823a6f4d0e5329bd21890ec6d96068b3f4
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Oct 5 22:47:52 2023 +1000
+
+    executive summary done
+
+commit 0b99135855824e31e0535785fed0e149f1b4579d
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Thu Oct 5 19:35:09 2023 +0800
+
+    Small change to the createDatabase.py script
+
+commit 830369eab0569644e521653d57bf478dce4d4b13
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Oct 5 17:45:22 2023 +1000
+
+    edited graph function
+
+commit b807085fe2874bcd7b11e331039b72bca22718e6
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Oct 5 16:05:04 2023 +1000
+
+    edited chart for display suburb
+
+commit 3585d7ebe80cd3f995fc7695d4f1cffe5ff0e625
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Oct 5 15:10:37 2023 +1000
+
+    updated and finished software testing report
+
+commit b62fa75709f85bb76c28e7f0b29adf9b1f6e5044
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Oct 5 10:51:14 2023 +1000
+
+    implemented delay logic, data.db checking lologic, added additional unittest.
+
+commit 27717f6821ed4bcb1bf798c1a955ea7a372fb931
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Wed Oct 4 15:25:43 2023 +1000
+
+    unittesting done
+
+commit 8cf8fb8b0020f9ec4baf96e1d983ff389a8ccac9
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Wed Oct 4 12:23:16 2023 +1000
+
+    revised testing
+
+commit 87991d3c6e72271e7f4a77ecf181d6f2d7049e5d
+Merge: a335c70 28b843a
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Wed Oct 4 07:11:58 2023 +1000
+
+    Merge branch 'main' of https://github.com/sajonasJ/SoftwareTech-Group17
+
+commit a335c70b06ee44a81610f504804ec2c268065a10
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Wed Oct 4 07:11:52 2023 +1000
+
+    deleted some files
+
+commit 28b843aa7508bd321bca63e052de7d19ba131c72
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Tue Oct 3 22:52:42 2023 +0800
+
+    Adding more testing in test_modutils
+
+commit 6d4b8844d64170294249341a541d42474e39cf4f
+Merge: 2f92fc5 a49dad8
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Oct 3 17:27:53 2023 +1000
+
+    Merge branch 'charlie'
+
+commit a49dad8793f5738f0b23f8a812aca9dc3b881aa9
+Merge: 57a53b9 1cd0fed
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Oct 3 17:22:03 2023 +1000
+
+    merged charlie
+
+commit 57a53b922c1828bbb067e4b3f066bc8b9bef9df1
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Oct 3 17:03:59 2023 +1000
+
+    merged charlie
+
+commit e83326aa0243286d898250e7fe8b839bb263c428
+Merge: 8369271 4ccfd43
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Oct 3 16:54:54 2023 +1000
+
+    Merge branch 'charlie' of https://github.com/sajonasJ/SoftwareTech-Group17 into charlie
+
+commit 8369271ede9835d6984c5363e30f31ac4dba6e11
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Oct 3 16:54:43 2023 +1000
+
+    finished testing
+
+commit 4ccfd4398893299e308e1ddb540babbc1e555659
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Tue Oct 3 14:51:36 2023 +0800
+
+    Adding a tree to cleanliness, and fixing the image
+
+commit b0f6bcade79c689ad2b28fe0be90b324ba659472
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Oct 3 15:06:33 2023 +1000
+
+    updated software testing and bug fix
+
+commit 1cd0fed620ea29f26b0377a8beab9183ee1cf2e7
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Tue Oct 3 13:05:42 2023 +0800
+
+    Deleting excess folder
+
+commit 57482f54d7b89a7d2b97dc8aab7561f159da8e52
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Oct 3 00:35:55 2023 +1000
+
+    tested half for unit testing
+
+commit 1dac2a350abed522cab6c4bcd5136c68f943b64f
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Mon Oct 2 21:47:49 2023 +0800
+
+    Testing
+
+commit 80a75b764a5234782f40fa6a86e1557a79c9a700
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Mon Oct 2 15:14:26 2023 +1000
+
+    testing
+
+commit 11f7f1d2cbc0d558e23e7061ca3c13245c8d4480
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Sun Oct 1 20:20:24 2023 +1000
+
+    cleaning and separated code
+
+commit 2f92fc5f33f831babf6a9fb400294ead225f6dda
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Sun Oct 1 16:03:17 2023 +0800
+
+    Deleted excess file
+
+commit 9a037051000f6accdf31bc946127c4e628eb08d8
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Sat Sep 30 00:18:40 2023 +1000
+
+    cleaned up and working app, included recommendations text
+
+commit 9e0bed3174e42948d3bc8357c6bf013e976b5a3c
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Sep 29 21:02:17 2023 +1000
+
+    finished get.py and clean.py
+
+commit a79d4d01abe982022f7da43c976ed02f5812df25
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Sep 29 20:17:52 2023 +1000
+
+    finished get.py and clean.py
+
+commit e4331f6667b618fce6a8743f0dcc3a0486f501dd
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Sep 29 17:50:50 2023 +1000
+
+    revised code structure
+
+commit 9185aa10771de405c90ae322a9548016b92c1aed
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Sep 29 17:16:24 2023 +1000
+
+    revised working getsuburb and getchart
+
+commit 1b88dfdb9d61cbbd5422e717fdba5b33ae2b73be
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Sep 29 13:37:11 2023 +1000
+
+    code cleanup, refactor, app still working
+
+commit 25a229943f9a97abea13b9e133198ed83e5dfac1
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Sep 29 12:04:33 2023 +1000
+
+    enabled the database to run with main.py, bug fixes
+
+commit bd6a668b2a88dd807b700a455f110e2d103c2e6b
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Sep 29 02:22:34 2023 +1000
+
+    separate files, connected database start up to main file, gui.py changed name to main.py
+
+commit 7f726c920bd887666a4d008a43ef77e2f4e3386f
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Thu Sep 28 16:28:04 2023 +0800
+
+    Plotted suburb ratings
+
+commit f7ff24a8f7e383244e334a7b39fde6ca5c33df8b
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Sep 28 09:12:19 2023 +1000
+
+    testing main file and clean up
+
+commit e7c31c45d743cc22be9db201f2940de7c9acc3d0
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Thu Sep 28 01:22:52 2023 +0800
+
+    Began plotting price chart data.
+
+commit 682cf181710aa6abb580cecfebae699d570e2d06
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 23:46:12 2023 +0800
+
+    Suburb ratings displayed by list in a table complete
+
+commit 200930f855220f2fb4cd306a67088945a040ce6f
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 23:16:04 2023 +0800
+
+    Cleanliness function data displayed on screen
+
+commit bc1774f323260752f7ebc1f5c31b0e1ced79325e
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 22:29:27 2023 +0800
+
+    Keyword results function, data display in a table
+
+commit bfb39d008b5ca042f410455dcbdff3b5590d7e1e
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 22:09:14 2023 +0800
+
+    Suburb listings displayed in a tree.
+
+commit 947e42ba4ec893f602c1d89956ab8e812d2da4bc
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 19:22:02 2023 +0800
+
+    Fixed cleanliness, and grabbed the data from the final function display by ratings.
+
+commit 973a8f96d49aff20958c3ea044197d3d10719d84
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 17:27:23 2023 +0800
+
+    Added search records data collection. Changed gitignore to ignore data.db
+
+commit d9c3b4d21933e1346af3d7a1123bdb7d624391d8
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 16:31:21 2023 +0800
+
+    Get data for price listings
+
+commit 972225d76adcd6cd8cfe493d62a695557c7af88f
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 16:26:53 2023 +0800
+
+    Create an sqlite database script to convert the csv data into a sqlite database
+
+commit 07d10f97229274eccf9815080af0c0729d870533
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Sep 27 00:03:07 2023 +0800
+
+    Added functional suburb listing and cleanliness. And README pip installs
+
+commit 43514d337eeb7a12e5bd10158389b4e7c08c62bf
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Tue Sep 26 20:54:02 2023 +0800
+
+    Turn the Excel data into a sqlite database
+
+commit abec55b77eefed5e115773f61c171967e0f97d19
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Sep 26 16:02:19 2023 +1000
+
+    added clean.py, updated some indents
+
+commit d67b3571118c54f8bbc39a4797a6475f6cdfaf75
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Sep 26 14:31:09 2023 +1000
+
+    added gitignore
+
+commit 3998e75a7676acf796b016fe27fa308c0ca55cbd
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Sep 26 08:04:28 2023 +1000
+
+    removed projectplan-1
+
+commit 00fa9b4df0efd2de241efc9f0e439fe027732a05
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Sep 26 08:03:31 2023 +1000
+
+    updated software design report, project plan, project plan 1 deleted, added executive summary
+
+commit 226b61e570d58eee101473c939cbe05aae078b70
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Sep 26 08:02:04 2023 +1000
+
+    added marking guide, newGantt, Software testing report
+
+commit 59f9a061536a032d19516d2e512da6c0ace8deb5
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Tue Sep 26 08:00:45 2023 +1000
+
+    deleted old gantt file, ??build layout came out of nowhere
+
+commit ed55d3f562240221e1990b62d4ed01ac16193751
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Mon Sep 25 22:46:03 2023 +0800
+
+    Cleanliness data grabbed without a suburb
+
+commit b50c5a7e756590e002422b08d5085b5ece87b2a8
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Sun Sep 24 23:10:40 2023 +0800
+
+    Added the basic functions
+
+commit 5290cfd3565cdf48cb7a5f26b805bf3da58b21d5
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Sun Sep 24 22:30:38 2023 +0800
+
+    Changed the orientation of the functions
+
+commit 7a27b2b9704e078f150708ffc7a898983bcde3f7
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Mon Sep 11 22:32:02 2023 +0800
+
+    Combined the build layouts into one app
+
+commit 1574f12fb6de2c188e132afcafa32ed71c3c6cd6
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Sep 7 20:29:59 2023 +1000
+
+    added tkinter code for multiple layouts
+
+commit 707a7d8cfe4c7dee4451a41180e9437d66dcb545
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Sep 7 14:16:25 2023 +1000
+
+    added landing page layout
+
+commit c80e550d7abaacdd8d17737e125e2e14295c39ef
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Sun Sep 3 22:44:47 2023 +1000
+
+    project plan updated
+
+commit 20dcf82190cf44f494e00c6b9462f95810e8a220
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Sun Sep 3 20:37:59 2023 +0800
+
+    Gantt Chart final
+
+commit 5b6d4aa7ca88bf176c68a4c1c2ef8a5ff9949811
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Sun Sep 3 20:59:19 2023 +1000
+
+    Software Design Document Updates
+
+commit efa465840ec5a6e428bd75509f7c1f1ed49f6d30
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Sun Sep 3 20:58:10 2023 +1000
+
+    Software Design Document update
+
+commit 3640bf00520117bb4bf27cc3f2a70921a08e1421
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Sat Sep 2 20:17:02 2023 +1000
+
+    Updated File Layouts and Finished Descriptions
+
+commit bce50076edd8f379d4104efd131e6a078fb0d181
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Fri Sep 1 21:45:01 2023 +1000
+
+    Project Plan update
+
+commit 8a94378bc8848de8b32e496f729b7f50aa8ad558
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Fri Sep 1 21:43:55 2023 +1000
+
+    Updated Projct Plan
+
+commit c688909157a3a722795e481e36050b23442f11b6
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Thu Aug 31 22:27:34 2023 +0800
+
+    Added psuedo code, functions, and other changes to Software Design. Added changes to project plan
+
+commit 0fa4a2ece50e4131f46230b8da957e88609bb2e0
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Thu Aug 31 01:34:26 2023 +1000
+
+    updated software design document: flowchart,usecase, usecase diagram, edited requirements
+
+commit 68bcda6143c827ed62f425132e6ef479deb0cebd
+Merge: 32730e7 1772d28
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Wed Aug 30 17:25:50 2023 +1000
+
+    Project Plan Updates
+
+commit 32730e7afc06de0d960995413ec5438699731d88
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Wed Aug 30 17:22:21 2023 +1000
+
+    Project Plan updates
+
+commit 1772d28429b15c9c9d2e1f2dffacd1b0e7953d99
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Wed Aug 30 10:07:28 2023 +0800
+
+    Added written functions 3.2.1
+
+commit b090d46e073b30a29e09909665459b33ed5a4ac6
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Wed Aug 30 00:24:42 2023 +1000
+
+    update Gantt Chart, Project Plan, and references. catchup update
+
+commit 26646a2a43f9934e5ecca666340f5c9085b35899
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Mon Aug 28 18:29:11 2023 +1000
+
+    Draft use case diagram
+
+commit 282762f6be6931a71f464489c5582ebced8457b0
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Tue Aug 22 20:20:00 2023 +1000
+
+    updated links to docs on readme
+
+commit d792bc63b723609e729cdbd28aaea6d9c899aa31
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Tue Aug 22 20:10:41 2023 +1000
+
+    updated links doc
+
+commit 0cdbfee75367ca7386b43efb9f6109ca040816d7
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Sat Aug 19 22:23:39 2023 +1000
+
+    updated Gantt chart
+
+commit 2c922d7c901e2a101b9aadde7c9dfd7f29d6467f
+Author: Ashley <ashley_tama@hotmail.com>
+Date:   Sat Aug 19 20:21:59 2023 +0800
+
+    Adding the activity definition and estimation
+
+commit d760f6b59ee77e88f4637854f99cf4b5d7426f09
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Sat Aug 19 21:53:55 2023 +1000
+
+    updated project plan with WBS
+
+commit 67aa6431d3a59045f8a9ab13d792d2546360ec69
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Mon Aug 14 14:23:24 2023 +1000
+
+    changed readme.md to readme.txt, added references and links- software tech assign1.docx
+
+commit a6a7a28505faab1c668ca4bcb2f5d7221449ac9d
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Sat Aug 12 13:17:40 2023 +1000
+
+    removed ~$ doc files
+
+commit 75f165a3893622929afcba6904f7576e33490c85
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Sat Aug 12 12:48:02 2023 +1000
+
+    more links
+
+commit e82b4596d0238516f7392eb13c334ff29115589d
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Sat Aug 12 11:38:22 2023 +1000
+
+    added use case links to README
+
+commit b9ff05174633af0f9c09fac8747ed126cf5d045b
+Author: AshleyPer <ashley.pergoliti@gmail.com>
+Date:   Fri Aug 4 19:23:22 2023 +0800
+
+    Added a file with references for the Software Design Document. Added text to the Software Design Document
+
+commit a33f99a16d65bce3475284895d710e198e0bf8dc
+Author: Jodie Thomson <thecurlypurpleshoe@gmail.com>
+Date:   Fri Aug 4 12:43:51 2023 +1000
+
+    added meeting doc links to README
+
+commit 207d69f2c3bd610cdf873d3e09e4c6a58fda2d96
+Author: Jonas Sajonas <jonas.sajonas@gmail.com>
+Date:   Fri Aug 4 12:11:05 2023 +1000
+
+    initial assignment templates
+
+commit 833ac4e656a7fa93d65823178fa6c59f1cb9a761
+Author: Jonas <117071036+sajonasJ@users.noreply.github.com>
+Date:   Fri Aug 4 11:25:21 2023 +1000
+
+    Initial commit
